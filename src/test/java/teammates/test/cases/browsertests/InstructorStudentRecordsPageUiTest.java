@@ -9,12 +9,13 @@ import teammates.common.datatransfer.attributes.InstructorAttributes;
 import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.AppUrl;
 import teammates.common.util.Const;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
 import teammates.test.pageobjects.InstructorStudentRecordsPage;
 
 /**
- * SUT: {@link Const.ActionURIs#INSTRUCTOR_STUDENT_RECORDS_PAGE}.
+ * SUT: {@link Const.WebPageURIs#INSTRUCTOR_STUDENT_RECORDS_PAGE}.
  */
-public class InstructorStudentRecordsPageUiTest extends BaseUiTestCase {
+public class InstructorStudentRecordsPageUiTest extends BaseE2ETestCase {
     private InstructorStudentRecordsPage viewPage;
 
     private String instructorId;
@@ -159,15 +160,15 @@ public class InstructorStudentRecordsPageUiTest extends BaseUiTestCase {
         ______TS("Typical Case: Delete comment");
 
         viewPage.deleteFeedbackResponseComment("-RGQ-1-1-1-3");
-        viewPage.verifyRowMissing("-RGQ-1-1-1-3");
+        viewPage.verifyCommentRowMissing("-RGQ-1-1-1-3");
     }
 
     private InstructorStudentRecordsPage getStudentRecordsPage() {
-        AppUrl viewPageUrl = createUrl(Const.ActionURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
+        AppUrl viewPageUrl = createUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
                            .withUserId(instructorId)
                            .withCourseId(courseId)
                            .withStudentEmail(studentEmail);
-        return loginAdminToPage(viewPageUrl, InstructorStudentRecordsPage.class);
+        return loginAdminToPageOld(viewPageUrl, InstructorStudentRecordsPage.class);
     }
 
     private void testPanelsCollapseExpand() {

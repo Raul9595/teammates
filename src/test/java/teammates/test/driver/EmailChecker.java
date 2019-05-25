@@ -1,6 +1,6 @@
 package teammates.test.driver;
 
-import static org.testng.AssertJUnit.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
@@ -21,27 +21,27 @@ public final class EmailChecker {
 
     /**
      * Verifies that the given {@code emailContent} is the same as
-     * the content given in the file at {@code filePathParam}. <br>
-     * @param filePathParam
-     *         If this starts with "/" (e.g., "/expected.html"), the
-     *         folder is assumed to be {@link TestProperties#TEST_EMAILS_FOLDER}.
+     * the content given in the file at {@code fileName}. <br>
      */
-    public static void verifyEmailContent(String emailContent, String filePathParam) throws IOException {
-        String filePath = (filePathParam.startsWith("/") ? TestProperties.TEST_EMAILS_FOLDER : "") + filePathParam;
+    public static void verifyEmailContent(String emailContent, String fileName) throws IOException {
+        String filePath = TestProperties.TEST_EMAILS_FOLDER + fileName;
         String actual = processEmailForComparison(emailContent);
         try {
             String expected = FileHelper.readFile(filePath);
             expected = injectTestProperties(expected);
-            assertEquals(expected, actual);
+            if (!expected.equals(actual)) {
+                assertEquals("<expected>" + System.lineSeparator() + expected + "</expected>",
+                        "<actual>" + System.lineSeparator() + actual + "</actual>");
+            }
         } catch (IOException | AssertionError e) {
-            if (!testAndRunGodMode(filePath, actual)) {
+            if (!updateSnapshot(filePath, actual)) {
                 throw e;
             }
         }
     }
 
-    private static boolean testAndRunGodMode(String filePath, String emailContent) throws IOException {
-        return TestProperties.IS_GODMODE_ENABLED && regenerateEmailFile(filePath, emailContent);
+    private static boolean updateSnapshot(String filePath, String emailContent) throws IOException {
+        return TestProperties.IS_SNAPSHOT_UPDATE && regenerateEmailFile(filePath, emailContent);
     }
 
     private static boolean regenerateEmailFile(String filePath, String emailContent) throws IOException {
@@ -49,7 +49,7 @@ public final class EmailChecker {
             return false;
         }
 
-        String processedEmailContent = processEmailForExpectedEmailRegeneration(emailContent) + Const.EOL;
+        String processedEmailContent = processEmailForExpectedEmailRegeneration(emailContent) + System.lineSeparator();
         FileHelper.saveFile(filePath, processedEmailContent);
         return true;
     }
@@ -58,8 +58,12 @@ public final class EmailChecker {
      * Injects values specified in configuration files to the appropriate placeholders.
      */
     private static String injectTestProperties(String emailContent) {
-        return emailContent.replace("${app.url}", Config.APP_URL)
+        return emailContent.replace("${app.url}", getAppUrl())
                            .replace("${support.email}", Config.SUPPORT_EMAIL);
+    }
+
+    private static String getAppUrl() {
+        return Config.isDevServer() ? Config.APP_FRONTENDDEV_URL : Config.APP_URL;
     }
 
     /**
@@ -81,7 +85,7 @@ public final class EmailChecker {
     }
 
     private static String replaceInjectedValuesWithPlaceholders(String emailContent) {
-        return emailContent.replace(Config.APP_URL, "${app.url}")
+        return emailContent.replace(getAppUrl(), "${app.url}")
                            .replace(Config.SUPPORT_EMAIL, "${support.email}");
     }
 

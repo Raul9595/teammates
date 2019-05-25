@@ -38,13 +38,13 @@
   },
   "courses": {
     "CHomeUiT.CS2104": {
-      "createdAt": "2012-04-01 11:58 PM UTC",
+      "createdAt": "2012-04-01T23:58:00Z",
       "id": "CHomeUiT.CS2104",
       "name": "Programming Language Concepts",
       "timeZone": "UTC"
     },
     "CHomeUiT.CS1101": {
-      "createdAt": "2012-04-01 11:59 PM UTC",
+      "createdAt": "2012-04-01T23:59:00Z",
       "id": "CHomeUiT.CS1101",
       "name": "Programming Methodology",
       "timeZone": "UTC"
@@ -55,7 +55,7 @@
       "timeZone": "UTC"
     },
     "CHomeUiT.testingSanitizationCourse": {
-      "createdAt": "2012-04-01 11:58 PM UTC",
+      "createdAt": "2012-04-01T23:58:00Z",
       "id": "CHomeUiT.idOfTestingSanitizationCourse",
       "name": "Testing<script> alert('hi!'); </script>",
       "timeZone": "UTC"
@@ -162,7 +162,7 @@
       "isArchived": false,
       "role": "Co-owner",
       "isDisplayedToStudents": true,
-      "displayedName": "inst<script>alert('hi!');</script>",
+      "displayedName": "inst'\"/><script>alert('hi!');</script>",
       "privileges": {
         "courseLevel": {
           "canviewstudentinsection": true,
@@ -189,7 +189,8 @@
       "course": "CHomeUiT.CS2104",
       "name": "Alice Betsy</td></div>'\"",
       "comments": "This student's name is Alice Betsy</td></div>'\"",
-      "team": "Team 1</td></div>'\""
+      "team": "Team 1</td></div>'\"",
+      "section": "None"
     },
     "CHomeUiT.benny.c.tmms@CHomeUiT.CS2104": {
       "googleId": "CHomeUiT.benny.c.tmms",
@@ -197,7 +198,8 @@
       "course": "CHomeUiT.CS2104",
       "name": "Benny Charles",
       "comments": "This student's name is Benny Charles",
-      "team": "Team 1</td></div>'\""
+      "team": "Team 1</td></div>'\"",
+      "section": "None"
     },
     "CHomeUiT.charlie.d.tmms@CHomeUiT.CS2104": {
       "googleId": "CHomeUiT.charlie.d.tmms",
@@ -205,7 +207,8 @@
       "course": "CHomeUiT.CS2104",
       "name": "Charlie Davis",
       "comments": "This student's name is Charlie Davis",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "CHomeUiT.danny.e.tmms@CHomeUiT.CS2104": {
       "googleId": "CHomeUiT.danny.e.tmms",
@@ -213,7 +216,8 @@
       "course": "CHomeUiT.CS2104",
       "name": "Danny Engrid",
       "comments": "This student's name is Danny Engrid",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "CHomeUiT.alice.b.tmms@CHomeUiT.CS1101": {
       "googleId": "CHomeUiT.alice.b.tmms",
@@ -221,7 +225,8 @@
       "course": "CHomeUiT.CS1101",
       "name": "Alice Betsy</td></div>'\"",
       "comments": "This student's name is Alice Betsy</td></div>'\"",
-      "team": "Team 1</td></div>'\""
+      "team": "Team 1</td></div>'\"",
+      "section": "None"
     },
     "CHomeUiT.benny.c.tmms@CHomeUiT.CS1101": {
       "googleId": "CHomeUiT.benny.c.tmms",
@@ -229,7 +234,8 @@
       "course": "CHomeUiT.CS1101",
       "name": "Benny Charles",
       "comments": "This student's name is Benny Charles",
-      "team": "Team 1</td></div>'\""
+      "team": "Team 1</td></div>'\"",
+      "section": "None"
     },
     "CHomeUiT.charlie.d.tmms@CHomeUiT.CS1101": {
       "googleId": "CHomeUiT.charlie.d.tmms",
@@ -237,7 +243,8 @@
       "course": "CHomeUiT.CS1101",
       "name": "Charlie Davis",
       "comments": "This student's name is Charlie Davis",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "CHomeUiT.danny.e.tmms@CHomeUiT.CS1101": {
       "googleId": "CHomeUiT.danny.e.tmms",
@@ -245,7 +252,8 @@
       "course": "CHomeUiT.CS1101",
       "name": "Danny Engrid",
       "comments": "This student's name is Danny Engrid",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     }
   },
   "feedbackSessions": {
@@ -253,17 +261,14 @@
       "feedbackSessionName": "First Feedback Session",
       "courseId": "CHomeUiT.CS2104",
       "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2027-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2027-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T04:00:00Z",
+      "endTime": "2027-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2027-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -276,17 +281,14 @@
       "feedbackSessionName": "Second Feedback Session",
       "courseId": "CHomeUiT.CS2104",
       "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2027-03-29 2:59 PM UTC",
-      "endTime": "2027-04-30 2:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2027-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2027-03-29T14:59:00Z",
+      "endTime": "2027-04-30T04:00:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2027-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": false,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -299,17 +301,14 @@
       "feedbackSessionName": "Third Feedback Session",
       "courseId": "CHomeUiT.CS2104",
       "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-10 3:59 PM UTC",
-      "endTime": "2012-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2027-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-10T15:59:00Z",
+      "endTime": "2012-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2027-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -322,43 +321,18 @@
       "feedbackSessionName": "Fourth Feedback Session",
       "courseId": "CHomeUiT.CS2104",
       "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-05 3:59 AM UTC",
-      "endTime": "2012-04-20 3:59 AM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-05T03:59:00Z",
+      "endTime": "2012-04-20T04:00:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
       "sentPublishedEmail": true,
-      "isOpeningEmailEnabled": true,
-      "isClosingEmailEnabled": true,
-      "isPublishedEmailEnabled": true
-    },
-    "Private Feedback Session": {
-      "feedbackSessionName": "Private Feedback Session",
-      "courseId": "CHomeUiT.CS1101",
-      "creatorEmail": "CHomeUiT.instructor.tmms.helper@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "sessionVisibleFromTime": "1970-11-27 12:00 AM UTC",
-      "resultsVisibleFromTime": "1970-11-27 12:00 AM UTC",
-      "timeZone": 8.0,
-      "gracePeriod": 0,
-      "feedbackSessionType": "PRIVATE",
-      "sentOpenEmail": true,
-      "sentClosingEmail": false,
-      "sentClosedEmail": false,
-      "sentPublishedEmail": false,
       "isOpeningEmailEnabled": true,
       "isClosingEmailEnabled": true,
       "isPublishedEmailEnabled": true
@@ -368,12 +342,11 @@
     "CHomeUiT.CS2104:First Feedback Session:Q1": {
       "feedbackSessionName": "First Feedback Session",
       "courseId": "CHomeUiT.CS2104",
-      "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "questionMetaData": {
-        "value": "Rate 5 other students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 5 other students' products"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 5,
@@ -392,12 +365,11 @@
     "CHomeUiT.CS2104:Third Feedback Session:Q1": {
       "feedbackSessionName": "Third Feedback Session",
       "courseId": "CHomeUiT.CS2104",
-      "creatorEmail": "CHomeUiT.instructor.tmms@gmail.tmt",
-      "questionMetaData": {
-        "value": "Rate 5 other students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 5 other students' products"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 5,

@@ -47,7 +47,8 @@
       "course": "AutSessRem.course",
       "name": "Alice Betsy</option></td></div>'\"",
       "comments": "dummy comment</option></td></div>'\"",
-      "team": "Team 1</td></div>'\""
+      "team": "Team 1</td></div>'\"",
+      "section": "None"
     }
   },
   "feedbackSessions": {
@@ -55,17 +56,14 @@
       "feedbackSessionName": "AutSessRem Opening Session",
       "courseId": "AutSessRem.course",
       "creatorEmail": "${value.injected.in.testfile}",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2037-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2037-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T15:59:00Z",
+      "endTime": "2037-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2037-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 0,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": false,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -78,17 +76,14 @@
       "feedbackSessionName": "AutSessRem Closing Session",
       "courseId": "AutSessRem.course",
       "creatorEmail": "${value.injected.in.testfile}",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 11:59 PM UTC",
-      "endTime": "2037-04-30 11:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 11:59 PM UTC",
-      "resultsVisibleFromTime": "2037-05-01 11:59 PM UTC",
-      "timeZone": 0.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T23:59:00Z",
+      "endTime": "2037-04-30T23:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T23:59:00Z",
+      "resultsVisibleFromTime": "2037-05-01T23:59:00Z",
+      "timeZone": "UTC",
       "gracePeriod": 15,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -101,17 +96,14 @@
       "feedbackSessionName": "AutSessRem Closed Session",
       "courseId": "AutSessRem.course",
       "creatorEmail": "${value.injected.in.testfile}",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 11:59 PM UTC",
-      "endTime": "2037-04-30 11:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 11:59 PM UTC",
-      "resultsVisibleFromTime": "2037-05-01 11:59 PM UTC",
-      "timeZone": 0.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T23:59:00Z",
+      "endTime": "2037-04-30T23:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T23:59:00Z",
+      "resultsVisibleFromTime": "2037-05-01T23:59:00Z",
+      "timeZone": "UTC",
       "gracePeriod": 15,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -124,17 +116,14 @@
       "feedbackSessionName": "AutSessRem Published Session",
       "courseId": "AutSessRem.course",
       "creatorEmail": "${value.injected.in.testfile}",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 9:59 PM UTC",
-      "endTime": "2013-04-30 9:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 9:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 9:59 PM UTC",
-      "timeZone": 2.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T21:59:00Z",
+      "endTime": "2013-04-30T21:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T21:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T21:59:00Z",
+      "timeZone": "Africa/Johannesburg",
       "gracePeriod": 0,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -148,12 +137,11 @@
     "questionForOpeningSession": {
       "feedbackSessionName": "AutSessRem Opening Session",
       "courseId": "AutSessRem.course",
-      "creatorEmail": "${value.injected.in.testfile}",
-      "questionMetaData": {
-        "value": "This question is so that opening reminders will be sent to students, as the session needs to have question for students."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question is so that opening reminders will be sent to students, as the session needs to have question for students."
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -170,12 +158,11 @@
     "questionForClosingSession": {
       "feedbackSessionName": "AutSessRem Closing Session",
       "courseId": "AutSessRem.course",
-      "creatorEmail": "${value.injected.in.testfile}",
-      "questionMetaData": {
-        "value": "This question is so that closing reminders will be sent to students as it is unanswered."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question is so that closing reminders will be sent to students as it is unanswered."
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -192,12 +179,11 @@
     "questionForPublishedSession": {
       "feedbackSessionName": "AutSessRem Published Session",
       "courseId": "AutSessRem.course",
-      "creatorEmail": "${value.injected.in.testfile}",
-      "questionMetaData": {
-        "value": "This question is so that opening reminders will be sent to students, as the session needs to have question for students."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question is so that opening reminders will be sent to students, as the session needs to have question for students."
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,

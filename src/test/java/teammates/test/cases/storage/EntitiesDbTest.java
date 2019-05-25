@@ -3,6 +3,8 @@ package teammates.test.cases.storage;
 import static teammates.common.util.FieldValidator.COURSE_ID_ERROR_MESSAGE;
 import static teammates.common.util.FieldValidator.REASON_INCORRECT_FORMAT;
 
+import java.time.ZoneId;
+
 import org.testng.annotations.Test;
 
 import teammates.common.datatransfer.attributes.CourseAttributes;
@@ -11,6 +13,7 @@ import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
 import teammates.common.util.FieldValidator;
 import teammates.storage.api.CoursesDb;
+import teammates.storage.api.EntitiesDb;
 import teammates.test.cases.BaseComponentTestCase;
 import teammates.test.driver.AssertHelper;
 
@@ -21,7 +24,7 @@ public class EntitiesDbTest extends BaseComponentTestCase {
 
     @Test
     public void testCreateEntity() throws Exception {
-        //We are using CoursesDb to test EntititesDb here.
+        //We are using CoursesDb to test EntitiesDb here.
         CoursesDb coursesDb = new CoursesDb();
 
         /*Explanation:
@@ -31,7 +34,9 @@ public class EntitiesDbTest extends BaseComponentTestCase {
 
         ______TS("success: typical case");
         CourseAttributes c = CourseAttributes
-                .builder("Computing101-fresh", "Basic Computing", "UTC")
+                .builder("Computing101-fresh")
+                .withName("Basic Computing")
+                .withTimezone(ZoneId.of("UTC"))
                 .build();
         coursesDb.deleteCourse(c.getId());
         verifyAbsentInDatastore(c);
@@ -39,40 +44,30 @@ public class EntitiesDbTest extends BaseComponentTestCase {
         verifyPresentInDatastore(c);
 
         ______TS("fails: entity already exists");
-        try {
-            coursesDb.createEntity(c);
-            signalFailureToDetectException();
-        } catch (EntityAlreadyExistsException e) {
-            AssertHelper.assertContains(String.format(CoursesDb.ERROR_CREATE_ENTITY_ALREADY_EXISTS,
-                                                      c.getEntityTypeAsString())
-                                                + c.getIdentificationString(),
-                                        e.getMessage());
-        }
-        coursesDb.deleteEntity(c);
+        EntityAlreadyExistsException eaee = assertThrows(EntityAlreadyExistsException.class,
+                () -> coursesDb.createEntity(c));
+        assertEquals(
+                String.format(EntitiesDb.ERROR_CREATE_ENTITY_ALREADY_EXISTS, c.toString()), eaee.getMessage());
+        coursesDb.deleteCourse(c.getId());
 
         ______TS("fails: invalid parameters");
         CourseAttributes invalidCourse = CourseAttributes
-                .builder("invalid id spaces", "Basic Computing", "UTC")
+                .builder("invalid id spaces")
+                .withName("Basic Computing")
+                .withTimezone(ZoneId.of("UTC"))
                 .build();
-        try {
-            coursesDb.createEntity(invalidCourse);
-            signalFailureToDetectException();
-        } catch (InvalidParametersException e) {
-            AssertHelper.assertContains(
-                    getPopulatedErrorMessage(
+        InvalidParametersException ipe = assertThrows(InvalidParametersException.class,
+                () -> coursesDb.createEntity(invalidCourse));
+        AssertHelper.assertContains(
+                getPopulatedErrorMessage(
                         COURSE_ID_ERROR_MESSAGE, invalidCourse.getId(),
                         FieldValidator.COURSE_ID_FIELD_NAME, REASON_INCORRECT_FORMAT,
                         FieldValidator.COURSE_ID_MAX_LENGTH),
-                    e.getMessage());
-        }
+                ipe.getMessage());
 
         ______TS("fails: null parameter");
-        try {
-            coursesDb.createEntity(null);
-            signalFailureToDetectException();
-        } catch (AssertionError ae) {
-            assertEquals(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getMessage());
-        }
+        AssertionError ae = assertThrows(AssertionError.class, () -> coursesDb.createEntity(null));
+        assertEquals(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getMessage());
     }
 
 }

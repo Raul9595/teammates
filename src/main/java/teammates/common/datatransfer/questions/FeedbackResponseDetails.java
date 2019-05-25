@@ -1,10 +1,12 @@
 package teammates.common.datatransfer.questions;
 
-import java.util.Map;
+import java.util.List;
 
 import teammates.common.datatransfer.FeedbackSessionResultsBundle;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+import teammates.common.util.Assumption;
+import teammates.common.util.JsonUtils;
 
 /** A class holding the details for the response of a specific question type.
  * This abstract class is inherited by concrete Feedback*ResponseDetails
@@ -19,6 +21,10 @@ public abstract class FeedbackResponseDetails {
         this.questionType = questionType;
     }
 
+    public void setQuestionType(FeedbackQuestionType questionType) {
+        this.questionType = questionType;
+    }
+
     /**
      * Extract response details and sets details accordingly.
      */
@@ -29,24 +35,26 @@ public abstract class FeedbackResponseDetails {
 
     public abstract String getAnswerString();
 
-    public abstract String getAnswerHtmlInstructorView(FeedbackQuestionDetails questionDetails);
+    public String getJsonString() {
+        Assumption.assertNotNull(questionType);
+        if (questionType == FeedbackQuestionType.TEXT) {
+            // For Text questions, the answer simply contains the response text, not a JSON
+            // This is due to legacy data in the data store before there were multiple question types
+            return getAnswerString();
+        }
+        return JsonUtils.toJson(this, questionType.getResponseDetailsClass());
+    }
 
-    public String getAnswerHtmlStudentView(FeedbackQuestionDetails questionDetails) {
-        return getAnswerHtmlInstructorView(questionDetails);
+    public FeedbackResponseDetails getDeepCopy() {
+        Assumption.assertNotNull(questionType);
+        if (questionType == FeedbackQuestionType.TEXT) {
+            return new FeedbackTextResponseDetails(getAnswerString());
+        }
+        String serializedResponseDetails = getJsonString();
+        return JsonUtils.fromJson(serializedResponseDetails, questionType.getResponseDetailsClass());
     }
 
     public abstract String getAnswerCsv(FeedbackQuestionDetails questionDetails);
-
-    /**
-     * getAnswerHtml with an additional parameter (FeedbackSessionResultsBundle)
-     *
-     * <p>default action is to call getAnswerHtml(FeedbackQuestionDetails questionDetails).
-     * override in child class if necessary.
-     */
-    public String getAnswerHtml(FeedbackResponseAttributes response, FeedbackQuestionAttributes question,
-                                FeedbackSessionResultsBundle feedbackSessionResultsBundle) {
-        return getAnswerHtmlInstructorView(question.getQuestionDetails());
-    }
 
     /**
      * getAnswerCsv with an additional parameter (FeedbackSessionResultsBundle)
@@ -55,16 +63,12 @@ public abstract class FeedbackResponseDetails {
      * override in child class if necessary.
      */
     public String getAnswerCsv(FeedbackResponseAttributes response, FeedbackQuestionAttributes question,
-                                    FeedbackSessionResultsBundle feedbackSessionResultsBundle) {
+                               FeedbackSessionResultsBundle feedbackSessionResultsBundle) {
         return getAnswerCsv(question.getQuestionDetails());
     }
 
-    public static FeedbackResponseDetails createResponseDetails(
-            String[] answer, FeedbackQuestionType questionType,
-            FeedbackQuestionDetails questionDetails,
-            Map<String, String[]> requestParameters, int questionIndx, int responseIndx) {
-
-        return questionType.getFeedbackResponseDetailsInstance(questionDetails, answer, requestParameters,
-                                                               questionIndx, responseIndx);
-    }
+    /**
+     * Validates the response details.
+     */
+    public abstract List<String> validateResponseDetails(FeedbackQuestionAttributes correspondingQuestion);
 }

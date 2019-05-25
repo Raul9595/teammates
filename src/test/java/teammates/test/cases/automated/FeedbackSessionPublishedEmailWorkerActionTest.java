@@ -16,7 +16,8 @@ import teammates.ui.automated.FeedbackSessionPublishedEmailWorkerAction;
 /**
  * SUT: {@link FeedbackSessionPublishedEmailWorkerAction}.
  */
-public class FeedbackSessionPublishedEmailWorkerActionTest extends BaseAutomatedActionTest {
+public class FeedbackSessionPublishedEmailWorkerActionTest
+        extends BaseAutomatedActionTest<FeedbackSessionPublishedEmailWorkerAction> {
 
     private static final CoursesLogic coursesLogic = CoursesLogic.inst();
 
@@ -31,7 +32,7 @@ public class FeedbackSessionPublishedEmailWorkerActionTest extends BaseAutomated
 
         String[] submissionParams = new String[] {
                 ParamsNames.EMAIL_COURSE, session1.getCourseId(),
-                ParamsNames.EMAIL_FEEDBACK, session1.getFeedbackSessionName()
+                ParamsNames.EMAIL_FEEDBACK, session1.getFeedbackSessionName(),
         };
 
         FeedbackSessionPublishedEmailWorkerAction action = getAction(submissionParams);
@@ -45,15 +46,9 @@ public class FeedbackSessionPublishedEmailWorkerActionTest extends BaseAutomated
         for (TaskWrapper task : tasksAdded) {
             Map<String, String[]> paramMap = task.getParamMap();
             assertEquals(String.format(EmailType.FEEDBACK_PUBLISHED.getSubject(), courseName,
-                                       session1.getSessionName()),
+                                       session1.getFeedbackSessionName()),
                          paramMap.get(ParamsNames.EMAIL_SUBJECT)[0]);
         }
-    }
-
-    @Override
-    protected FeedbackSessionPublishedEmailWorkerAction getAction(String... params) {
-        return (FeedbackSessionPublishedEmailWorkerAction)
-                gaeSimulation.getAutomatedActionObject(getActionUri(), params);
     }
 
 }

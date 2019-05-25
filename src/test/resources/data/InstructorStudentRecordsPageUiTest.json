@@ -47,17 +47,7 @@
       "name": "Benny Charlés",
       "isInstructor": false,
       "email": "benny.c.tmms@gmail.tmt",
-      "institute": "TEAMMATES Test Institute 5",
-      "studentProfile": {
-        "googleId": "ISR.benny.c.tmms",
-        "shortName": "Ben",
-        "email": "",
-        "institute": "TEAMMATES Test Institute 7",
-        "nationality": "Singaporean",
-        "gender": "male",
-        "moreInfo": "This is a lot of info!",
-        "pictureKey": ""
-      }
+      "institute": "TEAMMATES Test Institute 5"
     },
     "instructor1OfTestingSanitizationCourse": {
       "googleId": "ISR.sanitizationInstruct",
@@ -71,17 +61,7 @@
       "name": "Stud1<script> alert('hi!'); </script>",
       "isInstructor": false,
       "email": "ISR.stud@sanitization.tmt",
-      "institute": "inst<script> alert('hi!'); </script>",
-      "studentProfile": {
-        "googleId": "ISR.sanitizationStudent",
-        "shortName": "Stud1<script> alert('hi!'); </script>",
-        "email": "weird&'@gmail.tmt",
-        "institute": "inst<script> alert('hi!'); </script>",
-        "nationality": "American",
-        "gender": "other",
-        "moreInfo": "I am just a student :P<script> alert('hi!'); </script>",
-        "pictureKey": ""
-      }
+      "institute": "inst<script> alert('hi!'); </script>"
     }
   },
   "courses": {
@@ -101,7 +81,7 @@
       "timeZone": "UTC"
     },
     "testingSanitizationCourse": {
-      "createdAt": "2012-04-01 11:58 PM UTC",
+      "createdAt": "2012-04-01T23:58:00Z",
       "id": "ISR.sanitizationCourse",
       "name": "Testing<script> alert('hi!'); </script>",
       "timeZone": "UTC"
@@ -254,7 +234,7 @@
       "isArchived": false,
       "role": "Co-owner",
       "isDisplayedToStudents": true,
-      "displayedName": "inst<script>alert('hi!');</script>",
+      "displayedName": "inst'\"/><script>alert('hi!');</script>",
       "privileges": {
         "courseLevel": {
           "canviewstudentinsection": true,
@@ -278,7 +258,8 @@
       "course": "ISR.CS2104",
       "name": "Teammates Test",
       "comments": "This student's name is Teammates Test",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "benny.c.tmms@ISR.CS2104": {
       "googleId": "ISR.benny.c.tmms",
@@ -286,7 +267,8 @@
       "course": "ISR.CS2104",
       "name": "Benny Charlés",
       "comments": "This student's name is Benny Charlés",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "charlie.d.tmms@ISR.CS2104": {
       "googleId": "ISR.charlie.d.tmms",
@@ -294,7 +276,8 @@
       "course": "ISR.CS2104",
       "name": "Charlie Davis",
       "comments": "This student's name is Charlie Davis",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "alice.b.tmms@ISR.CS2104": {
       "googleId": "ISR.alice.b.tmms",
@@ -302,7 +285,8 @@
       "course": "ISR.CS2104",
       "name": "Alice Betsy",
       "comments": "This student's name is Alice Betsy",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "danny.e.tmms@ISR.CS2104": {
       "googleId": "ISR.danny.e.tmms",
@@ -310,7 +294,8 @@
       "course": "ISR.CS2104",
       "name": "Danny Engrid",
       "comments": "This student's name is Danny Engrid",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "teammates.test@ISR.CS1101": {
       "googleId": "ISR.teammates.test",
@@ -318,7 +303,8 @@
       "course": "ISR.CS1101",
       "name": "Teammates Test",
       "comments": "This student's name is Teammates Test",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "benny.c.tmms@ISR.CS1101": {
       "googleId": "ISR.benny.c.tmms",
@@ -326,7 +312,8 @@
       "course": "ISR.CS1101",
       "name": "Benny Charlés",
       "comments": "This student's name is Benny Charlés",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "charlie.d.tmms@ISR.CS1101": {
       "googleId": "ISR.charlie.d.tmms",
@@ -334,7 +321,8 @@
       "course": "ISR.CS1101",
       "name": "Charlie Davis",
       "comments": "This student's name is Charlie Davis",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "danny.e.tmms@ISR.CS1101": {
       "googleId": "ISR.danny.e.tmms",
@@ -342,7 +330,8 @@
       "course": "ISR.CS1101",
       "name": "Danny Engrid",
       "comments": "This student's name is Danny Engrid",
-      "team": "Team 2"
+      "team": "Team 2",
+      "section": "None"
     },
     "alice.b.tmms@ISR.NoEval": {
       "googleId": "",
@@ -350,7 +339,8 @@
       "course": "ISR.NoEval",
       "name": "Alice Betsy",
       "comments": "This student's name is Alice Betsy",
-      "team": "Team 1"
+      "team": "Team 1",
+      "section": "None"
     },
     "student1InTestingSanitizationCourse": {
       "googleId": "ISR.sanitizationStudent",
@@ -367,17 +357,14 @@
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "creatorEmail": "teammates.test@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 9:59 PM UTC",
-      "endTime": "2027-04-30 9:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 9:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 9:59 PM UTC",
-      "timeZone": 2.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T21:59:00Z",
+      "endTime": "2027-04-30T21:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T21:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T21:59:00Z",
+      "timeZone": "Africa/Johannesburg",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -390,17 +377,14 @@
       "feedbackSessionName": "Second feedback session",
       "courseId": "ISR.CS2104",
       "creatorEmail": "teammates.test@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2013-03-20 11:59 PM UTC",
-      "startTime": "2013-06-01 9:59 PM UTC",
-      "endTime": "2026-04-28 9:59 PM UTC",
-      "sessionVisibleFromTime": "2013-03-20 9:59 PM UTC",
-      "resultsVisibleFromTime": "2026-04-29 9:59 PM UTC",
-      "timeZone": 2.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2013-03-20T23:59:00Z",
+      "startTime": "2013-06-01T21:59:00Z",
+      "endTime": "2026-04-28T21:59:00Z",
+      "sessionVisibleFromTime": "2013-03-20T21:59:00Z",
+      "resultsVisibleFromTime": "2026-04-29T21:59:00Z",
+      "timeZone": "Africa/Johannesburg",
       "gracePeriod": 5,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": false,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -413,17 +397,14 @@
       "feedbackSessionName": "3rd feedback session",
       "courseId": "ISR.CS2104",
       "creatorEmail": "instructor2@course1.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2013-01-20 11:57 PM UTC",
-      "startTime": "2013-02-01 11:57 PM UTC",
-      "endTime": "2013-04-28 11:57 PM UTC",
-      "sessionVisibleFromTime": "2013-01-20 11:57 PM UTC",
-      "resultsVisibleFromTime": "2013-04-29 11:57 PM UTC",
-      "timeZone": 0.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2013-01-20T23:57:00Z",
+      "startTime": "2013-02-01T23:57:00Z",
+      "endTime": "2013-04-28T23:57:00Z",
+      "sessionVisibleFromTime": "2013-01-20T23:57:00Z",
+      "resultsVisibleFromTime": "2013-04-29T23:57:00Z",
+      "timeZone": "UTC",
       "gracePeriod": 5,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": false,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -433,42 +414,17 @@
       "isPublishedEmailEnabled": true
     },
     "session1InCourse2": {
-      "feedbackSessionName": "Private feedback session",
-      "courseId": "ISR.CS1101",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2027-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
-      "gracePeriod": 0,
-      "feedbackSessionType": "PRIVATE",
-      "sentOpenEmail": true,
-      "sentClosingEmail": false,
-      "sentClosedEmail": false,
-      "sentPublishedEmail": false,
-      "isOpeningEmailEnabled": true,
-      "isClosingEmailEnabled": true,
-      "isPublishedEmailEnabled": true
-    },
-    "session2InCourse2": {
       "feedbackSessionName": "Instructor feedback session",
       "courseId": "ISR.CS1101",
       "creatorEmail": "teammates.test@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2027-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-03-28 3:59 PM UTC",
-      "resultsVisibleFromTime": "2027-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2012-03-20T23:59:00Z",
+      "startTime": "2012-04-01T15:59:00Z",
+      "endTime": "2027-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-03-28T15:59:00Z",
+      "resultsVisibleFromTime": "2027-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 0,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -482,12 +438,11 @@
     "qn1InSession1InCourse1": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "What is the best selling point of your product?"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "What is the best selling point of your product?"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -504,12 +459,11 @@
     "qn2InSession1InCourse1": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "Rate 5 other students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 5 other students' products"
       },
       "questionNumber": 2,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 5,
@@ -528,12 +482,11 @@
     "qn3InSession1InCourse1": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "My comments on the class"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "My comments on the class"
       },
       "questionNumber": 3,
-      "questionType": "TEXT",
       "giverType": "SELF",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -556,15 +509,45 @@
         "INSTRUCTORS"
       ]
     },
+    "qn4InSession1InCourse1": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "ISR.CS2104",
+      "questionDetails": {
+        "hasAssignedWeights": false,
+        "mcqWeights": [],
+        "mcqOtherWeight": 0.0,
+        "numOfMcqChoices": 2,
+        "mcqChoices": [
+          "It's good",
+          "It's perfect"
+        ],
+        "otherEnabled": false,
+        "generateOptionsFor": "NONE",
+        "questionType": "MCQ",
+        "questionText": "What do you like best about our product?"
+      },
+      "questionNumber": 4,
+      "giverType": "STUDENTS",
+      "recipientType": "STUDENTS",
+      "numberOfEntitiesToGiveFeedbackTo": 1,
+      "showResponsesTo": [
+        "INSTRUCTORS"
+      ],
+      "showGiverNameTo": [
+        "INSTRUCTORS"
+      ],
+      "showRecipientNameTo": [
+        "INSTRUCTORS"
+      ]
+    },
     "qn1InSession2InCourse1": {
       "feedbackSessionName": "Second feedback session",
       "courseId": "ISR.CS2104",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to 2 other teams."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to 2 other teams."
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "TEAMS",
       "recipientType": "TEAMS",
       "numberOfEntitiesToGiveFeedbackTo": 2,
@@ -581,12 +564,11 @@
     "qn2InSession2InCourse1": {
       "feedbackSessionName": "Second feedback session",
       "courseId": "ISR.CS2104",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to 1 of your team mates"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to 1 of your team mates"
       },
       "questionNumber": 2,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -601,30 +583,13 @@
       ]
     },
     "qn1InSession1InCourse2": {
-      "feedbackSessionName": "Private feedback session",
-      "courseId": "ISR.CS1101",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "This is a private session for myself"
-      },
-      "questionNumber": 1,
-      "questionType": "TEXT",
-      "giverType": "SELF",
-      "recipientType": "STUDENTS",
-      "numberOfEntitiesToGiveFeedbackTo": 10,
-      "showResponsesTo": [],
-      "showGiverNameTo": [],
-      "showRecipientNameTo": []
-    },
-    "qn1InSession2InCourse2": {
       "feedbackSessionName": "Instructor feedback session",
       "courseId": "ISR.CS1101",
-      "creatorEmail": "teammates.test@gmail.tmt",
-      "questionMetaData": {
-        "value": "Please rate the following teams"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Please rate the following teams"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "TEAMS",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -638,55 +603,67 @@
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "alice.b.tmms@gmail.tmt",
       "recipient": "alice.b.tmms@gmail.tmt",
-      "responseMetaData": {
-        "value": "My product is light."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "My product is light."
       }
     },
     "response2": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "alice.b.tmms@gmail.tmt",
       "recipient": "benny.c.tmms@gmail.tmt",
-      "responseMetaData": {
-        "value": "Benny is a good student."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Benny is a good student."
       }
     },
     "response3": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "benny.c.tmms@gmail.tmt",
       "recipient": "danny.e.tmms@gmail.tmt",
-      "responseMetaData": {
-        "value": "Danny starts with D."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Danny starts with D."
       }
     },
     "response4": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "charlie.d.tmms@gmail.tmt",
       "recipient": "alice.b.tmms@gmail.tmt",
-      "responseMetaData": {
-        "value": "Alice is a good coder."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Alice is a good coder."
       }
     },
     "response5": {
       "feedbackSessionName": "First feedback session",
       "courseId": "ISR.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "benny.c.tmms@gmail.tmt",
       "recipient": "charlie.d.tmms@gmail.tmt",
-      "responseMetaData": {
-        "value": "Charlie did alot of work."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Charlie did alot of work."
+      }
+    },
+    "response6": {
+      "feedbackSessionName": "First feedback session",
+      "courseId": "ISR.CS2104",
+      "feedbackQuestionId": "4",
+      "giver": "benny.c.tmms@gmail.tmt",
+      "recipient": "alice.b.tmms@gmail.tmt",
+      "responseDetails": {
+        "answer": "It's good",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
       }
     }
   },
@@ -695,7 +672,7 @@
       "courseId": "ISR.CS2104",
       "feedbackSessionName": "First feedback session",
       "feedbackQuestionId": "2",
-      "giverEmail": "teammates.test2@gmail.tmt",
+      "commentGiver": "teammates.test2@gmail.tmt",
       "giverSection": "None",
       "receiverSection": "None",
       "feedbackResponseId": "2%alice.b.tmms@gmail.tmt%benny.c.tmms@gmail.tmt",
@@ -705,46 +682,99 @@
       "showGiverNameTo": [
         "INSTRUCTORS"
       ],
+      "commentGiverType": "INSTRUCTORS",
       "isVisibilityFollowingFeedbackQuestion": false,
-      "createdAt": "2012-04-02 11:59 PM UTC",
-      "commentText": {
-        "value": "First comment to Alice about feedback to Benny from different instructor"
-      }
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2012-04-02T23:59:00Z",
+      "commentText": "First comment to Alice about feedback to Benny from different instructor"
     },
     "comment2FromT1C1ToR1Q2S1C1": {
       "courseId": "ISR.CS2104",
       "feedbackSessionName": "First feedback session",
       "feedbackQuestionId": "2",
-      "giverEmail": "teammates.test@gmail.tmt",
+      "commentGiver": "teammates.test@gmail.tmt",
       "giverSection": "None",
       "receiverSection": "None",
       "feedbackResponseId": "2%alice.b.tmms@gmail.tmt%benny.c.tmms@gmail.tmt",
       "showCommentTo": [],
       "showGiverNameTo": [],
+      "commentGiverType": "INSTRUCTORS",
       "isVisibilityFollowingFeedbackQuestion": false,
-      "createdAt": "2026-03-01 11:59 PM UTC",
-      "commentText": {
-        "value": "Instructor second comment to Alice about feedback to Benny"
-      },
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2026-03-01T23:59:00Z",
       "lastEditorEmail": "teammates.test@gmail.tmt",
-      "lastEditedAt": "2026-03-02 11:59 PM UTC"
+      "lastEditedAt": "2026-03-02T23:59:00Z",
+      "commentText": "Instructor second comment to Alice about feedback to Benny"
     },
     "comment3FromT1C1ToR1Q2S1C1": {
       "courseId": "ISR.CS2104",
       "feedbackSessionName": "First feedback session",
       "feedbackQuestionId": "2",
-      "giverEmail": "teammates.test@gmail.tmt",
+      "commentGiver": "teammates.test@gmail.tmt",
       "giverSection": "None",
       "receiverSection": "None",
       "feedbackResponseId": "2%alice.b.tmms@gmail.tmt%benny.c.tmms@gmail.tmt",
       "showCommentTo": [],
       "showGiverNameTo": [],
+      "commentGiverType": "INSTRUCTORS",
       "isVisibilityFollowingFeedbackQuestion": false,
-      "createdAt": "2026-03-02 11:59 PM UTC",
-      "commentText": {
-        "value": "Instructor third comment to Alice about feedback to Benny"
-      }
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2026-03-02T23:59:00Z",
+      "commentText": "Instructor third comment to Alice about feedback to Benny"
+    },
+    "comment1OnR1Q4S1C2": {
+      "courseId": "ISR.CS2104",
+      "feedbackSessionName": "First feedback session",
+      "feedbackQuestionId": "4",
+      "commentGiver": "benny.c.tmms@gmail.tmt",
+      "giverSection": "None",
+      "receiverSection": "None",
+      "feedbackResponseId": "4%benny.c.tmms@gmail.tmt%alice.b.tmms@gmail.tmt",
+      "showCommentTo": [],
+      "showGiverNameTo": [],
+      "commentGiverType": "STUDENTS",
+      "isVisibilityFollowingFeedbackQuestion": true,
+      "isCommentFromFeedbackParticipant": true,
+      "createdAt": "2016-01-01T23:59:00Z",
+      "commentText": "Benny's comment to alice"
+    },
+    "comment1FromT1C1ToR1Q4S1C1": {
+      "courseId": "ISR.CS2104",
+      "feedbackSessionName": "First feedback session",
+      "feedbackQuestionId": "4",
+      "commentGiver": "teammates.test@gmail.tmt",
+      "giverSection": "None",
+      "receiverSection": "None",
+      "feedbackResponseId": "4%benny.c.tmms@gmail.tmt%alice.b.tmms@gmail.tmt",
+      "showCommentTo": [],
+      "showGiverNameTo": [],
+      "commentGiverType": "INSTRUCTORS",
+      "isVisibilityFollowingFeedbackQuestion": false,
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2026-03-02T23:59:00Z",
+      "commentText": "Instructor comment to Benny about feedback to Alice"
     }
   },
-  "profiles": {}
+  "profiles": {
+    "benny.c.tmms@ISR.CS2104": {
+      "googleId": "ISR.benny.c.tmms",
+      "shortName": "Ben",
+      "email": "",
+      "institute": "TEAMMATES Test Institute 7",
+      "nationality": "Singaporean",
+      "gender": "MALE",
+      "moreInfo": "This is a lot of info!",
+      "pictureKey": ""
+    },
+    "student1InTestingSanitizationCourse": {
+      "googleId": "ISR.sanitizationStudent",
+      "shortName": "Stud1<script> alert('hi!'); </script>",
+      "email": "weird&'@gmail.tmt",
+      "institute": "inst<script> alert('hi!'); </script>",
+      "nationality": "American",
+      "gender": "OTHER",
+      "moreInfo": "I am just a student :P<script> alert('hi!'); </script>",
+      "pictureKey": ""
+    }
+  }
 }

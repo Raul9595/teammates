@@ -1,6 +1,6 @@
 package teammates.common.datatransfer.questions;
 
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -8,12 +8,12 @@ import teammates.common.datatransfer.FeedbackParticipantType;
 import teammates.common.datatransfer.FeedbackSessionResultsBundle;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.Assumption;
 import teammates.common.util.Const;
-import teammates.common.util.HttpRequestHelper;
+import teammates.common.util.JsonUtils;
 import teammates.common.util.SanitizationHelper;
 import teammates.common.util.StringHelper;
-import teammates.ui.template.InstructorFeedbackResultsResponseRow;
 
 /**
  * A class holding the details for a specific question type.
@@ -37,49 +37,62 @@ public abstract class FeedbackQuestionDetails {
 
     public abstract String getQuestionTypeDisplayName();
 
+    @Deprecated
     public abstract String getQuestionWithExistingResponseSubmissionFormHtml(
-                                boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId,
-                                int totalNumRecipients,
-                                FeedbackResponseDetails existingResponseDetails);
+            boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId,
+            int totalNumRecipients, FeedbackResponseDetails existingResponseDetails, StudentAttributes student);
 
+    @Deprecated
     public abstract String getQuestionWithoutExistingResponseSubmissionFormHtml(
                                 boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId,
-                                int totalNumRecipients);
+                                int totalNumRecipients, StudentAttributes student);
 
+    @Deprecated
     public abstract String getQuestionSpecificEditFormHtml(int questionNumber);
 
+    @Deprecated
     public abstract String getNewQuestionSpecificEditFormHtml();
 
-    public abstract String getQuestionAdditionalInfoHtml(int questionNumber, String additionalInfoId);
-
+    @Deprecated
     public abstract String getQuestionResultStatisticsHtml(List<FeedbackResponseAttributes> responses,
                                                            FeedbackQuestionAttributes question,
                                                            String studentEmail,
                                                            FeedbackSessionResultsBundle bundle,
                                                            String view);
 
+    public abstract String getQuestionResultStatisticsJson(
+            List<FeedbackResponseAttributes> responses, FeedbackQuestionAttributes question,
+            String userEmail, FeedbackSessionResultsBundle bundle, boolean isStudent);
+
     public abstract String getQuestionResultStatisticsCsv(List<FeedbackResponseAttributes> responses,
                                                           FeedbackQuestionAttributes question,
                                                           FeedbackSessionResultsBundle bundle);
 
-    public abstract boolean isChangesRequiresResponseDeletion(FeedbackQuestionDetails newDetails);
+    public abstract boolean shouldChangesRequireResponseDeletion(FeedbackQuestionDetails newDetails);
 
     public abstract String getCsvHeader();
 
     /** Gets the header for detailed responses in csv format. Override in child classes if necessary. */
-    public String getCsvDetailedResponsesHeader(int noOfComments) {
-        return "Team" + "," + "Giver's Full Name" + ","
-               + "Giver's Last Name" + "," + "Giver's Email" + ","
-               + "Recipient's Team" + "," + "Recipient's Full Name" + ","
-               + "Recipient's Last Name" + "," + "Recipient's Email" + ","
-               + getCsvHeader()
-               + getCsvDetailedFeedbackResponsesCommentsHeader(noOfComments)
-               + Const.EOL;
+    public String getCsvDetailedResponsesHeader(int noOfInstructorComments) {
+        StringBuilder header = new StringBuilder(1000);
+        String headerString = "Team" + "," + "Giver's Full Name" + ","
+                + "Giver's Last Name" + "," + "Giver's Email" + ","
+                + "Recipient's Team" + "," + "Recipient's Full Name" + ","
+                + "Recipient's Last Name" + "," + "Recipient's Email" + ","
+                + getCsvHeader();
+        header.append(headerString);
+
+        if (isFeedbackParticipantCommentsOnResponsesAllowed()) {
+            headerString = ',' + "Giver's Comments";
+            header.append(headerString);
+        }
+        header.append(getCsvDetailedInstructorsCommentsHeader(noOfInstructorComments)).append(System.lineSeparator());
+        return header.toString();
     }
 
     public String getCsvDetailedResponsesRow(FeedbackSessionResultsBundle fsrBundle,
                                              FeedbackResponseAttributes feedbackResponseAttributes,
-                                             FeedbackQuestionAttributes question, boolean hasCommentsForResponses) {
+                                             FeedbackQuestionAttributes question) {
         // Retrieve giver details
         String giverLastName = fsrBundle.getLastNameForEmail(feedbackResponseAttributes.giver);
         String giverFullName = fsrBundle.getNameForEmail(feedbackResponseAttributes.giver);
@@ -92,7 +105,8 @@ public abstract class FeedbackQuestionDetails {
         String recipientTeamName = fsrBundle.getTeamNameForEmail(feedbackResponseAttributes.recipient);
         String recipientEmail = fsrBundle.getDisplayableEmailRecipient(feedbackResponseAttributes);
 
-        return SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(giverTeamName))
+        StringBuilder detailedResponseRow = new StringBuilder(1000);
+        String detailedResponseRowString = SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(giverTeamName))
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(giverFullName))
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(giverLastName))
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(giverEmail))
@@ -100,10 +114,21 @@ public abstract class FeedbackQuestionDetails {
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(recipientFullName))
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(recipientLastName))
                 + "," + SanitizationHelper.sanitizeForCsv(StringHelper.removeExtraSpace(recipientEmail))
-                + "," + fsrBundle.getResponseAnswerCsv(feedbackResponseAttributes, question)
-                + (hasCommentsForResponses
-                        ? fsrBundle.getCsvDetailedFeedbackResponseCommentsRow(feedbackResponseAttributes) : "")
-                + Const.EOL;
+                + "," + fsrBundle.getResponseAnswerCsv(feedbackResponseAttributes, question);
+        detailedResponseRow.append(detailedResponseRowString);
+        // Append feedback participant comments if allowed
+        if (isFeedbackParticipantCommentsOnResponsesAllowed()) {
+            String feedbackParticipantComment =
+                    fsrBundle.getCsvDetailedFeedbackParticipantCommentOnResponse(feedbackResponseAttributes);
+            detailedResponseRow.append(',').append(feedbackParticipantComment);
+        }
+        // Append instructor comments if allowed
+        if (isInstructorCommentsOnResponsesAllowed()) {
+            String instructorComments =
+                    fsrBundle.getCsvDetailedInstructorFeedbackResponseComments(feedbackResponseAttributes);
+            detailedResponseRow.append(instructorComments);
+        }
+        return detailedResponseRow.append(System.lineSeparator()).toString();
     }
 
     public String getQuestionText() {
@@ -121,6 +146,7 @@ public abstract class FeedbackQuestionDetails {
      * Returns a HTML option for selecting question type.
      * Used in instructorFeedbackEdit.jsp for selecting the question type for a new question.
      */
+    @Deprecated
     public abstract String getQuestionTypeChoiceOption();
 
     /**
@@ -135,11 +161,11 @@ public abstract class FeedbackQuestionDetails {
 
     /**
      * Validates the question details.
-     *
+     * @param courseId courseId of the question
      * @return A {@code List<String>} of error messages (to show as status message to user) if any, or an
      *         empty list if question details are valid.
      */
-    public abstract List<String> validateQuestionDetails();
+    public abstract List<String> validateQuestionDetails(String courseId);
 
     /**
      * Validates {@code List<FeedbackResponseAttributes>} for the question
@@ -168,26 +194,8 @@ public abstract class FeedbackQuestionDetails {
     public abstract boolean extractQuestionDetails(Map<String, String[]> requestParameters,
                                                    FeedbackQuestionType questionType);
 
-    public static FeedbackQuestionDetails createQuestionDetails(Map<String, String[]> requestParameters,
-                                                                FeedbackQuestionType questionType) {
-        String questionText = HttpRequestHelper.getValueFromParamMap(requestParameters,
-                                                                     Const.ParamsNames.FEEDBACK_QUESTION_TEXT);
-        Assumption.assertNotNull("Null question text", questionText);
-        Assumption.assertNotEmpty("Empty question text", questionText);
-
-        return questionType.getFeedbackQuestionDetailsInstance(questionText, requestParameters);
-    }
-
     // The following function handle the display of rows between possible givers
     // and recipients who did not respond to a question in feedback sessions
-
-    public String getNoResponseTextInHtml(String giverEmail, String recipientEmail,
-                                          FeedbackSessionResultsBundle bundle,
-                                          FeedbackQuestionAttributes question) {
-        return "<i>"
-               + SanitizationHelper.sanitizeForHtml(getNoResponseText(giverEmail, recipientEmail, bundle, question))
-               + "</i>";
-    }
 
     /**
      * Returns true if 'No Response' is to be displayed in the Response rows.
@@ -216,29 +224,24 @@ public abstract class FeedbackQuestionDetails {
         return Const.INSTRUCTOR_FEEDBACK_RESULTS_MISSING_RESPONSE;
     }
 
+    public String getJsonString() {
+        Assumption.assertNotNull(questionType);
+        return JsonUtils.toJson(this, questionType.getQuestionDetailsClass());
+    }
+
+    public FeedbackQuestionDetails getDeepCopy() {
+        Assumption.assertNotNull(questionType);
+        String serializedDetails = getJsonString();
+        return JsonUtils.fromJson(serializedDetails, questionType.getQuestionDetailsClass());
+    }
+
     /** Checks if the question has been skipped. */
-    public boolean isQuestionSkipped(String[] answer) {
-        if (answer == null) {
+    public boolean isQuestionSkipped(String[] answers) {
+        if (answers == null) {
             return true;
         }
-
-        boolean allAnswersEmpty = true;
-
-        for (int i = 0; i < answer.length; i++) {
-            if (answer[i] != null && !answer[i].trim().isEmpty()) {
-                allAnswersEmpty = false;
-                break;
-            }
-        }
-
-        return allAnswersEmpty;
+        return Arrays.stream(answers).noneMatch(answer -> answer != null && !answer.trim().isEmpty());
     }
-
-    public boolean isQuestionSpecificSortingRequired() {
-        return getResponseRowsSortOrder() != null;
-    }
-
-    public abstract Comparator<InstructorFeedbackResultsResponseRow> getResponseRowsSortOrder();
 
     public FeedbackQuestionType getQuestionType() {
         return questionType;
@@ -248,11 +251,13 @@ public abstract class FeedbackQuestionDetails {
         this.questionText = questionText;
     }
 
-    public boolean isCommentsOnResponsesAllowed() {
+    public boolean isInstructorCommentsOnResponsesAllowed() {
         return true;
     }
 
-    public String getCsvDetailedFeedbackResponsesCommentsHeader(int noOfComments) {
+    public abstract boolean isFeedbackParticipantCommentsOnResponsesAllowed();
+
+    public String getCsvDetailedInstructorsCommentsHeader(int noOfComments) {
         StringBuilder commentsHeader = new StringBuilder(200);
 
         for (int i = noOfComments; i > 0; i--) {
@@ -260,5 +265,26 @@ public abstract class FeedbackQuestionDetails {
         }
 
         return commentsHeader.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        // Json string contains all attributes of a `FeedbackQuestionDetails` object,
+        // so it is sufficient to use it to compare two `FeedbackQuestionDetails` objects.
+        FeedbackQuestionDetails other = (FeedbackQuestionDetails) obj;
+        return this.getJsonString().equals(other.getJsonString());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getJsonString().hashCode();
     }
 }

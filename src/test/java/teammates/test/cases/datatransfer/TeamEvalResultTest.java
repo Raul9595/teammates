@@ -3,7 +3,6 @@ package teammates.test.cases.datatransfer;
 import static teammates.common.datatransfer.TeamEvalResult.NA;
 import static teammates.common.datatransfer.TeamEvalResult.NSB;
 import static teammates.common.datatransfer.TeamEvalResult.NSU;
-import static teammates.common.util.Const.EOL;
 
 import java.util.Arrays;
 
@@ -25,7 +24,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100, 100, 100 },
                 { 100, 100, 100, 100 },
                 { 100, 100, 100, 100 },
-                { 100, 100, 100, 100 }
+                { 100, 100, 100, 100 },
         };
 
         int[][] expected = {
@@ -44,7 +43,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100, 100, 100 },
                 { 100, 100, 100, 100 },
                 { 100, 100, 100, 100 },
-                { 100, 100, 100, 100 }
+                { 100, 100, 100, 100 },
         };
 
         verifyCalculatePoints(input, expected);
@@ -53,7 +52,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100, 100, 100 },
                 { 110, 110, 110, 110 },
                 {  90,  90,  90,  90 },
-                {  10,  10,  10,  10 }
+                {  10,  10,  10,  10 },
         };
 
         int[][] expected3 = {
@@ -72,7 +71,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100, 100, 100 },
                 { 110, 110, 110, 110 },
                 {  90,  90,  90,  90 },
-                {  10,  10,  10,  10 }
+                {  10,  10,  10,  10 },
         };
         verifyCalculatePoints(input3, expected3);
 
@@ -80,7 +79,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100, 100, 100 },
                 { 110, 110, 110, 110 },
                 {  90,  90,  90,  90 },
-                {  70,  80, 110, 120 }
+                {  70,  80, 110, 120 },
         };
 
         int[][] expected2 = {
@@ -99,7 +98,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 {  94,  97, 109, 100 },
                 { 103, 107, 120, 110 },
                 {  84,  88,  98,  90 },
-                {  89,  93, 104,  95 }
+                {  89,  93, 104,  95 },
         };
         verifyCalculatePoints(input2, expected2);
 
@@ -107,7 +106,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { NSB, NSB, NSB, NSB },
                 { NSU, NSU, NSU, NSU },
                 { NSU, NSU, NSU, NSU },
-                { NSB, NSB, NSB, NSB }
+                { NSB, NSB, NSB, NSB },
         };
 
         int[][] expected4 = {
@@ -117,16 +116,16 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { NSB, NSB, NSB, NSB },
 
                 {  NA,  NA,  NA,  NA },
-                {  NA,  NA,  NA,  NA },
-                {  NA,  NA,  NA,  NA },
-                {  NA,  NA,  NA,  NA },
-
+                { NSU,  NA, NSU, NSU },
+                { NSU, NSU,  NA, NSU },
                 {  NA,  NA,  NA,  NA },
 
                 {  NA,  NA,  NA,  NA },
+
                 {  NA,  NA,  NA,  NA },
                 {  NA,  NA,  NA,  NA },
-                {  NA,  NA,  NA,  NA }
+                {  NA,  NA,  NA,  NA },
+                {  NA,  NA,  NA,  NA },
         };
 
         verifyCalculatePoints(input4, expected4);
@@ -135,7 +134,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 {  0,  0,  0,  0 },
                 {  0,  0,  0,  0 },
                 {  0,  0,  0,  0 },
-                {  0,  0,  0,  0 }
+                {  0,  0,  0,  0 },
         };
 
         int[][] expected5 = {
@@ -154,7 +153,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 {  0,  0,  0,  0 },
                 {  0,  0,  0,  0 },
                 {  0,  0,  0,  0 },
-                {  0,  0,  0,  0 }
+                {  0,  0,  0,  0 },
         };
         verifyCalculatePoints(input5, expected5);
 
@@ -162,7 +161,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 {   0,   0,   0, NSU },
                 {   0,   0,   0, NSU },
                 { NSB, NSB, NSB, NSB },
-                {   0,   0, NSU, NSU }
+                {   0,   0, NSU, NSU },
         };
 
         int[][] expected6 = {
@@ -171,17 +170,17 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { NSB, NSB, NSB, NSB },
                 {   0,   0, NSU, NSU },
 
-                {  NA,   0,   0,  NA },
-                {   0,  NA,   0,  NA },
+                {  NA,   0,   0, NSU },
+                {   0,  NA,   0, NSU },
                 {  NA,  NA,  NA,  NA },
-                {   0,   0,  NA,  NA },
+                {   0,   0, NSU,  NA },
 
                 {   0,   0,   0,  NA },
 
                 {   0,   0,   0,  NA },
                 {   0,   0,   0,  NA },
                 {   0,   0,   0,  NA },
-                {   0,   0,   0,  NA }
+                {   0,   0,   0,  NA },
         };
         verifyCalculatePoints(input6, expected6);
 
@@ -189,7 +188,7 @@ public class TeamEvalResultTest extends BaseTestCase {
         int[][] input7 = {
                 {  25,  25,  75 },
                 { NSB, NSB, NSB },
-                { NSB, NSB, NSB }
+                { NSB, NSB, NSB },
         };
 
         int[][] expected7 = {
@@ -205,7 +204,7 @@ public class TeamEvalResultTest extends BaseTestCase {
 
                 {  NA,  25,  75 },
                 {  NA,  50, 150 },
-                {  NA,  50, 150 }
+                {  NA,  50, 150 },
         };
 
         verifyCalculatePoints(input7, expected7);
@@ -214,7 +213,7 @@ public class TeamEvalResultTest extends BaseTestCase {
         int[][] input8 = {
                 {  25, NSU, NSU },
                 { NSB, NSB, NSB },
-                { NSB, NSB, NSB }
+                { NSB, NSB, NSB },
         };
 
         int[][] expected8 = {
@@ -222,7 +221,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { NSB, NSB, NSB },
                 { NSB, NSB, NSB },
 
-                {  NA,  NA,  NA },
+                {  NA, NSU, NSU },
                 {  NA,  NA,  NA },
                 {  NA,  NA,  NA },
 
@@ -230,7 +229,7 @@ public class TeamEvalResultTest extends BaseTestCase {
 
                 {  NA,  NA,  NA },
                 {  NA,  NA,  NA },
-                {  NA,  NA,  NA }
+                {  NA,  NA,  NA },
         };
         verifyCalculatePoints(input8, expected8);
 
@@ -238,7 +237,7 @@ public class TeamEvalResultTest extends BaseTestCase {
         //TODO: special treatment for two-person teams?
         int[][] input9 = {
                 {  50, 150 },
-                {  80,  80 }
+                {  80,  80 },
         };
 
         int[][] expected9 = {
@@ -251,7 +250,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100, 100 },
 
                 { 100, 100 },
-                {  80,  80 }
+                {  80,  80 },
         };
         verifyCalculatePoints(input9, expected9);
 
@@ -265,7 +264,7 @@ public class TeamEvalResultTest extends BaseTestCase {
         int[][] input11 = {
                 { 103, 103,  94 },
                 {  90, 110, NSU },
-                { 100,  90, 110 }
+                { 100,  90, 110 },
         };
 
         int[][] expected11 = {
@@ -274,14 +273,14 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 100,  90, 110 },
 
                 {  NA, 105,  96 },
-                { 101,  NA,  NA },
+                { 101,  NA,  NSU },
                 { 106,  95,  NA },
 
                 { 103, 100,  96 },
 
                 { 103, 100,  96 },
                 { 101,  99,  94 },
-                { 103, 100,  96 }
+                { 103, 100,  96 },
         };
         verifyCalculatePoints(input11, expected11);
     }
@@ -311,14 +310,14 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 11, 12, 13, 14 },
                 { 21, 22, 23, 24 },
                 { 31, 32, 33, 34 },
-                { 41, 42, 43, 44 }
+                { 41, 42, 43, 44 },
         };
 
         double[][] expected = {
                 { NA, 12, 13, 14 },
                 { 21, NA, 23, 24 },
                 { 31, 32, NA, 34 },
-                { 41, 42, 43, NA }
+                { 41, 42, 43, NA },
         };
         assertEquals(TeamEvalResult.pointsToString(expected),
                 TeamEvalResult.pointsToString(TeamEvalResult.removeSelfRatings(input)));
@@ -331,7 +330,7 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { 10, 20,  0, NA },
                 { 10, NA,  0, NA },
                 { 10, 20, NA, NA },
-                { 10, 20,  0, NA }
+                { 10, 20,  0, NA },
         };
         double[] expected = {10, 20, 0, NA};
         assertEquals(Arrays.toString(expected),
@@ -340,18 +339,11 @@ public class TeamEvalResultTest extends BaseTestCase {
                 { NA, NA, NA, NA },
                 { NA, NA, NA, NA },
                 { NA, NA, NA, NA },
-                { NA, NA, NA, NA }
+                { NA, NA, NA, NA },
         };
         double[] expected2 = {NA, NA, NA, NA};
         assertEquals(Arrays.toString(expected2),
                 Arrays.toString(TeamEvalResult.averageColumns(input2)));
-
-        try {
-            TeamEvalResult.averageColumns(new double[][] { {NSU} });
-            signalFailureToDetectException("The Assertion error is not thrown as expected");
-        } catch (AssertionError e) {
-            ignoreExpectedException();
-        }
 
     }
     // CHECKSTYLE.ON:SingleSpaceSeparator
@@ -365,12 +357,6 @@ public class TeamEvalResultTest extends BaseTestCase {
         assertEquals(0, TeamEvalResult.sum(new double[] {NA, 0, 0}), 0.001);
         assertEquals(NA, TeamEvalResult.sum(new double[] {NA, NA, NA}), 0.001);
 
-        try {
-            TeamEvalResult.sum(new double[] {NSU, 1, 2});
-            signalFailureToDetectException("The Assertion error is not thrown as expected");
-        } catch (AssertionError e) {
-            ignoreExpectedException();
-        }
     }
 
     @Test
@@ -417,7 +403,7 @@ public class TeamEvalResultTest extends BaseTestCase {
     public void testIsSanitized() {
         assertTrue(TeamEvalResult.isSanitized(new int[] {}));
         assertTrue(TeamEvalResult.isSanitized(new int[] {1, 2, NA}));
-        assertFalse(TeamEvalResult.isSanitized(new int[] {1, NSU, 2, NA}));
+        assertTrue(TeamEvalResult.isSanitized(new int[] {1, NSU, 2, NA}));
         assertFalse(TeamEvalResult.isSanitized(new int[] {NSB, 2, -1}));
     }
 
@@ -445,18 +431,18 @@ public class TeamEvalResultTest extends BaseTestCase {
                 new double[] {1, 2, NSB}, new double[] {1.0, 2.0, 3.0});
 
         verifyPurgeValuesCorrespondingToSpecialValuesInFilter(
-                new double[] {1.0, 2.0, NA },
+                new double[] {1.0, 2.0, NSU },
                 new double[] {1, 2, NSU}, new double[] {1.0, 2.0, 3.0});
 
         //mix of special values in filter
         verifyPurgeValuesCorrespondingToSpecialValuesInFilter(
-                new double[] {1.0, 2.0, NA, 4.0, NA, 6.0, NA},
+                new double[] {1.0, 2.0, NA, 4.0, NSU, 6.0, NA},
                 new double[] {1, 2, NSB, 4, NSU, 6, NA},
                 new double[] {1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
 
         // target array has special values
         verifyPurgeValuesCorrespondingToSpecialValuesInFilter(
-                new double[] {1.0, 2.0, NA, NA, NA, 6.0, NA},
+                new double[] {1.0, 2.0, NA, NA, NSU, 6.0, NA},
                 new double[] {1, 2, NSB, 4, NSU, 6, NA},
                 new double[] {1.0, 2.0, 3.0, NA, 5.0, 6.0});
     }
@@ -466,11 +452,11 @@ public class TeamEvalResultTest extends BaseTestCase {
     private void verifyCalculatePoints(int[][] input, int[][] expected) {
         TeamEvalResult t = new TeamEvalResult(input);
         String actual = TeamEvalResult.pointsToString(t.normalizedClaimed)
-                + "=======================" + EOL
+                + "=======================" + System.lineSeparator()
                 + TeamEvalResult.pointsToString(t.normalizedPeerContributionRatio)
-                + "=======================" + EOL
-                + Arrays.toString(t.normalizedAveragePerceived) + EOL
-                + "=======================" + EOL
+                + "=======================" + System.lineSeparator()
+                + Arrays.toString(t.normalizedAveragePerceived) + System.lineSeparator()
+                + "=======================" + System.lineSeparator()
                 + TeamEvalResult.pointsToString(t.denormalizedAveragePerceived);
         actual = TeamEvalResult.replaceMagicNumbers(actual);
         assertEquals(TeamEvalResult.pointsToString(expected), actual);

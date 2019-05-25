@@ -4,8 +4,11 @@ import java.util.Arrays;
 
 import org.testng.annotations.Test;
 
+import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.InstructorSearchResultBundle;
+import teammates.common.datatransfer.attributes.CourseAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
+import teammates.common.util.Const;
 import teammates.storage.api.InstructorsDb;
 import teammates.test.driver.AssertHelper;
 
@@ -25,6 +28,9 @@ public class InstructorSearchTest extends BaseSearchTest {
         InstructorAttributes ins1InCourse2 = dataBundle.instructors.get("instructor1OfCourse2");
         InstructorAttributes ins2InCourse2 = dataBundle.instructors.get("instructor2OfCourse2");
         InstructorAttributes ins3InCourse2 = dataBundle.instructors.get("instructor3OfCourse2");
+        InstructorAttributes ins1InCourse3 = dataBundle.instructors.get("instructor1OfCourse3");
+        InstructorAttributes ins2InCourse3 = dataBundle.instructors.get("instructor2OfCourse3");
+        InstructorAttributes ins1InCourse4 = dataBundle.instructors.get("instructor1OfCourse4");
         InstructorAttributes insInArchivedCourse = dataBundle.instructors.get("instructorOfArchivedCourse");
         InstructorAttributes insInUnregCourse = dataBundle.instructors.get("instructor5");
         InstructorAttributes ins1InTestingSanitizationCourse =
@@ -45,12 +51,13 @@ public class InstructorSearchTest extends BaseSearchTest {
         ______TS("success: search for instructors in whole system; query string matches some instructors");
 
         results = instructorsDb.searchInstructorsInWholeSystem("instructor1");
-        verifySearchResults(results, ins1InCourse1, ins1InCourse2, ins1InTestingSanitizationCourse);
+        verifySearchResults(results, ins1InCourse1, ins1InCourse2, ins1InCourse3, ins1InCourse4,
+                ins1InTestingSanitizationCourse);
 
         ______TS("success: search for instructors in whole system; query string should be case-insensitive");
 
         results = instructorsDb.searchInstructorsInWholeSystem("InStRuCtOr2");
-        verifySearchResults(results, ins2InCourse1, ins2InCourse2);
+        verifySearchResults(results, ins2InCourse1, ins2InCourse2, ins2InCourse3);
 
         ______TS("success: search for instructors in whole system; instructors in archived courses should be included");
 
@@ -90,7 +97,7 @@ public class InstructorSearchTest extends BaseSearchTest {
         ______TS("success: search for instructors in whole system; instructors should be searchable by their role");
 
         results = instructorsDb.searchInstructorsInWholeSystem("Custom");
-        verifySearchResults(results, helperInCourse1);
+        verifySearchResults(results, helperInCourse1, ins2InCourse3, ins1InCourse4);
 
         ______TS("success: search for instructors in whole system; instructors should be searchable by displayed name");
 
@@ -99,7 +106,10 @@ public class InstructorSearchTest extends BaseSearchTest {
         InstructorAttributes assistantProf = helperInCourse1.getCopy();
         String displayedName = "Assistant Prof Smith";
         assistantProf.displayedName = displayedName;
-        instructorsDb.updateInstructorByEmail(assistantProf);
+        instructorsDb.updateInstructorByEmail(
+                InstructorAttributes.updateOptionsWithEmailBuilder(assistantProf.getCourseId(), assistantProf.getEmail())
+                        .withDisplayedName(assistantProf.getDisplayedName())
+                        .build());
         results = instructorsDb.searchInstructorsInWholeSystem(displayedName);
         verifySearchResults(results, assistantProf);
 
@@ -107,20 +117,75 @@ public class InstructorSearchTest extends BaseSearchTest {
 
         instructorsDb.deleteInstructor(ins1InCourse1.courseId, ins1InCourse1.email);
         results = instructorsDb.searchInstructorsInWholeSystem("instructor1");
-        verifySearchResults(results, ins1InCourse2, ins1InTestingSanitizationCourse);
+        verifySearchResults(results, ins1InCourse2, ins1InCourse3, ins1InCourse4, ins1InTestingSanitizationCourse);
 
         ______TS("success: search for instructors in whole system; instructors created without searchability unsearchable");
 
-        instructorsDb.createEntitiesWithoutExistenceCheck(Arrays.asList(ins1InCourse1));
+        instructorsDb.putEntity(ins1InCourse1);
         results = instructorsDb.searchInstructorsInWholeSystem("instructor1");
-        verifySearchResults(results, ins1InCourse2, ins1InTestingSanitizationCourse);
+        verifySearchResults(results, ins1InCourse2, ins1InCourse3, ins1InCourse4, ins1InTestingSanitizationCourse);
 
         ______TS("success: search for instructors in whole system; deleting instructor without deleting document:"
                 + "document deleted during search, instructor unsearchable");
 
-        instructorsDb.deleteEntity(ins2InCourse1);
+        instructorsDb.deleteInstructor(ins2InCourse1.getCourseId(), ins2InCourse1.getEmail());
         results = instructorsDb.searchInstructorsInWholeSystem("instructor2");
-        verifySearchResults(results, ins2InCourse2);
+        verifySearchResults(results, ins2InCourse2, ins2InCourse3);
+    }
+
+    @Test
+    public void testSearchInstructor_createNewInstructor_instructorShouldBeSearchable() throws Exception {
+
+        InstructorsDb instructorsDb = new InstructorsDb();
+        CourseAttributes courseAttributes = dataBundle.courses.get("typicalCourse1");
+
+        InstructorSearchResultBundle bundle =
+                instructorsDb.searchInstructorsInWholeSystem("instructorABCDE");
+
+        assertEquals(0, bundle.numberOfResults);
+
+        // create a new instructor
+        instructorsDb.createEntity(
+                InstructorAttributes.builder(courseAttributes.getId(), "instructorABCDE@email.com")
+                        .withName("instructorABCDE")
+                        .withDisplayedName("Instructor")
+                        .withRole(Const.InstructorPermissionRoleNames.INSTRUCTOR_PERMISSION_ROLE_COOWNER)
+                        .build());
+
+        // the newly created instructor is searchable
+        bundle = instructorsDb.searchInstructorsInWholeSystem("instructorABCDE");
+        assertEquals(1, bundle.numberOfResults);
+        assertEquals("instructorABCDE", bundle.instructorList.get(0).getName());
+    }
+
+    @Test
+    public void testSearchInstructor_deleteAfterSearch_shouldNotBeSearchable() {
+        InstructorsDb instructorsDb = new InstructorsDb();
+
+        InstructorAttributes ins1InCourse2 = dataBundle.instructors.get("instructor1OfCourse2");
+        InstructorAttributes ins2InCourse2 = dataBundle.instructors.get("instructor2OfCourse2");
+        InstructorAttributes ins3InCourse2 = dataBundle.instructors.get("instructor3OfCourse2");
+
+        // there is search result before deletion
+        InstructorSearchResultBundle results = instructorsDb.searchInstructorsInWholeSystem("idOfTypicalCourse2");
+        verifySearchResults(results, ins1InCourse2, ins2InCourse2, ins3InCourse2);
+
+        // delete a student
+        instructorsDb.deleteInstructor(ins1InCourse2.getCourseId(), ins1InCourse2.getEmail());
+
+        // the search result will change
+        results = instructorsDb.searchInstructorsInWholeSystem("idOfTypicalCourse2");
+        verifySearchResults(results, ins2InCourse2, ins3InCourse2);
+
+        // delete all instructors in course 2
+        instructorsDb.deleteInstructors(
+                AttributesDeletionQuery.builder()
+                        .withCourseId(ins2InCourse2.getCourseId())
+                        .build());
+
+        // there should be no search result
+        results = instructorsDb.searchInstructorsInWholeSystem("idOfTypicalCourse2");
+        verifySearchResults(results);
     }
 
     /*
@@ -136,7 +201,7 @@ public class InstructorSearchTest extends BaseSearchTest {
         assertEquals(expected.length, actual.instructorList.size());
         standardizeInstructorsForComparison(expected);
         standardizeInstructorsForComparison(
-                actual.instructorList.toArray(new InstructorAttributes[actual.instructorList.size()]));
+                actual.instructorList.toArray(new InstructorAttributes[0]));
         AssertHelper.assertSameContentIgnoreOrder(Arrays.asList(expected), actual.instructorList);
     }
 

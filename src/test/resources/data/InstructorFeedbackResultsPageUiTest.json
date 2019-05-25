@@ -339,7 +339,8 @@
       "course": "CFResultsUiT.NoSections",
       "name": "Benn'y Charle's",
       "comments": "This student's name is Benn'y Charle's</td></div>'\"",
-      "team": "Team '1</td></div>'\""
+      "team": "Team '1</td></div>'\"",
+      "section": "None"
     }
   },
   "feedbackSessions": {
@@ -347,17 +348,14 @@
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "Instructions for first session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Instructions for first session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-01T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -370,17 +368,14 @@
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the second feedback session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2026-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the second feedback session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2026-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -393,17 +388,14 @@
       "feedbackSessionName": "Third Session",
       "courseId": "CFResultsUiT.CS2104",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "Please please fill in the last feedback session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the last feedback session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -416,17 +408,14 @@
       "feedbackSessionName": "Fourth Session",
       "courseId": "CFResultsUiT.CS2104",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "This session has errors"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "This session has errors",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -439,17 +428,14 @@
       "feedbackSessionName": "Sanitized Session",
       "courseId": "CFResultsUiT.SanitizedTeam",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "This session has errors"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "This session has errors",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -462,17 +448,14 @@
       "feedbackSessionName": "NoSections Session",
       "courseId": "CFResultsUiT.NoSections",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "This session has errors"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "This session has errors",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -485,17 +468,14 @@
       "feedbackSessionName": "Instructors as Givers",
       "courseId": "CFResultsUiT.CS2104",
       "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "instructions": {
-        "value": "Session with Instructors as Givers"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Session with Instructors as Givers",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-01T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -509,12 +489,11 @@
     "qn1InNoSectionsSession": {
       "feedbackSessionName": "NoSections Session",
       "courseId": "CFResultsUiT.NoSections",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Dummy question for NoSections course session"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Dummy question for NoSections course session"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -536,12 +515,11 @@
     "qn1InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Rate 3 other students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 3 other students' products"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -563,12 +541,11 @@
     "qn2InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "What is the best selling point of your product?"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "What is the best selling point of your product?"
       },
       "questionNumber": 2,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -588,12 +565,11 @@
     "qn3InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "My comments on the class"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "My comments on the class"
       },
       "questionNumber": 3,
-      "questionType": "TEXT",
       "giverType": "SELF",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -604,12 +580,11 @@
     "qn4InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to 3 other teams."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to 3 other teams."
       },
       "questionNumber": 4,
-      "questionType": "TEXT",
       "giverType": "TEAMS",
       "recipientType": "TEAMS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -629,12 +604,11 @@
     "qn5InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to your team mates"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to your team mates"
       },
       "questionNumber": 5,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -652,12 +626,11 @@
     "qn6InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "This question should be hidden."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question should be hidden."
       },
       "questionNumber": 6,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -674,12 +647,19 @@
     "qn7InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"numOfMcqChoices\":4,\"mcqChoices\":[\"FlexiCommand\",\"PowerSearch\",\"GoodUI\",\"Google Integration\"],\"questionText\":\"What is your extra feature?\",\"questionType\":\"MCQ\",\"otherEnabled\":false}"
+      "questionDetails": {
+        "numOfMcqChoices": 4,
+        "mcqChoices": [
+          "FlexiCommand",
+          "PowerSearch",
+          "GoodUI",
+          "Google Integration"
+        ],
+        "questionText": "What is your extra feature?",
+        "questionType": "MCQ",
+        "otherEnabled": false
       },
       "questionNumber": 7,
-      "questionType": "MCQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -699,12 +679,18 @@
     "qn8InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"msqChoices\":[\"FlexiCommand\",\"PowerSearch\",\"GoodUI\",\"Google Integration\"],\"questionText\":\"What is your extra feature?\",\"questionType\":\"MSQ\",\"numOfMsqChoices\":4,\"otherEnabled\":false}"
+      "questionDetails": {
+        "msqChoices": [
+          "FlexiCommand",
+          "PowerSearch",
+          "GoodUI",
+          "Google Integration"
+        ],
+        "questionText": "What is your extra feature?",
+        "questionType": "MSQ",
+        "otherEnabled": false
       },
       "questionNumber": 8,
-      "questionType": "MSQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -724,12 +710,13 @@
     "qn9InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Who do you think is the most hardworking student?\",\"questionType\":\"MCQ\",\"generateOptionsFor\":\"STUDENTS\",\"otherEnabled\":false}"
+      "questionDetails": {
+        "questionText": "Who do you think is the most hardworking student?",
+        "questionType": "MCQ",
+        "generateOptionsFor": "STUDENTS",
+        "otherEnabled": false
       },
       "questionNumber": 9,
-      "questionType": "MCQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -749,12 +736,13 @@
     "qn10InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Which team do you think has the best feature?\",\"questionType\":\"MCQ\",\"generateOptionsFor\":\"TEAMS\",\"otherEnabled\":false}"
+      "questionDetails": {
+        "questionText": "Which team do you think has the best feature?",
+        "questionType": "MCQ",
+        "generateOptionsFor": "TEAMS",
+        "otherEnabled": false
       },
       "questionNumber": 10,
-      "questionType": "MCQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -774,12 +762,13 @@
     "qn2InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Who are your teammates?\",\"questionType\":\"MSQ\",\"generateOptionsFor\":\"STUDENTS\",\"otherEnabled\":false}"
+      "questionDetails": {
+        "questionText": "Who are your teammates?",
+        "questionType": "MSQ",
+        "generateOptionsFor": "STUDENTS",
+        "otherEnabled": false
       },
       "questionNumber": 2,
-      "questionType": "MSQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -799,12 +788,13 @@
     "qn3InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Which teams do you like?\",\"questionType\":\"MSQ\",\"generateOptionsFor\":\"TEAMS\",\"otherEnabled\":false}"
+      "questionDetails": {
+        "questionText": "Which teams do you like?",
+        "questionType": "MSQ",
+        "generateOptionsFor": "TEAMS",
+        "otherEnabled": false
       },
       "questionNumber": 3,
-      "questionType": "MSQ",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -824,12 +814,14 @@
     "qn4InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"minScale\":1,\"questionText\":\"Rate our product.\",\"questionType\":\"NUMSCALE\",\"maxScale\":5,\"step\":0.5}"
+      "questionDetails": {
+        "minScale": 1,
+        "questionText": "Rate our product.",
+        "questionType": "NUMSCALE",
+        "maxScale": 5,
+        "step": 0.5
       },
       "questionNumber": 4,
-      "questionType": "NUMSCALE",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -846,12 +838,19 @@
     "qn5InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"distributeToRecipients\":false,\"pointsPerOption\":false,\"questionText\":\"How important are the following factors to you? Give points accordingly.\",\"numOfConstSumOptions\":2,\"questionType\":\"CONSTSUM\",\"points\":100,\"constSumOptions\":[\"Grades\",\"Fun\"]}"
+      "questionDetails": {
+        "distributeToRecipients": false,
+        "pointsPerOption": false,
+        "questionText": "How important are the following factors to you? Give points accordingly.",
+        "numOfConstSumOptions": 2,
+        "questionType": "CONSTSUM",
+        "points": 100,
+        "constSumOptions": [
+          "Grades",
+          "Fun"
+        ]
       },
       "questionNumber": 5,
-      "questionType": "CONSTSUM",
       "giverType": "STUDENTS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -871,12 +870,16 @@
     "qn6InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"distributeToRecipients\":true,\"pointsPerOption\":true,\"questionText\":\"Split points among the your team members and yourself, according to how much you think each member has contributed.\",\"numOfConstSumOptions\":0,\"questionType\":\"CONSTSUM\",\"points\":100,\"constSumOptions\":[]}"
+      "questionDetails": {
+        "distributeToRecipients": true,
+        "pointsPerOption": true,
+        "questionText": "Split points among the your team members and yourself, according to how much you think each member has contributed.",
+        "numOfConstSumOptions": 0,
+        "questionType": "CONSTSUM",
+        "points": 100,
+        "constSumOptions": []
       },
       "questionNumber": 6,
-      "questionType": "CONSTSUM",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -896,12 +899,11 @@
     "qn7InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Rate the contribution of yourself and your team members towards the latest project.\",\"questionType\":\"CONTRIB\"}"
+      "questionDetails": {
+        "questionText": "Rate the contribution of yourself and your team members towards the latest project.",
+        "questionType": "CONTRIB"
       },
       "questionNumber": 7,
-      "questionType": "CONTRIB",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -922,12 +924,14 @@
     "qn8InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"minScale\":1,\"questionText\":\"Rate you and your team members work.\",\"questionType\":\"NUMSCALE\",\"maxScale\":5,\"step\":0.5}"
+      "questionDetails": {
+        "minScale": 1,
+        "questionText": "Rate you and your team members work.",
+        "questionType": "NUMSCALE",
+        "maxScale": 5,
+        "step": 0.5
       },
       "questionNumber": 8,
-      "questionType": "NUMSCALE",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -942,12 +946,14 @@
     "qn9InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"minScale\":-5,\"questionText\":\"Rate the class\",\"questionType\":\"NUMSCALE\",\"maxScale\":5,\"step\":0.25}"
+      "questionDetails": {
+        "minScale": -5,
+        "questionText": "Rate the class",
+        "questionType": "NUMSCALE",
+        "maxScale": 5,
+        "step": 0.25
       },
       "questionNumber": 9,
-      "questionType": "NUMSCALE",
       "giverType": "STUDENTS",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -962,12 +968,11 @@
     "qn1InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to your instructors"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to your instructors"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "INSTRUCTORS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -982,12 +987,11 @@
     "qn10InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"questionText\":\"Rate the contribution of ideas from yourself and your team members in the last meeting.\",\"questionType\":\"CONTRIB\"}"
+      "questionDetails": {
+        "questionText": "Rate the contribution of ideas from yourself and your team members in the last meeting.",
+        "questionType": "CONTRIB"
       },
       "questionNumber": 10,
-      "questionType": "CONTRIB",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -1005,12 +1009,11 @@
     "qn11InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "As a team, what do you think could have been done differently?"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "As a team, what do you think could have been done differently?"
       },
       "questionNumber": 11,
-      "questionType": "TEXT",
       "giverType": "TEAMS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -1028,12 +1031,14 @@
     "qn12InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"minScale\":0,\"questionText\":\"Rate the class as a team\",\"questionType\":\"NUMSCALE\",\"maxScale\":1000,\"step\":5}"
+      "questionDetails": {
+        "minScale": 0,
+        "questionText": "Rate the class as a team",
+        "questionType": "NUMSCALE",
+        "maxScale": 1000,
+        "step": 5
       },
       "questionNumber": 12,
-      "questionType": "NUMSCALE",
       "giverType": "TEAMS",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -1052,12 +1057,11 @@
     "qn1InSession4": {
       "feedbackSessionName": "Fourth Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "As a team, what do you think could have been done differently?"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "As a team, what do you think could have been done differently?"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "TEAMS",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -1076,12 +1080,16 @@
     "qn2InSession4": {
       "feedbackSessionName": "Fourth Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "{\"distributeToRecipients\":true,\"pointsPerOption\":true,\"questionText\":\"Split points among the your team members and yourself, according to how much you think each member has contributed.\",\"numOfConstSumOptions\":0,\"questionType\":\"CONSTSUM\",\"points\":100,\"constSumOptions\":[]}"
+      "questionDetails": {
+        "distributeToRecipients": true,
+        "pointsPerOption": true,
+        "questionText": "Split points among the your team members and yourself, according to how much you think each member has contributed.",
+        "numOfConstSumOptions": 0,
+        "questionType": "CONSTSUM",
+        "points": 100,
+        "constSumOptions": []
       },
       "questionNumber": 2,
-      "questionType": "CONSTSUM",
       "giverType": "TEAMS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -1098,15 +1106,12 @@
     "qn1InSanitizedSession": {
       "feedbackSessionName": "Sanitized Session",
       "courseId": "CFResultsUiT.SanitizedTeam",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Some question text. Testing quotation marks '\" Testing unclosed tags </td></div> Testing script injection <script> alert('hello'); </script>"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Some question text. Testing quotation marks '\" Testing unclosed tags </td></div> Testing script injection <script> alert('hello'); </script>"
       },
-      "questionDescription": {
-        "value": "<p> Some  question description. </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>"
-      },
+      "questionDescription": "<p> Some  question description. </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>",
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS_INCLUDING_SELF",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -1126,12 +1131,11 @@
     "qn1InInstructorsAsGivers": {
       "feedbackSessionName": "Instructors as Givers",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "Rate 3 other students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 3 other students' products"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -1154,12 +1158,11 @@
     "qn11InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
-      "creatorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "questionMetaData": {
-        "value": "This is a dummy question to test default sort"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This is a dummy question to test default sort"
       },
       "questionNumber": 11,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -1184,593 +1187,638 @@
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "Alice self feedback."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Alice self feedback."
+      }
     },
     "response2": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "2 Response to Benny."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "2 Response to Benny."
+      }
     },
     "response3": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.benny.c@gmail.tmt",
       "recipient": "CFResultsUiT.danny.e@gmail.tmt",
-      "responseMetaData": {
-        "value": "1 Response to Danny."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "1 Response to Danny."
+      }
     },
     "response3a": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "drop.out@gmail.tmt",
-      "responseMetaData": {
-        "value": "Response to Dropout."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response to Dropout."
+      }
     },
     "response3b": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "drop.out@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "Response to Alice from Dropout."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response to Alice from Dropout."
+      }
     },
     "response3c": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "drop.out@gmail.tmt",
       "recipient": "CFResultsUiT.danny.e@gmail.tmt",
-      "responseMetaData": {
-        "value": "Response to Danny from Dropout."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response to Danny from Dropout."
+      }
     },
     "response3d": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "drop.out@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "Response to Benny from Dropout."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response to Benny from Dropout."
+      }
     },
     "response4": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.charlie.d@gmail.tmt",
       "recipient": "CFResultsUiT.emily.f@gmail.tmt",
-      "responseMetaData": {
-        "value": "3 Response to Emily."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section B"
+      "recipientSection": "Section B",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "3 Response to Emily."
+      }
     },
     "response5": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.benny.c@gmail.tmt",
       "recipient": "CFResultsUiT.charlie.d@gmail.tmt",
-      "responseMetaData": {
-        "value": "4 Response to Charlie."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "4 Response to Charlie."
+      }
     },
     "response5b": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.fred.g@gmail.tmt",
       "recipient": "CFResultsUiT.charlie.d@gmail.tmt",
-      "responseMetaData": {
-        "value": "Fred's Response to Charlie."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Fred's Response to Charlie."
+      }
     },
     "response6": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "7",
-      "feedbackQuestionType": "MCQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":\"PowerSearch\",\"otherFieldContent\":\"\",\"questionType\":\"MCQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": "PowerSearch",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
+      }
     },
     "mcqResponse6a": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "7",
-      "feedbackQuestionType": "MCQ",
       "giver": "drop.out@gmail.tmt",
       "recipient": "drop.out@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":\"PowerSearch\",\"otherFieldContent\":\"\",\"questionType\":\"MCQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": "PowerSearch",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
+      }
     },
     "response7": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "8",
-      "feedbackQuestionType": "MSQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[\"PowerSearch\",\"GoodUI\"],\"questionType\":\"MSQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          "PowerSearch",
+          "GoodUI"
+        ],
+        "questionType": "MSQ"
+      }
     },
     "response8": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "8",
-      "feedbackQuestionType": "MSQ",
       "giver": "CFResultsUiT.benny.c@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[\"\"],\"questionType\":\"MSQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          ""
+        ],
+        "questionType": "MSQ"
+      }
     },
     "response9": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "9",
-      "feedbackQuestionType": "MCQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":\"Danny\",\"otherFieldContent\":\"\",\"questionType\":\"MCQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": "Danny",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
+      }
     },
     "response10": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "10",
-      "feedbackQuestionType": "MCQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":\"Team 1\",\"otherFieldContent\":\"\",\"questionType\":\"MCQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": "Team 1",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
+      }
     },
     "mcqResponse10a": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "10",
-      "feedbackQuestionType": "MCQ",
       "giver": "drop.out@gmail.tmt",
       "recipient": "drop.out@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":\"Team 2\",\"otherFieldContent\":\"\",\"questionType\":\"MCQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": "Team 2",
+        "otherFieldContent": "",
+        "questionType": "MCQ"
+      }
     },
     "responseForTEAMQuestion": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "11",
-      "feedbackQuestionType": "TEXT",
       "giver": "Team 1</td></div>'\"",
       "recipient": "Team 1</td></div>'\"",
-      "responseMetaData": {
-        "value": "Response from benny to Team 1 (own team)"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response from benny to Team 1 (own team)"
+      }
     },
     "responseForTEAMQuestion2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "12",
-      "feedbackQuestionType": "NUMSCALE",
       "giver": "Team 1</td></div>'\"",
       "recipient": "%GENERAL%",
-      "responseMetaData": {
-        "value": "{\"answer\":0,\"questionType\":\"NUMSCALE\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "None"
+      "recipientSection": "None",
+      "responseDetails": {
+        "answer": 0,
+        "questionType": "NUMSCALE"
+      }
     },
     "response11": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "MSQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[\"Danny\"],\"otherFieldContent\":\"\",\"questionType\":\"MSQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          "Danny"
+        ],
+        "otherFieldContent": "",
+        "questionType": "MSQ"
+      }
     },
     "response12": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "3",
-      "feedbackQuestionType": "MSQ",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[\"Team 1\",\"Team 2\"],\"otherFieldContent\":\"\",\"questionType\":\"MSQ\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          "Team 1",
+          "Team 2"
+        ],
+        "otherFieldContent": "",
+        "questionType": "MSQ"
+      }
     },
     "response13": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "4",
-      "feedbackQuestionType": "NUMSCALE",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":3.5,\"questionType\":\"NUMSCALE\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 3.5,
+        "questionType": "NUMSCALE"
+      }
     },
     "response14": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "3",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.instr@gmail.tmt",
       "recipient": "%GENERAL%",
-      "responseMetaData": {
-        "value": "This is for nobody specific."
-      },
       "giverSection": "None",
-      "recipientSection": "None"
+      "recipientSection": "None",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "This is for nobody specific."
+      }
     },
     "response15": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "4",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "Team 2",
-      "responseMetaData": {
-        "value": "Response from team 1 (by alice) to team 2."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response from team 1 (by alice) to team 2."
+      }
     },
     "response16": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "5",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[45,55],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          45,
+          55
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "response17.1": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "6",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[110],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          110
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "response17.2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "6",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[90],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          90
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "response17.3": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "6",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.charlie.d@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[50],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          50
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "response17.4": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "6",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.danny.e@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[150],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answers": [
+          150
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "FS.Q1.Alice.1": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "7",
-      "feedbackQuestionType": "CONTRIB",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":150,\"questionType\":\"CONTRIB\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 150,
+        "questionType": "CONTRIB"
+      }
     },
     "FS.Q1.Alice.2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "7",
-      "feedbackQuestionType": "CONTRIB",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":120,\"questionType\":\"CONTRIB\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 120,
+        "questionType": "CONTRIB"
+      }
     },
     "response17": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "8",
-      "feedbackQuestionType": "NUMSCALE",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":3,\"questionType\":\"NUMSCALE\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 3,
+        "questionType": "NUMSCALE"
+      }
     },
     "response18": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "8",
-      "feedbackQuestionType": "NUMSCALE",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":4,\"questionType\":\"NUMSCALE\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 4,
+        "questionType": "NUMSCALE"
+      }
     },
     "response19": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "9",
-      "feedbackQuestionType": "NUMSCALE",
       "giver": "CFResultsUiT.benny.c@gmail.tmt",
       "recipient": "%GENERAL%",
-      "responseMetaData": {
-        "value": "{\"answer\":-0.5,\"questionType\":\"NUMSCALE\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "None"
+      "recipientSection": "None",
+      "responseDetails": {
+        "answer": -0.5,
+        "questionType": "NUMSCALE"
+      }
     },
     "response20.1": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "10",
-      "feedbackQuestionType": "CONTRIB",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":150,\"questionType\":\"CONTRIB\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 150,
+        "questionType": "CONTRIB"
+      }
     },
     "repsonse20.2": {
       "feedbackSessionName": "Second Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "10",
-      "feedbackQuestionType": "CONTRIB",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answer\":120,\"questionType\":\"CONTRIB\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "answer": 120,
+        "questionType": "CONTRIB"
+      }
     },
     "response21": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "11",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.fred.g@gmail.tmt",
-      "responseMetaData": {
-        "value": "Alice to Danny."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Alice to Danny."
+      }
     },
     "response22": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "11",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.danny.e@gmail.tmt",
       "recipient": "CFResultsUiT.fred.g@gmail.tmt",
-      "responseMetaData": {
-        "value": "Benny to Danny."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Benny to Danny."
+      }
     },
     "response23": {
       "feedbackSessionName": "First Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "11",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.fred.g@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "Danny to Alice."
-      },
       "giverSection": "Section A",
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Danny to Alice."
+      }
     },
     "response1 Of Session 4": {
       "feedbackSessionName": "Fourth Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "Team 1</td></div>'\"",
       "recipient": "%GENERAL%",
-      "responseMetaData": {
-        "value": "None"
-      },
       "giverSection": "Section A",
-      "recipientSection": "None"
+      "recipientSection": "None",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "None"
+      }
     },
     "response2 Of Session 4": {
       "feedbackSessionName": "Fourth Session",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "CONSTSUM",
       "giver": "Team 1</td></div>'\"",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "{\"answers\":[50],\"questionType\":\"CONSTSUM\"}"
-      },
       "giverSection": "Section A",
-      "recipientSection": "None"
+      "recipientSection": "None",
+      "responseDetails": {
+        "answers": [
+          50
+        ],
+        "questionType": "CONSTSUM"
+      }
     },
     "SanitizedResponse1": {
       "feedbackSessionName": "Sanitized Session",
       "courseId": "CFResultsUiT.SanitizedTeam",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.alice.b@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "<p> Some response to text question. </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>"
-      },
       "giverSection": "Section A</td></div>'\"",
-      "recipientSection": "Section A</td></div>'\""
+      "recipientSection": "Section A</td></div>'\"",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "<p> Some response to text question. </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>"
+      }
     },
     "InstructorsAsGiversResponse1": {
       "feedbackSessionName": "Instructors as Givers",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.instr@gmail.tmt",
       "recipient": "CFResultsUiT.alice.b@gmail.tmt",
-      "responseMetaData": {
-        "value": "Alice you did okay. You get B-"
-      },
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Alice you did okay. You get B-"
+      }
     },
     "InstructorsAsGiversResponse2": {
       "feedbackSessionName": "Instructors as Givers",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.instr@gmail.tmt",
       "recipient": "CFResultsUiT.benny.c@gmail.tmt",
-      "responseMetaData": {
-        "value": "You did better than Alice. You get C+"
-      },
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "You did better than Alice. You get C+"
+      }
     },
     "InstructorsAsGiversResponse3": {
       "feedbackSessionName": "Instructors as Givers",
       "courseId": "CFResultsUiT.CS2104",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.instr@gmail.tmt",
       "recipient": "CFResultsUiT.charlie.d@gmail.tmt",
-      "responseMetaData": {
-        "value": "I like you so I give you above A-"
-      },
-      "recipientSection": "Section A"
+      "recipientSection": "Section A",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "I like you so I give you above A-"
+      }
     },
     "NoSectionsResponse1": {
       "feedbackSessionName": "NoSections Session",
       "courseId": "CFResultsUiT.NoSections",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "CFResultsUiT.benny.no@gmail.tmt",
       "recipient": "CFResultsUiT.benny.no@gmail.tmt",
-      "responseMetaData": {
-        "value": "Benny self feedback."
+      "giverSection": "None",
+      "recipientSection": "None",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Benny self feedback."
+      }
+    },
+    "Response to Instructors": {
+      "feedbackSessionName": "Second Session",
+      "courseId": "CFResultsUiT.CS2104",
+      "feedbackQuestionId": "1",
+      "giver": "CFResultsUiT.alice.b@gmail.tmt",
+      "recipient": "CFResultsUiT.instr@gmail.tmt",
+      "giverSection": "Section A",
+      "recipientSection": "None",
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "You are a great instructor."
       }
     }
   },
@@ -1779,25 +1827,25 @@
       "courseId": "CFResultsUiT.SanitizedTeam",
       "feedbackSessionName": "Sanitized Session",
       "feedbackQuestionId": "1",
-      "giverEmail": "CFResultsUiT.instr@gmail.tmt",
+      "commentGiver": "CFResultsUiT.instr@gmail.tmt",
       "giverSection": "None",
       "receiverSection": "Section A</td></div>'\"",
       "feedbackResponseId": "1%CFResultsUiT.alice.b@gmail.tmt%CFResultsUiT.benny.c@gmail.tmt",
       "showCommentTo": [],
       "showGiverNameTo": [],
+      "commentGiverType": "INSTRUCTORS",
       "isVisibilityFollowingFeedbackQuestion": false,
-      "createdAt": "2026-03-01 11:59 PM UTC",
-      "commentText": {
-        "value": "<p> Some comment from instructor </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>"
-      },
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2026-03-01T23:59:00Z",
       "lastEditorEmail": "CFResultsUiT.instr@gmail.tmt",
-      "lastEditedAt": "2026-03-02 11:59 PM UTC"
+      "lastEditedAt": "2026-03-02T23:59:00Z",
+      "commentText": "<p> Some comment from instructor </p><a href='https://github.com/TEAMMATES/teammates/issues'>a link</a> attempted script injection <script>alert('hi');</script>"
     },
     "comment2ToBeEditedByDifferentInstructor": {
       "courseId": "CFResultsUiT.CS2104",
       "feedbackSessionName": "First Session",
       "feedbackQuestionId": "2",
-      "giverEmail": "CFResultsUiT.instr2@gmail.tmt",
+      "commentGiver": "CFResultsUiT.instr2@gmail.tmt",
       "giverSection": "Section A",
       "receiverSection": "Section A",
       "feedbackResponseId": "2%CFResultsUiT.alice.b@gmail.tmt%CFResultsUiT.alice.b@gmail.tmt",
@@ -1815,13 +1863,29 @@
         "STUDENTS",
         "INSTRUCTORS"
       ],
+      "commentGiverType": "INSTRUCTORS",
       "isVisibilityFollowingFeedbackQuestion": false,
-      "createdAt": "2012-04-02 11:59 PM UTC",
-      "commentText": {
-        "value": "Comment to be edited by different instructor."
-      },
+      "isCommentFromFeedbackParticipant": false,
+      "createdAt": "2012-04-02T23:59:00Z",
       "lastEditorEmail": "CFResultsUiT.instr2@gmail.tmt",
-      "lastEditedAt": "2012-04-02 11:59 PM UTC"
+      "lastEditedAt": "2012-04-02T23:59:00Z",
+      "commentText": "Comment to be edited by different instructor."
+    },
+    "comment1OnResponse6": {
+      "courseId": "CFResultsUiT.CS2104",
+      "feedbackSessionName": "First Session",
+      "feedbackQuestionId": "7",
+      "commentGiver": "CFResultsUiT.alice.b@gmail.tmt",
+      "giverSection": "Section A",
+      "receiverSection": "Section A",
+      "feedbackResponseId": "7%CFResultsUiT.alice.b@gmail.tmt%CFResultsUiT.alice.b@gmail.tmt",
+      "showCommentTo": [],
+      "showGiverNameTo": [],
+      "commentGiverType": "STUDENTS",
+      "isVisibilityFollowingFeedbackQuestion": true,
+      "isCommentFromFeedbackParticipant": true,
+      "createdAt": "2012-04-02T23:59:00Z",
+      "commentText": "Comment by Alice."
     }
   },
   "profiles": {}

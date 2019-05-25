@@ -3,8 +3,8 @@ package teammates.common.datatransfer.questions;
 import java.util.ArrayList;
 import java.util.List;
 
+import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.util.Assumption;
-import teammates.common.util.SanitizationHelper;
 
 public class FeedbackConstantSumResponseDetails extends
         FeedbackResponseDetails {
@@ -45,37 +45,22 @@ public class FeedbackConstantSumResponseDetails extends
     }
 
     @Override
-    public String getAnswerHtmlInstructorView(FeedbackQuestionDetails questionDetails) {
-        FeedbackConstantSumQuestionDetails csQd = (FeedbackConstantSumQuestionDetails) questionDetails;
-        if (csQd.isDistributeToRecipients()) {
-            return getAnswerString();
-        }
-        StringBuilder htmlBuilder = new StringBuilder(100);
-        htmlBuilder.append("<ul>");
-        for (int i = 0; i < answers.size(); i++) {
-            String answerString = answers.get(i).toString();
-            String optionString = csQd.getConstSumOptions().get(i);
-
-            htmlBuilder.append("<li>");
-            htmlBuilder.append(optionString).append(": ").append(SanitizationHelper.sanitizeForHtml(answerString));
-            htmlBuilder.append("</li>");
-        }
-        htmlBuilder.append("</ul>");
-        return htmlBuilder.toString();
-    }
-
-    @Override
     public String getAnswerCsv(FeedbackQuestionDetails questionDetails) {
         StringBuilder csvBuilder = new StringBuilder();
 
-        for (int i = 0; i < answers.size(); i++) {
+        for (Integer answer : answers) {
             if (!((FeedbackConstantSumQuestionDetails) questionDetails).isDistributeToRecipients()) {
                 csvBuilder.append(',');
             }
-            csvBuilder.append(answers.get(i));
+            csvBuilder.append(answer);
         }
 
         return csvBuilder.toString();
+    }
+
+    @Override
+    public List<String> validateResponseDetails(FeedbackQuestionAttributes correspondingQuestion) {
+        return new ArrayList<>();
     }
 
     private void setConstantSumResponseDetails(List<Integer> answers, List<String> constSumOptions,

@@ -8,8 +8,8 @@ import com.googlecode.objectify.Objectify;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.util.Closeable;
 
+import teammates.client.util.ClientProperties;
 import teammates.storage.api.OfyHelper;
-import teammates.test.driver.TestProperties;
 
 /**
  * Enables access to any Datastore (local/production).
@@ -19,12 +19,12 @@ import teammates.test.driver.TestProperties;
 public abstract class RemoteApiClient {
 
     protected Objectify ofy() {
-        return com.googlecode.objectify.ObjectifyService.ofy();
+        return ObjectifyService.ofy();
     }
 
     protected void doOperationRemotely() throws IOException {
 
-        String appUrl = TestProperties.TEAMMATES_URL.replaceAll("^https?://", "");
+        String appUrl = ClientProperties.TARGET_URL.replaceAll("^https?://", "");
         String appDomain = appUrl.split(":")[0];
         int appPort = appUrl.contains(":") ? Integer.parseInt(appUrl.split(":")[1]) : 443;
 
@@ -33,7 +33,7 @@ public abstract class RemoteApiClient {
 
         RemoteApiOptions options = new RemoteApiOptions().server(appDomain, appPort);
 
-        if (TestProperties.isDevServer()) {
+        if (ClientProperties.isTargetUrlDevServer()) {
             // Dev Server doesn't require credential.
             options.useDevelopmentServerCredential();
         } else {
@@ -57,13 +57,6 @@ public abstract class RemoteApiClient {
         }
 
         System.out.println("--- Remote operation completed ---");
-    }
-
-    /**
-     * Prints the {@code string} on system output, followed by a newline.
-     */
-    protected void println(String string) {
-        System.out.println(string);
     }
 
     /**

@@ -34,7 +34,7 @@ public class InstructorStudentRecordsAjaxPageActionTest extends BaseActionTest {
         String[] submissionParams = new String[] {
                 Const.ParamsNames.COURSE_ID, instructor.courseId,
                 Const.ParamsNames.STUDENT_EMAIL, student.email,
-                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session"
+                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session",
         };
 
         InstructorStudentRecordsAjaxPageAction a = getAction(submissionParams);
@@ -53,38 +53,35 @@ public class InstructorStudentRecordsAjaxPageActionTest extends BaseActionTest {
 
     @Override
     protected InstructorStudentRecordsAjaxPageAction getAction(String... params) {
-        return (InstructorStudentRecordsAjaxPageAction) gaeSimulation.getActionObject(getActionUri(), params);
+        return (InstructorStudentRecordsAjaxPageAction) gaeSimulation.getLegacyActionObject(getActionUri(), params);
     }
 
     @Test
     @Override
     protected void testAccessControl() throws Exception {
-        InstructorAttributes instructor = typicalBundle.instructors.get("instructor3OfCourse1");
+        InstructorAttributes instructor = typicalBundle.instructors.get("helperOfCourse1");
         StudentAttributes student = typicalBundle.students.get("student2InCourse1");
         CourseAttributes course = typicalBundle.courses.get("typicalCourse1");
 
         String[] submissionParams = new String[] {
                 Const.ParamsNames.COURSE_ID, course.getId(),
                 Const.ParamsNames.STUDENT_EMAIL, student.email,
-                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session"
+                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session",
         };
         verifyOnlyInstructorsOfTheSameCourseCanAccess(submissionParams);
 
         ______TS("Instructor cannot view sections without View-Student-In-Sections privilege");
 
-        instructor = typicalBundle.instructors.get("helperOfCourse1");
         gaeSimulation.loginAsInstructor(instructor.googleId);
 
         submissionParams = new String[] {
                 Const.ParamsNames.COURSE_ID, course.getId(),
                 Const.ParamsNames.STUDENT_EMAIL, student.email,
-                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session"
+                Const.ParamsNames.FEEDBACK_SESSION_NAME, "First feedback session",
         };
 
         InstructorStudentRecordsAjaxPageAction a = getAction(submissionParams);
         ShowPageResult r = getShowPageResult(a);
-        a = getAction(submissionParams);
-        r = getShowPageResult(a);
 
         assertEquals(
                 getPageResultDestination(Const.ViewURIs.INSTRUCTOR_STUDENT_RECORDS_AJAX, false, "idOfHelperOfCourse1"),

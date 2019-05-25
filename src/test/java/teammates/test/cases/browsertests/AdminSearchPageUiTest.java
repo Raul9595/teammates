@@ -15,12 +15,13 @@ import teammates.common.util.AppUrl;
 import teammates.common.util.Const;
 import teammates.common.util.SanitizationHelper;
 import teammates.common.util.StringHelper;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
 import teammates.test.pageobjects.AdminSearchPage;
 
 /**
  * SUT: {@link Const.ActionURIs#ADMIN_SEARCH_PAGE}.
  */
-public class AdminSearchPageUiTest extends BaseUiTestCase {
+public class AdminSearchPageUiTest extends BaseE2ETestCase {
     private static final int ADMIN_SEARCH_INSTRUCTOR_TABLE_NUM_COLUMNS = 5;
     private static final int ADMIN_SEARCH_STUDENT_TABLE_NUM_COLUMNS = 6;
 
@@ -60,7 +61,7 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
 
         assertTrue(isPageTitleCorrect());
         assertTrue(isSearchPanelPresent());
-        searchPage.verifyStatus("Search key cannot be empty");
+        searchPage.waitForTextsForAllStatusMessagesToUserEquals("Search key cannot be empty");
 
         ______TS("search for student1");
 
@@ -86,7 +87,7 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
 
         assertTrue(isSearchPanelPresent());
         assertTrue(isSearchDataDisplayCorrect());
-        searchPage.verifyStatus("Total results found: 1");
+        searchPage.waitForTextsForAllStatusMessagesToUserEquals("Total results found: 1");
 
         ______TS("search for student name with special characters");
 
@@ -123,8 +124,8 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
     }
 
     private AdminSearchPage getAdminSearchPage() {
-        AppUrl searchPageUrl = createUrl(Const.ActionURIs.ADMIN_SEARCH_PAGE);
-        return loginAdminToPage(searchPageUrl, AdminSearchPage.class);
+        AppUrl searchPageUrl = createUrl(Const.WebPageURIs.ADMIN_SEARCH_PAGE);
+        return loginAdminToPageOld(searchPageUrl, AdminSearchPage.class);
     }
 
     private boolean isPageTitleCorrect() {
@@ -152,7 +153,7 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
             }
             return true;
         }
-        searchPage.verifyStatus("No result found, please try again");
+        searchPage.waitForTextsForAllStatusMessagesToUserEquals("No result found, please try again");
         return true;
 
     }
@@ -276,7 +277,7 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
                                          InstructorAttributes instructorToMasquaradeAs) {
 
         String actualNameLink = studentRow.findElement(By.xpath("td[3]/a")).getAttribute("href");
-        String expectedNameLink = createUrl(Const.ActionURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
+        String expectedNameLink = createUrl(Const.WebPageURIs.INSTRUCTOR_STUDENT_RECORDS_PAGE)
                                   .withCourseId(student.course)
                                   .withStudentEmail(student.email)
                                   .withUserId(instructorToMasquaradeAs.googleId)
@@ -285,7 +286,7 @@ public class AdminSearchPageUiTest extends BaseUiTestCase {
         if (student.isRegistered()) {
 
             String actualGoogleIdLink = studentRow.findElement(By.xpath("td[4]/a")).getAttribute("href");
-            String expectedGoogleIdLink = createUrl(Const.ActionURIs.STUDENT_HOME_PAGE)
+            String expectedGoogleIdLink = createUrl(Const.WebPageURIs.STUDENT_HOME_PAGE)
                                           .withUserId(student.googleId)
                                           .toAbsoluteString();
 

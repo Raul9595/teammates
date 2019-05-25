@@ -15,7 +15,8 @@ import teammates.ui.automated.FeedbackSessionUpdateRespondentWorkerAction;
 /**
  * SUT: {@link FeedbackSessionUpdateRespondentWorkerAction}.
  */
-public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomatedActionTest {
+public class FeedbackSessionUpdateRespondentWorkerActionTest
+        extends BaseAutomatedActionTest<FeedbackSessionUpdateRespondentWorkerAction> {
 
     private static final FeedbackSessionsLogic fsLogic = FeedbackSessionsLogic.inst();
 
@@ -39,7 +40,7 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
                 ParamsNames.FEEDBACK_SESSION_NAME, session.getFeedbackSessionName(),
                 ParamsNames.RESPONDENT_EMAIL, student.email,
                 ParamsNames.RESPONDENT_IS_INSTRUCTOR, "false",
-                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "false"
+                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "false",
         };
 
         FeedbackSessionUpdateRespondentWorkerAction action = getAction(submissionParams);
@@ -58,7 +59,7 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
                 ParamsNames.FEEDBACK_SESSION_NAME, session.getFeedbackSessionName(),
                 ParamsNames.RESPONDENT_EMAIL, instructor.email,
                 ParamsNames.RESPONDENT_IS_INSTRUCTOR, "true",
-                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "false"
+                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "false",
         };
 
         action = getAction(submissionParams);
@@ -75,7 +76,7 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
                 ParamsNames.FEEDBACK_SESSION_NAME, session.getFeedbackSessionName(),
                 ParamsNames.RESPONDENT_EMAIL, student.email,
                 ParamsNames.RESPONDENT_IS_INSTRUCTOR, "false",
-                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "true"
+                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "true",
         };
 
         action = getAction(submissionParams);
@@ -92,7 +93,7 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
                 ParamsNames.FEEDBACK_SESSION_NAME, session.getFeedbackSessionName(),
                 ParamsNames.RESPONDENT_EMAIL, instructor.email,
                 ParamsNames.RESPONDENT_IS_INSTRUCTOR, "true",
-                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "true"
+                ParamsNames.RESPONDENT_IS_TO_BE_REMOVED, "true",
         };
 
         action = getAction(submissionParams);
@@ -101,17 +102,11 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
         verifyRespondentNotInSessionRespondentsList(session, instructor.email, true);
     }
 
-    @Override
-    protected FeedbackSessionUpdateRespondentWorkerAction getAction(String... params) {
-        return (FeedbackSessionUpdateRespondentWorkerAction)
-                gaeSimulation.getAutomatedActionObject(getActionUri(), params);
-    }
-
     private void verifyRespondentInSessionRespondentsList(FeedbackSessionAttributes session, String respondentEmail,
             boolean isInstructor) throws EntityDoesNotExistException {
         FeedbackSessionResponseStatus responseStatus =
                 fsLogic.getFeedbackSessionResponseStatus(session.getFeedbackSessionName(), session.getCourseId());
-        assertFalse(responseStatus.getNoResponse().contains(respondentEmail));
+        assertFalse(responseStatus.getStudentsWhoDidNotRespond().contains(respondentEmail));
         if (!isInstructor) {
             assertTrue(responseStatus.getStudentsWhoResponded().contains(respondentEmail));
         }
@@ -121,7 +116,7 @@ public class FeedbackSessionUpdateRespondentWorkerActionTest extends BaseAutomat
             boolean isInstructor) throws EntityDoesNotExistException {
         FeedbackSessionResponseStatus responseStatus =
                 fsLogic.getFeedbackSessionResponseStatus(session.getFeedbackSessionName(), session.getCourseId());
-        assertTrue(responseStatus.getNoResponse().contains(respondentEmail));
+        assertTrue(responseStatus.getStudentsWhoDidNotRespond().contains(respondentEmail));
         if (!isInstructor) {
             assertFalse(responseStatus.getStudentsWhoResponded().contains(respondentEmail));
         }

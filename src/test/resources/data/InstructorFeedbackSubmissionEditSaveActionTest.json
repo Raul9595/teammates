@@ -114,7 +114,8 @@
       "course": "idOfCourse1",
       "name": "student1 In Course1</td></div>'\"",
       "comments": "comment for student1InCourse1</td></div>'\"",
-      "team": "Team 1.1</td></div>'\""
+      "team": "Team 1.1</td></div>'\"",
+      "section": "None"
     }
   },
   "feedbackSessions": {
@@ -122,17 +123,14 @@
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
       "creatorEmail": "instructor1@course1.tmt",
-      "instructions": {
-        "value": "Instructions for first session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2026-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Instructions for first session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-01T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2026-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 10,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -145,17 +143,14 @@
       "feedbackSessionName": "Second Session",
       "courseId": "idOfCourse1",
       "creatorEmail": "instructor1@course1.tmt",
-      "instructions": {
-        "value": "Please please fill in the second feedback session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2026-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2026-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the second feedback session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2026-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2026-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": false,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -168,17 +163,14 @@
       "feedbackSessionName": "Third Session",
       "courseId": "idOfCourse1",
       "creatorEmail": "instructor1@course1.tmt",
-      "instructions": {
-        "value": "Please please fill in the last feedback session"
-      },
-      "createdTime": "2012-04-01 11:59 PM UTC",
-      "startTime": "2012-04-02 3:59 PM UTC",
-      "endTime": "2026-04-30 3:59 PM UTC",
-      "sessionVisibleFromTime": "2012-04-01 3:59 PM UTC",
-      "resultsVisibleFromTime": "2012-05-01 3:59 PM UTC",
-      "timeZone": 8.0,
+      "instructions": "Please please fill in the last feedback session",
+      "createdTime": "2012-04-01T23:59:00Z",
+      "startTime": "2012-04-02T15:59:00Z",
+      "endTime": "2026-04-30T15:59:00Z",
+      "sessionVisibleFromTime": "2012-04-01T15:59:00Z",
+      "resultsVisibleFromTime": "2012-05-01T15:59:00Z",
+      "timeZone": "Asia/Singapore",
       "gracePeriod": 20,
-      "feedbackSessionType": "STANDARD",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -191,39 +183,14 @@
       "feedbackSessionName": "Session in Grace Period",
       "courseId": "idOfCourse1",
       "creatorEmail": "instructor1@course1.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2013-03-20 11:59 PM UTC",
-      "startTime": "2013-06-01 9:59 PM UTC",
-      "endTime": "2026-04-28 9:59 PM UTC",
-      "sessionVisibleFromTime": "2013-03-20 9:59 PM UTC",
-      "resultsVisibleFromTime": "2026-04-29 9:59 PM UTC",
-      "timeZone": 2.0,
+      "instructions": "Please please fill in the following questions.",
+      "createdTime": "2013-03-20T23:59:00Z",
+      "startTime": "2013-06-01T21:59:00Z",
+      "endTime": "2026-04-28T21:59:00Z",
+      "sessionVisibleFromTime": "2013-03-20T21:59:00Z",
+      "resultsVisibleFromTime": "2026-04-29T21:59:00Z",
+      "timeZone": "Africa/Johannesburg",
       "gracePeriod": 1440,
-      "feedbackSessionType": "STANDARD",
-      "sentOpenEmail": true,
-      "sentClosingEmail": false,
-      "sentClosedEmail": false,
-      "sentPublishedEmail": false,
-      "isOpeningEmailEnabled": true,
-      "isClosingEmailEnabled": true,
-      "isPublishedEmailEnabled": true
-    },
-    "Private Session": {
-      "feedbackSessionName": "Private Session",
-      "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "instructions": {
-        "value": "Please please fill in the following questions."
-      },
-      "createdTime": "2012-03-20 11:59 PM UTC",
-      "startTime": "2012-04-01 3:59 PM UTC",
-      "sessionVisibleFromTime": "1970-11-27 12:00 AM UTC",
-      "resultsVisibleFromTime": "1970-11-27 12:00 AM UTC",
-      "timeZone": 8.0,
-      "gracePeriod": 0,
-      "feedbackSessionType": "PRIVATE",
       "sentOpenEmail": true,
       "sentClosingEmail": false,
       "sentClosedEmail": false,
@@ -237,12 +204,11 @@
     "qn1InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "What is the best selling point of your product?"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "What is the best selling point of your product?"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "SELF",
       "numberOfEntitiesToGiveFeedbackTo": 1,
@@ -260,12 +226,11 @@
     "qn2InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "Rate 3 students' products"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Rate 3 students' products"
       },
       "questionNumber": 2,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "STUDENTS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -284,12 +249,11 @@
     "qn3InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "Comments about the class"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Comments about the class"
       },
       "questionNumber": 3,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "NONE",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -304,12 +268,11 @@
     "qn4InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "This question should be hidden."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question should be hidden."
       },
       "questionNumber": 4,
-      "questionType": "TEXT",
       "giverType": "TEAMS",
       "recipientType": "TEAMS",
       "numberOfEntitiesToGiveFeedbackTo": 3,
@@ -326,12 +289,11 @@
     "qn5InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "This question should be hidden."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "This question should be hidden."
       },
       "questionNumber": 5,
-      "questionType": "TEXT",
       "giverType": "STUDENTS",
       "recipientType": "OWN_TEAM_MEMBERS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -348,12 +310,11 @@
     "qn6InSession1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to other instructors."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to other instructors."
       },
       "questionNumber": 6,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "INSTRUCTORS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -370,12 +331,11 @@
     "qn1InSession2": {
       "feedbackSessionName": "Second Session",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "Give feedback to your instructors"
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback to your instructors"
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "INSTRUCTORS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
@@ -392,37 +352,14 @@
     "qn1InGracePeriodSession": {
       "feedbackSessionName": "Session in Grace Period",
       "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "Give feedback."
+      "questionDetails": {
+        "questionType": "TEXT",
+        "questionText": "Give feedback."
       },
       "questionNumber": 1,
-      "questionType": "TEXT",
       "giverType": "INSTRUCTORS",
       "recipientType": "INSTRUCTORS",
       "numberOfEntitiesToGiveFeedbackTo": -100,
-      "showResponsesTo": [
-        "RECEIVER"
-      ],
-      "showGiverNameTo": [
-        "RECEIVER"
-      ],
-      "showRecipientNameTo": [
-        "RECEIVER"
-      ]
-    },
-    "qn1InPrivateSession": {
-      "feedbackSessionName": "Private Session",
-      "courseId": "idOfCourse1",
-      "creatorEmail": "instructor1@course1.tmt",
-      "questionMetaData": {
-        "value": "What is the best selling point of your product?"
-      },
-      "questionNumber": 1,
-      "questionType": "TEXT",
-      "giverType": "SELF",
-      "recipientType": "SELF",
-      "numberOfEntitiesToGiveFeedbackTo": 1,
       "showResponsesTo": [
         "RECEIVER"
       ],
@@ -439,44 +376,33 @@
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "instructor1@course1.tmt",
       "recipient": "instructor1@course1.tmt",
-      "responseMetaData": {
-        "value": "Instructor self feedback."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Instructor self feedback."
       }
     },
     "response1ForQ2S1C1": {
       "feedbackSessionName": "First Session",
       "courseId": "idOfCourse1",
       "feedbackQuestionId": "2",
-      "feedbackQuestionType": "TEXT",
       "giver": "instructor1@course1.tmt",
       "recipient": "student1inCourse1@gmail.tmt",
-      "responseMetaData": {
-        "value": "Instructor feedback to student 1."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Instructor feedback to student 1."
       }
     },
     "response1ForGracePeriodSession": {
       "feedbackSessionName": "Session in Grace Period",
       "courseId": "idOfCourse1",
       "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
       "giver": "instructor1@course1.tmt",
       "recipient": "instructor2@course1.tmt",
-      "responseMetaData": {
-        "value": "Response from instructor 1 to instructor 2."
-      }
-    },
-    "response1ForPrivateSession": {
-      "feedbackSessionName": "Private Session",
-      "courseId": "idOfCourse1",
-      "feedbackQuestionId": "1",
-      "feedbackQuestionType": "TEXT",
-      "giver": "instructor1@course1.tmt",
-      "recipient": "instructor1@course1.tmt",
-      "responseMetaData": {
-        "value": "Private response."
+      "responseDetails": {
+        "questionType": "TEXT",
+        "answer": "Response from instructor 1 to instructor 2."
       }
     }
   },

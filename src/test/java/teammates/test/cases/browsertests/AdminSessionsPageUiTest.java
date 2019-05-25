@@ -10,12 +10,13 @@ import org.testng.annotations.Test;
 
 import teammates.common.util.AppUrl;
 import teammates.common.util.Const;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
 import teammates.test.pageobjects.AdminSessionsPage;
 
 /**
  * SUT: {@link Const.ActionURIs#ADMIN_SESSIONS_PAGE}.
  */
-public class AdminSessionsPageUiTest extends BaseUiTestCase {
+public class AdminSessionsPageUiTest extends BaseE2ETestCase {
     private AdminSessionsPage sessionsPage;
 
     @Override
@@ -37,8 +38,8 @@ public class AdminSessionsPageUiTest extends BaseUiTestCase {
 
         ______TS("content: typical page");
 
-        AppUrl sessionsUrl = createUrl(Const.ActionURIs.ADMIN_SESSIONS_PAGE);
-        sessionsPage = loginAdminToPage(sessionsUrl, AdminSessionsPage.class);
+        AppUrl sessionsUrl = createUrl(Const.WebPageURIs.ADMIN_SESSIONS_PAGE);
+        sessionsPage = loginAdminToPageOld(sessionsUrl, AdminSessionsPage.class);
         By timeFramePanel = By.id("timeFramePanel");
         sessionsPage.waitForElementToDisappear(timeFramePanel);
         assertTrue(isSessionDataDisplayCorrect());
@@ -73,7 +74,7 @@ public class AdminSessionsPageUiTest extends BaseUiTestCase {
             }
             return true;
         }
-        sessionsPage.verifyStatus("Currently No Ongoing Sessions");
+        sessionsPage.waitForTextsForAllStatusMessagesToUserEquals("Currently No Ongoing Sessions");
         return true;
 
     }

@@ -2,33 +2,52 @@ package teammates.test.cases.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import teammates.common.datatransfer.AttributesDeletionQuery;
+import teammates.common.datatransfer.FeedbackParticipantType;
 import teammates.common.datatransfer.FeedbackResponseCommentSearchResultBundle;
+import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
+import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseCommentAttributes;
 import teammates.common.datatransfer.attributes.InstructorAttributes;
+import teammates.common.exception.EntityDoesNotExistException;
+import teammates.common.exception.InvalidParametersException;
+import teammates.common.util.retry.RetryableTask;
+import teammates.logic.core.FeedbackSessionsLogic;
 import teammates.storage.api.FeedbackResponseCommentsDb;
 
 /**
  * SUT: {@link FeedbackResponseCommentsDb},
- *      {@link teammates.storage.search.FeedbackResponseCommentDocument},
+ *      {@link teammates.storage.search.FeedbackResponseCommentSearchDocument},
  *      {@link teammates.storage.search.FeedbackResponseCommentSearchQuery}.
  */
 public class FeedbackResponseCommentSearchTest extends BaseSearchTest {
 
-    @Test
-    public void allTests() {
-        FeedbackResponseCommentsDb commentsDb = new FeedbackResponseCommentsDb();
+    private FeedbackSessionsLogic feedbackSessionsLogic;
+    private FeedbackResponseCommentsDb commentsDb;
 
+    @BeforeClass
+    public void classSetup() {
+        feedbackSessionsLogic = FeedbackSessionsLogic.inst();
+        commentsDb = new FeedbackResponseCommentsDb();
+    }
+
+    @Test
+    public void allTests() throws Exception {
         FeedbackResponseCommentAttributes frc1I1Q1S1C1 = dataBundle.feedbackResponseComments
                 .get("comment1FromT1C1ToR1Q1S1C1");
         FeedbackResponseCommentAttributes frc1I1Q2S1C1 = dataBundle.feedbackResponseComments
                 .get("comment1FromT1C1ToR1Q2S1C1");
-        FeedbackResponseCommentAttributes frc1I3Q1S1C2 = dataBundle.feedbackResponseComments
-                .get("comment1FromT1C1ToR1Q1S1C2");
+        FeedbackResponseCommentAttributes frc1I1Q3S1C1 = dataBundle.feedbackResponseComments
+                .get("comment1FromT1C1ToR1Q3S1C1");
+        FeedbackResponseCommentAttributes frc1I3Q1S2C2 = dataBundle.feedbackResponseComments
+                .get("comment1FromT1C1ToR1Q1S2C2");
 
-        ArrayList<InstructorAttributes> instructors = new ArrayList<InstructorAttributes>();
+        List<InstructorAttributes> instructors = new ArrayList<>();
 
         ______TS("success: search for comments; no results found as instructor doesn't have privileges");
 
@@ -49,27 +68,27 @@ public class FeedbackResponseCommentSearchTest extends BaseSearchTest {
         ______TS("success: search for comments; query string matches single comment");
 
         bundle = commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
-        verifySearchResults(bundle, frc1I3Q1S1C2);
+        verifySearchResults(bundle, frc1I3Q1S2C2);
 
         ______TS("success: search for comments in instructor's course; query string matches some comments");
 
         bundle = commentsDb.search("\"self feedback\"", instructors);
-        verifySearchResults(bundle, frc1I1Q1S1C1, frc1I1Q2S1C1);
+        verifySearchResults(bundle, frc1I1Q1S1C1, frc1I1Q2S1C1, frc1I1Q3S1C1);
 
         ______TS("success: search for comments in instructor's course; confirms query string is case insensitive");
 
-        bundle = commentsDb.search("\"Instructor 1 COMMENT to student 1 self feedback Question 2\"", instructors);
+        bundle = commentsDb.search("\"Instructor 1 COMMENT to student 2 self feedback Question 2\"", instructors);
         verifySearchResults(bundle, frc1I1Q2S1C1);
 
         ______TS("success: search for comments using feedbackSessionName");
 
         bundle = commentsDb.search("\"First feedback session\"", instructors);
-        verifySearchResults(bundle, frc1I1Q2S1C1, frc1I1Q1S1C1);
+        verifySearchResults(bundle, frc1I1Q2S1C1, frc1I1Q1S1C1, frc1I1Q3S1C1);
 
         ______TS("success: search for comments using Instructor's email");
 
         bundle = commentsDb.search("instructor1@course1.tmt", instructors);
-        verifySearchResults(bundle, frc1I1Q2S1C1, frc1I1Q1S1C1);
+        verifySearchResults(bundle, frc1I1Q2S1C1, frc1I1Q1S1C1, frc1I1Q3S1C1);
 
         ______TS("success: search for comments using Student name");
 
@@ -77,32 +96,120 @@ public class FeedbackResponseCommentSearchTest extends BaseSearchTest {
         verifySearchResults(bundle, frc1I1Q2S1C1);
 
         ______TS("success: search for comments; confirms deleted comments are not included in results");
-
-        commentsDb.deleteDocument(frc1I3Q1S1C2);
-        bundle = commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
-        verifySearchResults(bundle);
+        FeedbackResponseCommentAttributes commentToDelete = commentsDb.getFeedbackResponseComment(frc1I3Q1S2C2.courseId,
+                frc1I3Q1S2C2.createdAt, frc1I3Q1S2C2.commentGiver);
+        commentsDb.deleteDocumentByCommentId(commentToDelete.feedbackResponseCommentId);
+        // search engine need time to persist changes
+        getPersistenceRetryManager().runUntilNoRecognizedException(new RetryableTask("verify search result") {
+            @Override
+            public void run() {
+                FeedbackResponseCommentSearchResultBundle bundle =
+                        commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+                verifySearchResults(bundle);
+            }
+        }, AssertionError.class);
     }
 
-    /*
-     * Verifies that search results match with expected output.
-     * Compares the text for each comment as it is unique.
-     *
-     * @param actual the results from the search query.
-     * @param expected the expected results for the search query.
-     */
-    private static void verifySearchResults(FeedbackResponseCommentSearchResultBundle actual,
-                FeedbackResponseCommentAttributes... expected) {
-        assertEquals(expected.length, actual.numberOfResults);
-        assertEquals(expected.length, actual.comments.size());
-        FeedbackResponseCommentAttributes.sortFeedbackResponseCommentsByCreationTime(Arrays.asList(expected));
-        FeedbackResponseCommentAttributes[] sortedComments = Arrays.asList(expected)
-                .toArray(new FeedbackResponseCommentAttributes[2]);
-        int i = 0;
-        for (String key : actual.comments.keySet()) {
-            for (FeedbackResponseCommentAttributes comment : actual.comments.get(key)) {
-                assertEquals(sortedComments[i].commentText, comment.commentText);
-                i++;
-            }
-        }
+    @Test
+    public void testSearchComment_feedbackSessionDeleted_commentShouldNotBeSearchable()
+            throws InvalidParametersException, EntityDoesNotExistException {
+        // perform normal search
+        FeedbackResponseCommentAttributes frc1I3Q1S2C2 =
+                dataBundle.feedbackResponseComments.get("comment1FromT1C1ToR1Q1S2C2");
+        List<InstructorAttributes> instructors = new ArrayList<>();
+        instructors.add(dataBundle.instructors.get("instructor3OfCourse2"));
+        FeedbackResponseCommentSearchResultBundle bundle =
+                commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+        verifySearchResults(bundle, frc1I3Q1S2C2);
+
+        // session soft-deleted
+        feedbackSessionsLogic.moveFeedbackSessionToRecycleBin(frc1I3Q1S2C2.feedbackSessionName, frc1I3Q1S2C2.courseId);
+        assertNotNull(feedbackSessionsLogic
+                .getFeedbackSessionFromRecycleBin(frc1I3Q1S2C2.feedbackSessionName, frc1I3Q1S2C2.courseId));
+        bundle = commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+        assertEquals(0, bundle.comments.size());
+        assertEquals(0, bundle.responses.size());
+        assertEquals(0, bundle.questions.size());
+        assertEquals(0, bundle.sessions.size());
+
+        // session deleted completely
+        feedbackSessionsLogic.deleteFeedbackSessionCascade(frc1I3Q1S2C2.feedbackSessionName, frc1I3Q1S2C2.courseId);
+        assertNull(feedbackSessionsLogic
+                .getFeedbackSessionFromRecycleBin(frc1I3Q1S2C2.feedbackSessionName, frc1I3Q1S2C2.courseId));
+        bundle = commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+        assertEquals(0, bundle.comments.size());
+        assertEquals(0, bundle.responses.size());
+        assertEquals(0, bundle.questions.size());
+        assertEquals(0, bundle.sessions.size());
+    }
+
+    @Test
+    public void testSearchComment_createNewComment_commentShouldBeSearchable() throws Exception {
+
+        FeedbackResponseCommentsDb feedbackResponseCommentsDb = new FeedbackResponseCommentsDb();
+        InstructorAttributes instructor3OfCourse1 = dataBundle.instructors.get("instructor3OfCourse1");
+        FeedbackResponseAttributes response1ForQ1S1C1 = dataBundle.feedbackResponses.get("response1ForQ1S1C1");
+        // get response1ForQ1S1C1 from the datastore
+        FeedbackQuestionAttributes correspondingQuestion =
+                logic.getFeedbackQuestion(response1ForQ1S1C1.getFeedbackSessionName(),
+                        response1ForQ1S1C1.getCourseId(), Integer.parseInt(response1ForQ1S1C1.getFeedbackQuestionId()));
+        response1ForQ1S1C1 = logic.getFeedbackResponse(correspondingQuestion.getId(),
+                response1ForQ1S1C1.getGiver(), response1ForQ1S1C1.getRecipient());
+        assertNotNull(response1ForQ1S1C1);
+
+        FeedbackResponseCommentSearchResultBundle bundle =
+                feedbackResponseCommentsDb.search("commentABCDE", Arrays.asList(instructor3OfCourse1));
+
+        assertEquals(0, bundle.numberOfResults);
+
+        // create a new comment
+        feedbackResponseCommentsDb.createEntity(
+                FeedbackResponseCommentAttributes.builder()
+                        .withCourseId(response1ForQ1S1C1.getCourseId())
+                        .withFeedbackSessionName(response1ForQ1S1C1.getFeedbackSessionName())
+                        .withCommentText("commentABCDE")
+                        .withCommentGiver(response1ForQ1S1C1.getGiver())
+                        .withCommentGiverType(FeedbackParticipantType.STUDENTS)
+                        .withGiverSection(response1ForQ1S1C1.getGiverSection())
+                        .withReceiverSection(response1ForQ1S1C1.getRecipientSection())
+                        .withShowGiverNameTo(new ArrayList<>())
+                        .withShowCommentTo(new ArrayList<>())
+                        .withFeedbackQuestionId(response1ForQ1S1C1.getFeedbackQuestionId())
+                        .withFeedbackResponseId(response1ForQ1S1C1.getId())
+                        .withCommentFromFeedbackParticipant(true)
+                        .withVisibilityFollowingFeedbackQuestion(true)
+                        .build());
+
+        // the newly created comment is searchable
+        bundle = feedbackResponseCommentsDb.search("commentABCDE", Arrays.asList(instructor3OfCourse1));
+        assertEquals(1, bundle.numberOfResults);
+        assertEquals("commentABCDE",
+                bundle.comments.get(response1ForQ1S1C1.getId()).get(0).getCommentText());
+    }
+
+    @Test
+    public void testSearchComment_commentsDeletedByBatch_shouldReturnNoResult() {
+        // perform normal search
+        FeedbackResponseCommentAttributes frc1I3Q1S2C2 =
+                dataBundle.feedbackResponseComments.get("comment1FromT1C1ToR1Q1S2C2");
+        List<InstructorAttributes> instructors = new ArrayList<>();
+        instructors.add(dataBundle.instructors.get("instructor3OfCourse2"));
+        FeedbackResponseCommentSearchResultBundle bundle =
+                commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+        verifySearchResults(bundle, frc1I3Q1S2C2);
+
+        // delete comments inside the session
+        commentsDb.deleteFeedbackResponseComments(
+                AttributesDeletionQuery.builder()
+                        .withCourseId(frc1I3Q1S2C2.courseId)
+                        .withFeedbackSessionName(frc1I3Q1S2C2.feedbackSessionName)
+                        .build());
+
+        // document deleted, should have no search result
+        bundle = commentsDb.search("\"Instructor 3 comment to instr1C2 response to student1C2\"", instructors);
+        assertEquals(0, bundle.comments.size());
+        assertEquals(0, bundle.responses.size());
+        assertEquals(0, bundle.questions.size());
+        assertEquals(0, bundle.sessions.size());
     }
 }

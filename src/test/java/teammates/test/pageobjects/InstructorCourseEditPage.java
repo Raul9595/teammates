@@ -1,7 +1,7 @@
 package teammates.test.pageobjects;
 
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 import teammates.common.util.Const;
+import teammates.e2e.pageobjects.Browser;
 
 public class InstructorCourseEditPage extends AppPage {
 
@@ -61,6 +62,10 @@ public class InstructorCourseEditPage extends AppPage {
 
     @FindBy(id = "instructoremail")
     private WebElement newInstructorEmailTextBox;
+
+    @FindBy(xpath = "//form[@name='formAddInstructor']"
+            + "//input[@name='instructordisplayname']")
+    private WebElement newInstructorDisplayNameTextBox;
 
     @FindBy(id = "btnAddInstructor")
     private WebElement addInstructorButton;
@@ -155,9 +160,22 @@ public class InstructorCourseEditPage extends AppPage {
         return getTextBoxValue(newInstructorNameTextBox);
     }
 
+    public String getNewInstructorName() {
+        return getTextBoxValue(newInstructorNameTextBox);
+    }
+
     public String fillNewInstructorEmail(String value) {
         fillTextBox(newInstructorEmailTextBox, value);
         return getTextBoxValue(newInstructorEmailTextBox);
+    }
+
+    public String getNewInstructorEmail() {
+        return getTextBoxValue(newInstructorEmailTextBox);
+    }
+
+    public String fillNewInstructorDisplayName(String value) {
+        fillTextBox(newInstructorDisplayNameTextBox, value);
+        return getTextBoxValue(newInstructorDisplayNameTextBox);
     }
 
     public void clickEditInstructorLink(int instrNum) {
@@ -181,6 +199,10 @@ public class InstructorCourseEditPage extends AppPage {
         click(getCancelEditInstructorLink(instrNum));
     }
 
+    public void clickCancelAddInstructorLink() {
+        click(getCancelAddInstructorLink());
+    }
+
     public void verifyInstructorEditFormDisabled(int instrNum) {
         waitForElementToDisappear(By.id("btnSaveInstructor" + instrNum));
 
@@ -191,6 +213,25 @@ public class InstructorCourseEditPage extends AppPage {
                                 && !editInstructorEmailTextBox.isEnabled();
 
         assertTrue(isNotEditable);
+    }
+
+    public boolean verifyAddInstructorFormDisplayed() {
+        WebElement newInstructorForm = browser.driver.findElement(By.id("panelAddInstructor"));
+        return newInstructorForm.isDisplayed();
+    }
+
+    public boolean verifyAddInstructorFormDefaultValues(int newInstructorIndex) {
+        String checkbox = browser.driver.findElement(By.name(
+                Const.ParamsNames.INSTRUCTOR_IS_DISPLAYED_TO_STUDENT)).getAttribute("value");
+        String instructorName = browser.driver.findElement(By.name(
+                Const.ParamsNames.INSTRUCTOR_DISPLAY_NAME)).getAttribute("value");
+        String instructorRole = browser.driver.findElement(By.id(
+                Const.ParamsNames.INSTRUCTOR_ROLE_NAME + "forinstructor"
+                        + newInstructorIndex)).getAttribute("value");
+
+        return "true".equals(checkbox) && "Instructor".equals(instructorName)
+                && instructorRole.equals(Const.InstructorPermissionRoleNames
+                .INSTRUCTOR_PERMISSION_ROLE_COOWNER); // default values taken from courseEditAddInstructorPanel.tag
     }
 
     /**
@@ -223,6 +264,12 @@ public class InstructorCourseEditPage extends AppPage {
     public void selectRoleForInstructor(int instrNum, String role) {
         WebElement roleRadioButton = browser.driver.findElement(By.cssSelector(
                 "input[id='instructorroleforinstructor" + instrNum + "'][value='" + role + "']"));
+        click(roleRadioButton);
+    }
+
+    public void selectRoleForNewInstructor(int newInstructorIndex, String role) {
+        WebElement roleRadioButton = browser.driver.findElement(By.cssSelector(
+                "input[id='instructorroleforinstructor" + newInstructorIndex + "'][value='" + role + "']"));
         click(roleRadioButton);
     }
 
@@ -335,7 +382,7 @@ public class InstructorCourseEditPage extends AppPage {
 
     public boolean isInstructorListSortedByName() {
         boolean isSorted = true;
-        List<String> instructorNames = new ArrayList<String>();
+        List<String> instructorNames = new ArrayList<>();
         List<WebElement> elements = browser.driver.findElements(By.xpath("//*[starts-with(@id, 'instructorname')]"));
         for (int i = 1; i < elements.size(); i++) {
             instructorNames.add(browser.driver.findElement(By.id("instructorname" + i)).getAttribute("value"));
@@ -397,14 +444,10 @@ public class InstructorCourseEditPage extends AppPage {
         fillTextBox(courseNameTextBox, value);
     }
 
-    public InstructorCoursesPage clickDeleteCourseLinkAndConfirm() {
-        clickAndConfirm(deleteCourseLink);
+    public InstructorCoursesPage clickDeleteCourseLink() {
+        click(deleteCourseLink);
         waitForPageToLoad();
         return changePageType(InstructorCoursesPage.class);
-    }
-
-    public void clickDeleteCourseLinkAndCancel() {
-        clickAndCancel(deleteCourseLink);
     }
 
     /**
@@ -448,6 +491,10 @@ public class InstructorCourseEditPage extends AppPage {
 
     public WebElement getCancelEditInstructorLink(int instrNum) {
         return browser.driver.findElement(By.id("instrCancelLink" + instrNum));
+    }
+
+    public WebElement getCancelAddInstructorLink() {
+        return browser.driver.findElement(By.id("cancelAddInstructorLink"));
     }
 
     private WebElement getInviteInstructorLink(int instrNum) {

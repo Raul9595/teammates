@@ -1,7 +1,5 @@
 package teammates.test.cases;
 
-import java.util.Map;
-
 import teammates.common.datatransfer.DataBundle;
 import teammates.common.datatransfer.attributes.AccountAttributes;
 import teammates.common.datatransfer.attributes.CourseAttributes;
@@ -18,7 +16,6 @@ import teammates.common.util.JsonUtils;
 import teammates.common.util.StringHelper;
 import teammates.common.util.ThreadHelper;
 import teammates.common.util.retry.RetryManager;
-import teammates.test.driver.TestProperties;
 
 /**
  * Base class for all test cases which are allowed to access the Datastore.
@@ -30,33 +27,37 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
     private static final int OPERATION_RETRY_COUNT = 5;
     private static final int OPERATION_RETRY_DELAY_IN_MS = 1000;
 
-    protected RetryManager persistenceRetryManager = new RetryManager(TestProperties.PERSISTENCE_RETRY_PERIOD_IN_S / 2);
+    protected abstract RetryManager getPersistenceRetryManager();
 
     protected void verifyPresentInDatastore(DataBundle data) {
-        Map<String, AccountAttributes> accounts = data.accounts;
-        for (AccountAttributes account : accounts.values()) {
-            verifyPresentInDatastore(account);
-        }
+        data.accounts.values().forEach(this::verifyPresentInDatastore);
 
-        Map<String, InstructorAttributes> instructors = data.instructors;
-        for (InstructorAttributes instructor : instructors.values()) {
-            verifyPresentInDatastore(instructor);
-        }
+        data.instructors.values().forEach(this::verifyPresentInDatastore);
 
-        Map<String, CourseAttributes> courses = data.courses;
-        for (CourseAttributes course : courses.values()) {
-            verifyPresentInDatastore(course);
-        }
+        data.courses.values().stream()
+                .filter(course -> !course.isCourseDeleted())
+                .forEach(this::verifyPresentInDatastore);
 
-        Map<String, StudentAttributes> students = data.students;
-        for (StudentAttributes student : students.values()) {
-            verifyPresentInDatastore(student);
+        data.students.values().forEach(this::verifyPresentInDatastore);
+    }
+
+    protected void verifyPresentInDatastore(EntityAttributes<?> expected) {
+        int retryLimit = VERIFICATION_RETRY_COUNT;
+        EntityAttributes<?> actual = getEntity(expected);
+        while (actual == null && retryLimit > 0) {
+            retryLimit--;
+            ThreadHelper.waitFor(VERIFICATION_RETRY_DELAY_IN_MS);
+            actual = getEntity(expected);
         }
+        verifyEquals(expected, actual);
     }
 
     private EntityAttributes<?> getEntity(EntityAttributes<?> expected) {
         if (expected instanceof AccountAttributes) {
             return getAccount((AccountAttributes) expected);
+
+        } else if (expected instanceof StudentProfileAttributes) {
+            return getStudentProfile((StudentProfileAttributes) expected);
 
         } else if (expected instanceof CourseAttributes) {
             return getCourse((CourseAttributes) expected);
@@ -95,23 +96,18 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
         assertNull(actual);
     }
 
-    protected void verifyPresentInDatastore(EntityAttributes<?> expected) {
-        int retryLimit = VERIFICATION_RETRY_COUNT;
-        EntityAttributes<?> actual = getEntity(expected);
-        while (actual == null && retryLimit > 0) {
-            retryLimit--;
-            ThreadHelper.waitFor(VERIFICATION_RETRY_DELAY_IN_MS);
-            actual = getEntity(expected);
-        }
-        verifyEquals(expected, actual);
-    }
-
     private void verifyEquals(EntityAttributes<?> expected, EntityAttributes<?> actual) {
         if (expected instanceof AccountAttributes) {
             AccountAttributes expectedAccount = ((AccountAttributes) expected).getCopy();
             AccountAttributes actualAccount = (AccountAttributes) actual;
             equalizeIrrelevantData(expectedAccount, actualAccount);
             assertEquals(JsonUtils.toJson(expectedAccount), JsonUtils.toJson(actualAccount));
+
+        } else if (expected instanceof StudentProfileAttributes) {
+            StudentProfileAttributes expectedProfile = ((StudentProfileAttributes) expected).getCopy();
+            StudentProfileAttributes actualProfile = (StudentProfileAttributes) actual;
+            equalizeIrrelevantData(expectedProfile, actualProfile);
+            assertEquals(JsonUtils.toJson(expectedProfile), JsonUtils.toJson(actualProfile));
 
         } else if (expected instanceof CourseAttributes) {
             CourseAttributes expectedCourse = (CourseAttributes) expected;
@@ -129,7 +125,7 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
             FeedbackResponseCommentAttributes expectedFrc = (FeedbackResponseCommentAttributes) expected;
             FeedbackResponseCommentAttributes actualFrc = (FeedbackResponseCommentAttributes) actual;
             assertEquals(expectedFrc.courseId, actualFrc.courseId);
-            assertEquals(expectedFrc.giverEmail, actualFrc.giverEmail);
+            assertEquals(expectedFrc.commentGiver, actualFrc.commentGiver);
             assertEquals(expectedFrc.feedbackSessionName, actualFrc.feedbackSessionName);
             assertEquals(expectedFrc.commentText, actualFrc.commentText);
 
@@ -149,7 +145,7 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
             InstructorAttributes expectedInstructor = ((InstructorAttributes) expected).getCopy();
             InstructorAttributes actualInstructor = (InstructorAttributes) actual;
             equalizeIrrelevantData(expectedInstructor, actualInstructor);
-            assertTrue(expectedInstructor.isEqualToAnotherInstructor(actualInstructor));
+            assertEquals(JsonUtils.toJson(expectedInstructor), JsonUtils.toJson(actualInstructor));
 
         } else if (expected instanceof StudentAttributes) {
             StudentAttributes expectedStudent = ((StudentAttributes) expected).getCopy();
@@ -167,47 +163,29 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
     private void equalizeIrrelevantData(AccountAttributes expected, AccountAttributes actual) {
         // Ignore time field as it is stamped at the time of creation in testing
         expected.createdAt = actual.createdAt;
-
-        if (actual.studentProfile == null) {
-            expected.studentProfile = null;
-        } else {
-            if (expected.studentProfile == null) {
-                expected.studentProfile = StudentProfileAttributes.builder().build();
-                expected.studentProfile.googleId = actual.googleId;
-            }
-            expected.studentProfile.modifiedDate = actual.studentProfile.modifiedDate;
-        }
     }
 
-    protected abstract CourseAttributes getCourse(CourseAttributes course);
+    private void equalizeIrrelevantData(StudentProfileAttributes expected, StudentProfileAttributes actual) {
+        expected.modifiedDate = actual.modifiedDate;
+    }
 
     private void equalizeIrrelevantData(CourseAttributes expected, CourseAttributes actual) {
         // Ignore time field as it is stamped at the time of creation in testing
         expected.createdAt = actual.createdAt;
     }
 
-    protected abstract FeedbackQuestionAttributes getFeedbackQuestion(FeedbackQuestionAttributes fq);
-
     private void equalizeIrrelevantData(FeedbackQuestionAttributes expected, FeedbackQuestionAttributes actual) {
         expected.setId(actual.getId());
     }
-
-    protected abstract FeedbackResponseCommentAttributes getFeedbackResponseComment(FeedbackResponseCommentAttributes frc);
-
-    protected abstract FeedbackResponseAttributes getFeedbackResponse(FeedbackResponseAttributes fr);
 
     private void equalizeIrrelevantData(FeedbackResponseAttributes expected, FeedbackResponseAttributes actual) {
         expected.setId(actual.getId());
     }
 
-    protected abstract FeedbackSessionAttributes getFeedbackSession(FeedbackSessionAttributes fs);
-
     private void equalizeIrrelevantData(FeedbackSessionAttributes expected, FeedbackSessionAttributes actual) {
         expected.setRespondingInstructorList(actual.getRespondingInstructorList());
         expected.setRespondingStudentList(actual.getRespondingStudentList());
     }
-
-    protected abstract InstructorAttributes getInstructor(InstructorAttributes instructor);
 
     private void equalizeIrrelevantData(InstructorAttributes expected, InstructorAttributes actual) {
         // pretend keys match because the key is generated only before storing into database
@@ -215,8 +193,6 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
             expected.key = actual.key;
         }
     }
-
-    protected abstract StudentAttributes getStudent(StudentAttributes student);
 
     private void equalizeIrrelevantData(StudentAttributes expected, StudentAttributes actual) {
         // For these fields, we consider null and "" equivalent.
@@ -237,6 +213,22 @@ public abstract class BaseTestCaseWithDatastoreAccess extends BaseTestCaseWithOb
 
         expected.lastName = StringHelper.splitName(expected.name)[1];
     }
+
+    protected abstract StudentProfileAttributes getStudentProfile(StudentProfileAttributes studentProfileAttributes);
+
+    protected abstract CourseAttributes getCourse(CourseAttributes course);
+
+    protected abstract FeedbackQuestionAttributes getFeedbackQuestion(FeedbackQuestionAttributes fq);
+
+    protected abstract FeedbackResponseCommentAttributes getFeedbackResponseComment(FeedbackResponseCommentAttributes frc);
+
+    protected abstract FeedbackResponseAttributes getFeedbackResponse(FeedbackResponseAttributes fr);
+
+    protected abstract FeedbackSessionAttributes getFeedbackSession(FeedbackSessionAttributes fs);
+
+    protected abstract InstructorAttributes getInstructor(InstructorAttributes instructor);
+
+    protected abstract StudentAttributes getStudent(StudentAttributes student);
 
     protected void removeAndRestoreDataBundle(DataBundle testData) {
         int retryLimit = OPERATION_RETRY_COUNT;

@@ -1,20 +1,19 @@
 package teammates.common.datatransfer.questions;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import teammates.common.datatransfer.FeedbackSessionResultsBundle;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.Const;
 import teammates.common.util.HttpRequestHelper;
 import teammates.common.util.SanitizationHelper;
 import teammates.common.util.Templates;
 import teammates.common.util.Templates.FeedbackQuestion.FormTemplates;
 import teammates.common.util.Templates.FeedbackQuestion.Slots;
-import teammates.ui.template.InstructorFeedbackResultsResponseRow;
 
 public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
 
@@ -28,6 +27,14 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
     public FeedbackTextQuestionDetails(String questionText) {
         super(FeedbackQuestionType.TEXT, questionText);
         recommendedLength = 0;
+    }
+
+    public int getRecommendedLength() {
+        return recommendedLength;
+    }
+
+    public void setRecommendedLength(int recommendedLength) {
+        this.recommendedLength = recommendedLength;
     }
 
     @Override
@@ -53,13 +60,14 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
     }
 
     @Override
-    public boolean isChangesRequiresResponseDeletion(FeedbackQuestionDetails newDetails) {
+    public boolean shouldChangesRequireResponseDeletion(FeedbackQuestionDetails newDetails) {
         return false;
     }
 
     @Override
     public String getQuestionWithExistingResponseSubmissionFormHtml(boolean sessionIsOpen, int qnIdx,
-            int responseIdx, String courseId, int totalNumRecipients, FeedbackResponseDetails existingResponseDetails) {
+            int responseIdx, String courseId, int totalNumRecipients, FeedbackResponseDetails existingResponseDetails,
+            StudentAttributes student) {
         return Templates.populateTemplate(
                 FormTemplates.TEXT_SUBMISSION_FORM,
                 Slots.IS_SESSION_OPEN, Boolean.toString(sessionIsOpen),
@@ -74,7 +82,8 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
 
     @Override
     public String getQuestionWithoutExistingResponseSubmissionFormHtml(
-            boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId, int totalNumRecipients) {
+            boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId, int totalNumRecipients,
+            StudentAttributes student) {
         return Templates.populateTemplate(
                 FormTemplates.TEXT_SUBMISSION_FORM,
                 Slots.IS_SESSION_OPEN, Boolean.toString(sessionIsOpen),
@@ -98,11 +107,6 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
         return "<div id=\"textForm\">"
                 + getQuestionSpecificEditFormHtml(-1)
                 + "</div>";
-    }
-
-    @Override
-    public String getQuestionAdditionalInfoHtml(int questionNumber, String additionalInfoId) {
-        return "";
     }
 
     @Override
@@ -147,6 +151,14 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
     }
 
     @Override
+    public String getQuestionResultStatisticsJson(
+            List<FeedbackResponseAttributes> responses, FeedbackQuestionAttributes question,
+            String userEmail, FeedbackSessionResultsBundle bundle, boolean isStudent) {
+        // TODO
+        return "";
+    }
+
+    @Override
     public String getQuestionResultStatisticsCsv(
             List<FeedbackResponseAttributes> responses,
             FeedbackQuestionAttributes question,
@@ -166,8 +178,12 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
     }
 
     @Override
-    public List<String> validateQuestionDetails() {
-        return new ArrayList<>();
+    public List<String> validateQuestionDetails(String courseId) {
+        List<String> errors = new ArrayList<>();
+        if (recommendedLength < 0) {
+            errors.add(Const.FeedbackQuestion.TEXT_ERROR_INVALID_RECOMMENDED_LENGTH);
+        }
+        return errors;
     }
 
     @Override
@@ -178,13 +194,12 @@ public class FeedbackTextQuestionDetails extends FeedbackQuestionDetails {
     }
 
     @Override
-    public Comparator<InstructorFeedbackResultsResponseRow> getResponseRowsSortOrder() {
-        return null;
+    public boolean isFeedbackParticipantCommentsOnResponsesAllowed() {
+        return false;
     }
 
     @Override
     public String validateGiverRecipientVisibility(FeedbackQuestionAttributes feedbackQuestionAttributes) {
         return "";
     }
-
 }

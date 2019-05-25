@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.FeedbackParticipantType;
 import teammates.common.datatransfer.TeamDetailsBundle;
 import teammates.common.datatransfer.attributes.CourseAttributes;
@@ -50,51 +51,22 @@ public final class FeedbackQuestionsLogic {
         return instance;
     }
 
-    public void createFeedbackQuestion(FeedbackQuestionAttributes fqa)
-            throws InvalidParametersException {
-
-        String feedbackSessionName = fqa.feedbackSessionName;
-        String courseId = fqa.courseId;
-        List<FeedbackQuestionAttributes> questions = null;
-
-        try {
-            questions = getFeedbackQuestionsForSession(feedbackSessionName, courseId);
-        } catch (EntityDoesNotExistException e) {
-            Assumption.fail("Session disappeared.");
-        }
-        if (fqa.questionNumber < 0) {
-            fqa.questionNumber = questions.size() + 1;
-        }
-        adjustQuestionNumbers(questions.size() + 1, fqa.questionNumber, questions);
-        createFeedbackQuestionNoIntegrityCheck(fqa, fqa.questionNumber);
-    }
-
     /**
-     * Used for creating initial questions only.
-     * Does not check if feedback session exists.
-     * Does not check if question number supplied is valid(does not check for clashes, or make adjustments)
+     * Creates a new feedback question.
+     *
+     * @return the created question
+     * @throws InvalidParametersException if the question is invalid
      */
-    public FeedbackQuestionAttributes createFeedbackQuestionNoIntegrityCheck(
-            FeedbackQuestionAttributes fqa, int questionNumber) throws InvalidParametersException {
-        fqa.questionNumber = questionNumber;
-        fqa.removeIrrelevantVisibilityOptions();
-        return fqDb.createFeedbackQuestionWithoutExistenceCheck(fqa);
-    }
-
-    public FeedbackQuestionAttributes copyFeedbackQuestion(
-            String feedbackQuestionId, String feedbackSessionName, String courseId, String instructorEmail)
+    public FeedbackQuestionAttributes createFeedbackQuestion(FeedbackQuestionAttributes fqa)
             throws InvalidParametersException {
 
-        FeedbackQuestionAttributes question = getFeedbackQuestion(feedbackQuestionId);
-        question.feedbackSessionName = feedbackSessionName;
-        question.courseId = courseId;
-        question.creatorEmail = instructorEmail;
-        question.questionNumber = -1;
-        question.setId(null);
+        List<FeedbackQuestionAttributes> questionsBefore =
+                getFeedbackQuestionsForSession(fqa.getFeedbackSessionName(), fqa.getCourseId());
 
-        createFeedbackQuestion(question);
+        FeedbackQuestionAttributes createdQuestion = fqDb.putEntity(fqa);
 
-        return question;
+        adjustQuestionNumbers(questionsBefore.size() + 1, createdQuestion.getQuestionNumber(), questionsBefore);
+        return createdQuestion;
     }
 
     /**
@@ -122,16 +94,13 @@ public final class FeedbackQuestionsLogic {
      * Gets a {@link List} of every FeedbackQuestion in the given session.
      */
     public List<FeedbackQuestionAttributes> getFeedbackQuestionsForSession(
-            String feedbackSessionName, String courseId) throws EntityDoesNotExistException {
+            String feedbackSessionName, String courseId) {
 
-        if (fsLogic.getFeedbackSession(feedbackSessionName, courseId) == null) {
-            throw new EntityDoesNotExistException(
-                    "Trying to get questions for a feedback session that does not exist.");
-        }
         List<FeedbackQuestionAttributes> questions =
                 fqDb.getFeedbackQuestionsForSession(feedbackSessionName, courseId);
         questions.sort(null);
 
+        // check whether the question numbers are consistent
         if (questions.size() > 1 && !areQuestionNumbersConsistent(questions)) {
             log.severe(courseId + ": " + feedbackSessionName + " has invalid question numbers");
         }
@@ -160,8 +129,7 @@ public final class FeedbackQuestionsLogic {
     /**
      *  Gets a {@link List} of every FeedbackQuestion that the instructor can copy.
      */
-    public List<FeedbackQuestionAttributes> getCopiableFeedbackQuestionsForInstructor(String googleId)
-            throws EntityDoesNotExistException {
+    public List<FeedbackQuestionAttributes> getCopiableFeedbackQuestionsForInstructor(String googleId) {
 
         List<FeedbackQuestionAttributes> copiableQuestions = new ArrayList<>();
         List<CourseAttributes> courses = coursesLogic.getCoursesForInstructor(googleId);
@@ -213,6 +181,25 @@ public final class FeedbackQuestionsLogic {
     }
 
     /**
+     * Filters through the given list of questions and returns a {@code List} of
+     * questions that an instructor can view/submit.
+     */
+    public List<FeedbackQuestionAttributes> getFeedbackQuestionsForInstructor(
+            List<FeedbackQuestionAttributes> allQuestions, boolean isCreator) {
+
+        List<FeedbackQuestionAttributes> questions = new ArrayList<>();
+
+        for (FeedbackQuestionAttributes question : allQuestions) {
+            if (question.giverType == FeedbackParticipantType.INSTRUCTORS
+                    || question.giverType == FeedbackParticipantType.SELF && isCreator) {
+                questions.add(question);
+            }
+        }
+
+        return questions;
+    }
+
+    /**
      * Gets a {@code List} of all questions for the list of questions that an
      * instructor who is the creator of the course can view/submit.
      */
@@ -245,25 +232,6 @@ public final class FeedbackQuestionsLogic {
                 courseId, FeedbackParticipantType.SELF));
 
         questions.sort(null);
-        return questions;
-    }
-
-    /**
-     * Filters through the given list of questions and returns a {@code List} of
-     * questions that an instructor can view/submit.
-     */
-    public List<FeedbackQuestionAttributes> getFeedbackQuestionsForInstructor(
-            List<FeedbackQuestionAttributes> allQuestions, boolean isCreator) {
-
-        List<FeedbackQuestionAttributes> questions = new ArrayList<>();
-
-        for (FeedbackQuestionAttributes question : allQuestions) {
-            if (question.giverType == FeedbackParticipantType.INSTRUCTORS
-                    || question.giverType == FeedbackParticipantType.SELF && isCreator) {
-                questions.add(question);
-            }
-        }
-
         return questions;
     }
 
@@ -318,7 +286,7 @@ public final class FeedbackQuestionsLogic {
     public Map<String, String> getRecipientsForQuestion(
             FeedbackQuestionAttributes question, String giver,
             InstructorAttributes instructorGiver, StudentAttributes studentGiver)
-                    throws EntityDoesNotExistException {
+            throws EntityDoesNotExistException {
 
         Map<String, String> recipients = new HashMap<>();
 
@@ -389,6 +357,147 @@ public final class FeedbackQuestionsLogic {
         return recipients;
     }
 
+    /**
+     * Gets the recipients of a feedback question for students.
+     *
+     * <p>Filter out some recipients based on the setting of the course.
+     */
+    public Map<String, String> getRecipientsOfQuestionForStudent(
+            FeedbackQuestionAttributes question, String giverEmail, String giverTeam) {
+        Map<String, String> recipients = getRecipientsOfQuestion(question, giverEmail, giverTeam);
+
+        // remove hidden instructors
+        if (question.getRecipientType() == FeedbackParticipantType.INSTRUCTORS) {
+            List<InstructorAttributes> instructors = instructorsLogic.getInstructorsForCourse(question.getCourseId());
+            Set<String> hiddenInstructorEmails = new HashSet<>();
+            for (InstructorAttributes instructorAttributes : instructors) {
+                if (!instructorAttributes.isDisplayedToStudents()) {
+                    hiddenInstructorEmails.add(instructorAttributes.email);
+                }
+            }
+
+            for (String instructorEmail : hiddenInstructorEmails) {
+                recipients.remove(instructorEmail);
+            }
+        }
+
+        return recipients;
+    }
+
+    /**
+     * Gets the recipients of a feedback question for instructors.
+     *
+     * <p>Filter out some recipients based on the privileges of the instructor.
+     */
+    public Map<String, String> getRecipientsOfQuestionForInstructor(FeedbackQuestionAttributes question, String giverEmail) {
+        Map<String, String> recipients = getRecipientsOfQuestion(question, giverEmail, Const.USER_TEAM_FOR_INSTRUCTOR);
+        InstructorAttributes instructor = instructorsLogic.getInstructorForEmail(question.getCourseId(), giverEmail);
+
+        // TODO the below will cause slow queries when recipients are large, find a better way
+
+        // instructor can only see students in allowed sections for him/her
+        if (question.getRecipientType().equals(FeedbackParticipantType.STUDENTS)) {
+            recipients.entrySet().removeIf(studentEntry -> {
+                StudentAttributes student = studentsLogic.getStudentForEmail(question.getCourseId(), studentEntry.getKey());
+                return !instructor.isAllowedForPrivilege(student.section, question.getFeedbackSessionName(),
+                        Const.ParamsNames.INSTRUCTOR_PERMISSION_SUBMIT_SESSION_IN_SECTIONS);
+            });
+        }
+        // instructor can only see teams in allowed sections for him/her
+        if (question.getRecipientType().equals(FeedbackParticipantType.TEAMS)) {
+            recipients.entrySet().removeIf(teamEntry -> {
+                String teamSection = studentsLogic.getSectionForTeam(question.getCourseId(), teamEntry.getKey());
+                return !instructor.isAllowedForPrivilege(teamSection, question.getFeedbackSessionName(),
+                        Const.ParamsNames.INSTRUCTOR_PERMISSION_SUBMIT_SESSION_IN_SECTIONS);
+            });
+        }
+
+        return recipients;
+    }
+
+    /**
+     * Gets the recipients of a feedback question.
+     *
+     * @param question the feedback question
+     * @param giverEmail the email of the giver of the feedback question; In the case where the giver is a team,
+     *                   this parameter can be anything as long as {@code giverTeam} is the name of the team.
+     * @param giverTeam the team name of the giver of the feedback question
+     * @return a map which keys are the identifiers of the recipients and values are the names of the recipients
+     */
+    private Map<String, String> getRecipientsOfQuestion(
+            FeedbackQuestionAttributes question, String giverEmail, String giverTeam) {
+        Map<String, String> recipients = new HashMap<>();
+
+        FeedbackParticipantType recipientType = question.recipientType;
+
+        switch (recipientType) {
+        case SELF:
+            if (question.giverType == FeedbackParticipantType.TEAMS) {
+                recipients.put(giverTeam, giverTeam);
+            } else {
+                recipients.put(giverEmail, Const.USER_NAME_FOR_SELF);
+            }
+            break;
+        case STUDENTS:
+            List<StudentAttributes> studentsInCourse = studentsLogic.getStudentsForCourse(question.courseId);
+            for (StudentAttributes student : studentsInCourse) {
+                // Ensure student does not evaluate himself
+                if (!giverEmail.equals(student.email)) {
+                    recipients.put(student.email, student.name);
+                }
+            }
+            break;
+        case INSTRUCTORS:
+            List<InstructorAttributes> instructorsInCourse = instructorsLogic.getInstructorsForCourse(question.courseId);
+            for (InstructorAttributes instr : instructorsInCourse) {
+                // Ensure instructor does not evaluate himself
+                if (!giverEmail.equals(instr.email)) {
+                    recipients.put(instr.email, instr.name);
+                }
+            }
+            break;
+        case TEAMS:
+            List<TeamDetailsBundle> teams = null;
+            try {
+                teams = coursesLogic.getTeamsForCourse(question.courseId);
+            } catch (EntityDoesNotExistException e) {
+                Assumption.fail(e.getMessage());
+            }
+            for (TeamDetailsBundle team : teams) {
+                // Ensure student('s team) does not evaluate own team.
+                if (!giverTeam.equals(team.name)) {
+                    // recipientEmail doubles as team name in this case.
+                    recipients.put(team.name, team.name);
+                }
+            }
+            break;
+        case OWN_TEAM:
+            recipients.put(giverTeam, giverTeam);
+            break;
+        case OWN_TEAM_MEMBERS:
+            List<StudentAttributes> students = studentsLogic.getStudentsForTeam(giverTeam, question.courseId);
+            for (StudentAttributes student : students) {
+                if (!student.email.equals(giverEmail)) {
+                    recipients.put(student.email, student.name);
+                }
+            }
+            break;
+        case OWN_TEAM_MEMBERS_INCLUDING_SELF:
+            List<StudentAttributes> teamMembers = studentsLogic.getStudentsForTeam(giverTeam, question.courseId);
+            for (StudentAttributes student : teamMembers) {
+                // accepts self feedback too
+                recipients.put(student.email, student.name);
+            }
+            break;
+        case NONE:
+            recipients.put(Const.GENERAL_QUESTION, Const.GENERAL_QUESTION);
+            break;
+        default:
+            break;
+        }
+        return recipients;
+    }
+
     private String getGiverTeam(String defaultTeam, InstructorAttributes instructorGiver,
             StudentAttributes studentGiver) {
         String giverTeam = defaultTeam;
@@ -400,11 +509,6 @@ public final class FeedbackQuestionsLogic {
             giverTeam = Const.USER_TEAM_FOR_INSTRUCTOR;
         }
         return giverTeam;
-    }
-
-    public boolean areThereResponsesForQuestion(String feedbackQuestionId) {
-        return !frLogic.getFeedbackResponsesForQuestionWithinRange(feedbackQuestionId, 1)
-                       .isEmpty();
     }
 
     public boolean isQuestionFullyAnsweredByUser(FeedbackQuestionAttributes question, String email)
@@ -423,33 +527,50 @@ public final class FeedbackQuestionsLogic {
     }
 
     /**
-     * Updates the feedback question number, shifts other questions up/down
-     * depending on the change.
+     * Updates a feedback question by {@code FeedbackQuestionAttributes.UpdateOptions}.
+     *
+     * <p>Cascade adjust the question number of questions in the same session.
+     *
+     * <p>Cascade adjust the existing response of the question.
+     *
+     * @return updated feedback question
+     * @throws InvalidParametersException if attributes to update are not valid
+     * @throws EntityDoesNotExistException if the feedback question cannot be found
      */
-    public void updateFeedbackQuestionNumber(FeedbackQuestionAttributes newQuestion)
+    public FeedbackQuestionAttributes updateFeedbackQuestionCascade(FeedbackQuestionAttributes.UpdateOptions updateOptions)
             throws InvalidParametersException, EntityDoesNotExistException {
-
-        FeedbackQuestionAttributes oldQuestion =
-                fqDb.getFeedbackQuestion(newQuestion.getId());
-
+        FeedbackQuestionAttributes oldQuestion = fqDb.getFeedbackQuestion(updateOptions.getFeedbackQuestionId());
         if (oldQuestion == null) {
             throw new EntityDoesNotExistException("Trying to update a feedback question that does not exist.");
         }
 
+        FeedbackQuestionAttributes newQuestion = oldQuestion.getCopy();
+        newQuestion.update(updateOptions);
         int oldQuestionNumber = oldQuestion.questionNumber;
         int newQuestionNumber = newQuestion.questionNumber;
-        String feedbackSessionName = oldQuestion.feedbackSessionName;
-        String courseId = oldQuestion.courseId;
-        List<FeedbackQuestionAttributes> questions = null;
 
-        try {
-            questions = getFeedbackQuestionsForSession(feedbackSessionName, courseId);
-        } catch (EntityDoesNotExistException e) {
-            Assumption.fail("Session disappeared.");
+        List<FeedbackQuestionAttributes> previousQuestionsInSession = new ArrayList<>();
+        if (oldQuestionNumber != newQuestionNumber) {
+            // get questions in session before update
+            String feedbackSessionName = oldQuestion.feedbackSessionName;
+            String courseId = oldQuestion.courseId;
+            previousQuestionsInSession = getFeedbackQuestionsForSession(feedbackSessionName, courseId);
         }
 
-        adjustQuestionNumbers(oldQuestionNumber, newQuestionNumber, questions);
-        updateFeedbackQuestion(newQuestion);
+        // update question
+        FeedbackQuestionAttributes updatedQuestion = fqDb.updateFeedbackQuestion(updateOptions);
+
+        if (oldQuestionNumber != newQuestionNumber) {
+            // shift other feedback questions (generate an empty "slot")
+            adjustQuestionNumbers(oldQuestionNumber, newQuestionNumber, previousQuestionsInSession);
+        }
+
+        // adjust responses
+        if (oldQuestion.areResponseDeletionsRequiredForChanges(updatedQuestion)) {
+            frLogic.deleteFeedbackResponsesForQuestionCascade(oldQuestion.getId());
+        }
+
+        return updatedQuestion;
     }
 
     /**
@@ -459,175 +580,64 @@ public final class FeedbackQuestionsLogic {
      */
     private void adjustQuestionNumbers(int oldQuestionNumber,
             int newQuestionNumber, List<FeedbackQuestionAttributes> questions) {
-        if (oldQuestionNumber > newQuestionNumber && oldQuestionNumber >= 1) {
-            for (int i = oldQuestionNumber - 1; i >= newQuestionNumber; i--) {
-                FeedbackQuestionAttributes question = questions.get(i - 1);
-                question.questionNumber += 1;
-                updateFeedbackQuestionWithoutResponseRateUpdate(question);
-            }
-        } else if (oldQuestionNumber < newQuestionNumber && oldQuestionNumber < questions.size()) {
-            for (int i = oldQuestionNumber + 1; i <= newQuestionNumber; i++) {
-                FeedbackQuestionAttributes question = questions.get(i - 1);
-                question.questionNumber -= 1;
-                updateFeedbackQuestionWithoutResponseRateUpdate(question);
-            }
-        }
-    }
-
-    /**
-     * Updates the feedback question. For each attribute in
-     * {@code newAttributes}, the existing value is preserved if the attribute
-     * is null (due to 'keep existing' policy). Existing responses for the
-     * question are automatically deleted if giverType/recipientType are
-     * changed, or if the response visibility is increased. However, the
-     * response rate of the feedback session is not updated.<br>
-     * Precondition: <br>
-     * {@code newAttributes} is not {@code null}
-     */
-    private void updateFeedbackQuestionWithoutResponseRateUpdate(FeedbackQuestionAttributes newAttributes) {
         try {
-            updateFeedbackQuestion(newAttributes, false);
-        } catch (InvalidParametersException e) {
-            Assumption.fail("Invalid question.");
-        } catch (EntityDoesNotExistException e) {
-            Assumption.fail("Question disappeared.");
+            if (oldQuestionNumber > newQuestionNumber && oldQuestionNumber >= 1) {
+                for (int i = oldQuestionNumber - 1; i >= newQuestionNumber; i--) {
+                    FeedbackQuestionAttributes question = questions.get(i - 1);
+                    fqDb.updateFeedbackQuestion(
+                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())
+                                    .withQuestionNumber(question.questionNumber + 1)
+                                    .build());
+                }
+            } else if (oldQuestionNumber < newQuestionNumber && oldQuestionNumber < questions.size()) {
+                for (int i = oldQuestionNumber + 1; i <= newQuestionNumber; i++) {
+                    FeedbackQuestionAttributes question = questions.get(i - 1);
+                    fqDb.updateFeedbackQuestion(
+                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())
+                                    .withQuestionNumber(question.questionNumber - 1)
+                                    .build());
+                }
+            }
+        } catch (InvalidParametersException | EntityDoesNotExistException e) {
+            Assumption.fail("Adjusting question number should not cause: " + e.getMessage());
         }
     }
 
     /**
-     * Updates the feedback question. For each attribute in
-     * {@code newAttributes}, the existing value is preserved if the attribute
-     * is null (due to 'keep existing' policy). Existing responses for the
-     * question are automatically deleted and the response rate of the feedback
-     * session is updated if giverType/recipientType are changed, or if the
-     * response visibility is increased.<br>
-     * Precondition: <br>
-     * {@code newAttributes} is not {@code null}
-     */
-    public void updateFeedbackQuestion(FeedbackQuestionAttributes newAttributes)
-            throws InvalidParametersException, EntityDoesNotExistException {
-
-        updateFeedbackQuestion(newAttributes, true);
-    }
-
-    private void updateFeedbackQuestion(FeedbackQuestionAttributes newAttributes, boolean hasResponseRateUpdate)
-            throws InvalidParametersException, EntityDoesNotExistException {
-        FeedbackQuestionAttributes oldQuestion = null;
-        if (newAttributes.getId() == null) {
-            oldQuestion = fqDb.getFeedbackQuestion(newAttributes.feedbackSessionName,
-                    newAttributes.courseId, newAttributes.questionNumber);
-        } else {
-            oldQuestion = fqDb.getFeedbackQuestion(newAttributes.getId());
-        }
-
-        if (oldQuestion == null) {
-            throw new EntityDoesNotExistException(
-                    "Trying to update a feedback question that does not exist.");
-        }
-
-        if (oldQuestion.areResponseDeletionsRequiredForChanges(newAttributes)) {
-            frLogic.deleteFeedbackResponsesForQuestionAndCascade(oldQuestion.getId(), hasResponseRateUpdate);
-        }
-
-        oldQuestion.updateValues(newAttributes);
-        newAttributes.removeIrrelevantVisibilityOptions();
-        fqDb.updateFeedbackQuestion(newAttributes);
-    }
-
-    public void deleteFeedbackQuestionsForSession(String feedbackSessionName, String courseId)
-            throws EntityDoesNotExistException {
-        List<FeedbackQuestionAttributes> questions =
-                getFeedbackQuestionsForSession(feedbackSessionName, courseId);
-
-        for (FeedbackQuestionAttributes question : questions) {
-            deleteFeedbackQuestionCascadeWithoutResponseRateUpdate(question.getId());
-        }
-
-    }
-
-    /**
-     * Deletes a question by its auto-generated ID. <br>
-     * Cascade the deletion of all existing responses for the question and then
-     * shifts larger question numbers down by one to preserve number order. The
-     * response rate of the feedback session is not updated.
-     *
-     * <p>Silently fails if question does not exist.
-     */
-    private void deleteFeedbackQuestionCascadeWithoutResponseRateUpdate(String feedbackQuestionId) {
-        FeedbackQuestionAttributes questionToDeleteById =
-                        getFeedbackQuestion(feedbackQuestionId);
-
-        if (questionToDeleteById == null) {
-            log.warning("Trying to delete question that does not exist: " + feedbackQuestionId);
-        } else {
-            deleteFeedbackQuestionCascade(questionToDeleteById.feedbackSessionName,
-                                            questionToDeleteById.courseId,
-                                            questionToDeleteById.questionNumber, false);
-        }
-    }
-
-    /**
-     * Deletes a question by its auto-generated ID. <br>
-     * Cascade the deletion of all existing responses for the question and then
-     * shifts larger question numbers down by one to preserve number order. The
-     * response rate of the feedback session is updated accordingly.
+     * Deletes a feedback question cascade its responses and comments.
      *
      * <p>Silently fail if question does not exist.
+     *
+     * <p>The respondent lists will also be updated due the deletion of question.
      */
     public void deleteFeedbackQuestionCascade(String feedbackQuestionId) {
-        FeedbackQuestionAttributes questionToDeleteById =
-                        getFeedbackQuestion(feedbackQuestionId);
-
-        if (questionToDeleteById == null) {
-            log.warning("Trying to delete question that does not exist: " + feedbackQuestionId);
-        } else {
-            deleteFeedbackQuestionCascade(questionToDeleteById.feedbackSessionName,
-                                            questionToDeleteById.courseId,
-                                            questionToDeleteById.questionNumber, true);
-        }
-    }
-
-    /**
-     * Deletes all feedback questions in all sessions of the course specified. This is
-     * a non-cascade delete. The responses to the questions and the comments of these responses
-     * should be handled.
-     *
-     */
-    public void deleteFeedbackQuestionsForCourse(String courseId) {
-        fqDb.deleteFeedbackQuestionsForCourse(courseId);
-    }
-
-    /**
-     * Deletes a question.<br> Question is identified by it's question number, and
-     * the feedback session name and course ID of the question.<br>
-     * Can be used when the question ID is unknown. <br>
-     * Cascade the deletion of all existing responses for the question and then
-     * shifts larger question numbers down by one to preserve number order.
-     */
-    private void deleteFeedbackQuestionCascade(
-            String feedbackSessionName, String courseId, int questionNumber, boolean hasResponseRateUpdate) {
-
         FeedbackQuestionAttributes questionToDelete =
-                getFeedbackQuestion(feedbackSessionName, courseId, questionNumber);
+                        getFeedbackQuestion(feedbackQuestionId);
 
         if (questionToDelete == null) {
             return; // Silently fail if question does not exist.
         }
-        // Cascade delete responses for question.
-        frLogic.deleteFeedbackResponsesForQuestionAndCascade(questionToDelete.getId(), hasResponseRateUpdate);
 
-        List<FeedbackQuestionAttributes> questionsToShiftQnNumber = null;
-        try {
-            questionsToShiftQnNumber = getFeedbackQuestionsForSession(feedbackSessionName, courseId);
-        } catch (EntityDoesNotExistException e) {
-            Assumption.fail("Session disappeared.");
-        }
+        // cascade delete responses for question.
+        frLogic.deleteFeedbackResponsesForQuestionCascade(questionToDelete.getId());
 
-        fqDb.deleteEntity(questionToDelete);
+        List<FeedbackQuestionAttributes> questionsToShiftQnNumber =
+                getFeedbackQuestionsForSession(questionToDelete.getFeedbackSessionName(), questionToDelete.getCourseId());
 
+        // delete question
+        fqDb.deleteFeedbackQuestion(feedbackQuestionId);
+
+        // adjust question numbers
         if (questionToDelete.questionNumber < questionsToShiftQnNumber.size()) {
             shiftQuestionNumbersDown(questionToDelete.questionNumber, questionsToShiftQnNumber);
         }
+    }
+
+    /**
+     * Deletes questions using {@link AttributesDeletionQuery}.
+     */
+    public void deleteFeedbackQuestions(AttributesDeletionQuery query) {
+        fqDb.deleteFeedbackQuestions(query);
     }
 
     // Shifts all question numbers after questionNumberToShiftFrom down by one.
@@ -635,30 +645,16 @@ public final class FeedbackQuestionsLogic {
             List<FeedbackQuestionAttributes> questionsToShift) {
         for (FeedbackQuestionAttributes question : questionsToShift) {
             if (question.questionNumber > questionNumberToShiftFrom) {
-                question.questionNumber -= 1;
-                updateFeedbackQuestionWithoutResponseRateUpdate(question);
+                try {
+                    fqDb.updateFeedbackQuestion(
+                            FeedbackQuestionAttributes.updateOptionsBuilder(question.getId())
+                            .withQuestionNumber(question.questionNumber - 1)
+                            .build());
+                } catch (InvalidParametersException | EntityDoesNotExistException e) {
+                    Assumption.fail("Shifting question number should not cause: " + e.getMessage());
+                }
             }
         }
-    }
-
-    /*
-     * Removes questions with no recipients.
-     */
-    public List<FeedbackQuestionAttributes> getQuestionsWithRecipients(
-            List<FeedbackQuestionAttributes> questions, String giver)
-            throws EntityDoesNotExistException {
-        List<FeedbackQuestionAttributes> questionsWithRecipients = new ArrayList<>();
-        for (FeedbackQuestionAttributes question : questions) {
-            int numRecipients = question.numberOfEntitiesToGiveFeedbackTo;
-            if (numRecipients == Const.MAX_POSSIBLE_RECIPIENTS) {
-                numRecipients = this.getRecipientsForQuestion(question, giver)
-                        .size();
-            }
-            if (numRecipients > 0) {
-                questionsWithRecipients.add(question);
-            }
-        }
-        return questionsWithRecipients;
     }
 
 }

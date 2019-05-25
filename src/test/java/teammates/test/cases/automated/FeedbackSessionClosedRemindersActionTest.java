@@ -1,5 +1,7 @@
 package teammates.test.cases.automated;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -19,14 +21,15 @@ import teammates.ui.automated.FeedbackSessionClosedRemindersAction;
 /**
  * SUT: {@link FeedbackSessionClosedRemindersAction}.
  */
-public class FeedbackSessionClosedRemindersActionTest extends BaseAutomatedActionTest {
+public class FeedbackSessionClosedRemindersActionTest
+        extends BaseAutomatedActionTest<FeedbackSessionClosedRemindersAction> {
 
     private static final CoursesLogic coursesLogic = CoursesLogic.inst();
     private static final FeedbackSessionsLogic fsLogic = FeedbackSessionsLogic.inst();
 
     @Override
     protected String getActionUri() {
-        return Const.ActionURIs.AUTOMATED_FEEDBACK_CLOSED_REMINDERS;
+        return Const.CronJobURIs.AUTOMATED_FEEDBACK_CLOSED_REMINDERS;
     }
 
     @Test
@@ -45,29 +48,51 @@ public class FeedbackSessionClosedRemindersActionTest extends BaseAutomatedActio
         // Session is closed recently
 
         FeedbackSessionAttributes session1 = dataBundle.feedbackSessions.get("session1InCourse1");
-        session1.setTimeZone(0);
-        session1.setStartTime(TimeHelper.getDateOffsetToCurrentTime(-2));
-        session1.setEndTime(TimeHelperExtension.getHoursOffsetToCurrentTime(-1));
-        fsLogic.updateFeedbackSession(session1);
+        session1.setTimeZone(ZoneId.of("UTC"));
+        session1.setStartTime(TimeHelper.getInstantDaysOffsetFromNow(-2));
+        session1.setEndTime(TimeHelperExtension.getInstantHoursOffsetFromNow(-1));
+        fsLogic.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(session1.getFeedbackSessionName(), session1.getCourseId())
+                        .withTimeZone(session1.getTimeZone())
+                        .withStartTime(session1.getStartTime())
+                        .withEndTime(session1.getEndTime())
+                        .build());
+        session1.setSentOpenEmail(false); // fsLogic will set the flag to false
         verifyPresentInDatastore(session1);
 
         // Ditto, but with disabled closed reminder
 
         FeedbackSessionAttributes session2 = dataBundle.feedbackSessions.get("session2InCourse1");
-        session2.setTimeZone(0);
-        session2.setStartTime(TimeHelper.getDateOffsetToCurrentTime(-2));
-        session2.setEndTime(TimeHelperExtension.getHoursOffsetToCurrentTime(-1));
+        session2.setTimeZone(ZoneId.of("UTC"));
+        session2.setStartTime(TimeHelper.getInstantDaysOffsetFromNow(-2));
+        session2.setEndTime(TimeHelperExtension.getInstantHoursOffsetFromNow(-1));
         session2.setClosingEmailEnabled(false);
-        fsLogic.updateFeedbackSession(session2);
+        fsLogic.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(session2.getFeedbackSessionName(), session2.getCourseId())
+                        .withTimeZone(session2.getTimeZone())
+                        .withStartTime(session2.getStartTime())
+                        .withEndTime(session2.getEndTime())
+                        .withIsClosingEmailEnabled(session2.isClosingEmailEnabled())
+                        .build());
+        session2.setSentOpenEmail(false); // fsLogic will set the flag to false
         verifyPresentInDatastore(session2);
 
         // Still in grace period; closed reminder should not be sent
 
         FeedbackSessionAttributes session3 = dataBundle.feedbackSessions.get("gracePeriodSession");
-        session3.setTimeZone(0);
-        session3.setStartTime(TimeHelper.getDateOffsetToCurrentTime(-2));
-        session3.setEndTime(TimeHelper.getDateOffsetToCurrentTime(0));
-        fsLogic.updateFeedbackSession(session3);
+        session3.setTimeZone(ZoneId.of("UTC"));
+        session3.setStartTime(TimeHelper.getInstantDaysOffsetFromNow(-2));
+        session3.setEndTime(Instant.now());
+        fsLogic.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(session3.getFeedbackSessionName(), session3.getCourseId())
+                        .withTimeZone(session3.getTimeZone())
+                        .withStartTime(session3.getStartTime())
+                        .withEndTime(session3.getEndTime())
+                        .build());
+        session3.setSentOpenEmail(false); // fsLogic will set the flag to false
         verifyPresentInDatastore(session3);
 
         action = getAction();
@@ -81,25 +106,24 @@ public class FeedbackSessionClosedRemindersActionTest extends BaseAutomatedActio
         for (TaskWrapper task : tasksAdded) {
             Map<String, String[]> paramMap = task.getParamMap();
             assertEquals(String.format(EmailType.FEEDBACK_CLOSED.getSubject(), courseName,
-                                       session1.getSessionName()),
+                                       session1.getFeedbackSessionName()),
                          paramMap.get(ParamsNames.EMAIL_SUBJECT)[0]);
         }
 
         ______TS("1 session closed recently with closed emails sent");
 
         session1.setSentClosedEmail(true);
-        fsLogic.updateFeedbackSession(session1);
+        fsLogic.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(session1.getFeedbackSessionName(), session1.getCourseId())
+                        .withSentClosedEmail(session1.isSentClosedEmail())
+                        .build());
 
         action = getAction();
         action.execute();
 
         verifyNoTasksAdded(action);
 
-    }
-
-    @Override
-    protected FeedbackSessionClosedRemindersAction getAction(String... params) {
-        return (FeedbackSessionClosedRemindersAction) gaeSimulation.getAutomatedActionObject(getActionUri());
     }
 
 }

@@ -9,14 +9,19 @@ import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.AppUrl;
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
 import teammates.test.driver.BackDoor;
 import teammates.test.driver.FileHelper;
+import teammates.test.pageobjects.InstructorCourseDetailsPage;
+import teammates.test.pageobjects.InstructorCourseStudentDetailsEditPage;
+import teammates.test.pageobjects.InstructorCourseStudentDetailsViewPage;
 import teammates.test.pageobjects.InstructorSearchPage;
+import teammates.test.pageobjects.InstructorStudentRecordsPage;
 
 /**
- * SUT: {@link Const.ActionURIs#INSTRUCTOR_SEARCH_PAGE}.
+ * SUT: {@link Const.WebPageURIs#INSTRUCTOR_SEARCH_PAGE}.
  */
-public class InstructorSearchPageUiTest extends BaseUiTestCase {
+public class InstructorSearchPageUiTest extends BaseE2ETestCase {
     private InstructorSearchPage searchPage;
 
     @Override
@@ -38,6 +43,11 @@ public class InstructorSearchPageUiTest extends BaseUiTestCase {
 
         testContent();
         testSearch();
+
+        testViewAction();
+        testEditAction();
+        testAllRecordsAction();
+        testDeleteAction();
 
         testSanitization();
 
@@ -109,7 +119,86 @@ public class InstructorSearchPageUiTest extends BaseUiTestCase {
         searchPage.verifyHtmlMainContent("/instructorSearchPageSearchStudentsForStudent2.html");
     }
 
+    private void testViewAction() {
+
+        ______TS("action: view");
+
+        searchPage.clearSearchBox();
+        String searchContent = "\"student2 2 In Course1\"";
+        searchPage.inputSearchContent(searchContent);
+        searchPage.clickSearchButton();
+
+        String studentName = testData.students.get("student2.2InCourse1").name;
+        String studentEmail = testData.students.get("student2.2InCourse1").email;
+        String courseId = testData.courses.get("typicalCourse1").getId();
+
+        searchPage.clickViewStudent(courseId, studentName);
+        InstructorCourseStudentDetailsViewPage studentDetailsViewPage = searchPage
+                .changePageType(InstructorCourseStudentDetailsViewPage.class);
+        studentDetailsViewPage.verifyIsCorrectPage(studentEmail);
+        studentDetailsViewPage.closeCurrentWindowAndSwitchToParentWindow();
+    }
+
+    private void testEditAction() {
+
+        ______TS("action: edit");
+
+        searchPage.clearSearchBox();
+        String searchContent = "\"student2 2 In Course1\"";
+        searchPage.inputSearchContent(searchContent);
+        searchPage.clickSearchButton();
+
+        String studentName = testData.students.get("student2.2InCourse1").name;
+        String studentEmail = testData.students.get("student2.2InCourse1").email;
+        String courseId = testData.courses.get("typicalCourse1").getId();
+
+        searchPage.clickEditStudent(courseId, studentName);
+        InstructorCourseStudentDetailsEditPage studentDetailsEditPage = searchPage
+                .changePageType(InstructorCourseStudentDetailsEditPage.class);
+        studentDetailsEditPage.verifyIsCorrectPage(studentEmail);
+        studentDetailsEditPage.closeCurrentWindowAndSwitchToParentWindow();
+    }
+
+    private void testAllRecordsAction() {
+
+        ______TS("action: all records");
+
+        searchPage.clearSearchBox();
+        String searchContent = "\"student2 2 In Course1\"";
+        searchPage.inputSearchContent(searchContent);
+        searchPage.clickSearchButton();
+
+        String studentName = testData.students.get("student2.2InCourse1").name;
+        String courseId = testData.courses.get("typicalCourse1").getId();
+
+        searchPage.clickAllRecordsLink(courseId, studentName);
+        InstructorStudentRecordsPage studentRecordsPage = searchPage
+                .changePageType(InstructorStudentRecordsPage.class);
+        studentRecordsPage.verifyIsCorrectPage(studentName);
+        studentRecordsPage.closeCurrentWindowAndSwitchToParentWindow();
+    }
+
+    private void testDeleteAction() {
+
+        ______TS("action: delete");
+
+        String studentName = testData.students.get("student2.2InCourse1").name;
+        String studentEmail = testData.students.get("student2.2InCourse1").email;
+        String courseId = testData.courses.get("typicalCourse1").getId();
+
+        searchPage.clickDeleteAndCancel(courseId, studentName);
+        assertNotNull(BackDoor.getStudent(courseId, studentEmail));
+
+        searchPage.clickDeleteAndConfirm(courseId, studentName);
+        InstructorCourseDetailsPage courseDetailsPage = searchPage.changePageType(InstructorCourseDetailsPage.class);
+        courseDetailsPage.waitForTextsForAllStatusMessagesToUserEquals(Const.StatusMessages.STUDENT_DELETED);
+        assertNull(BackDoor.getStudent(courseId, studentEmail));
+    }
+
     private void testSanitization() throws IOException {
+
+        ______TS("action: test sanitization");
+
         String instructorId = testData.accounts.get("instructor1OfTestingSanitizationCourse").googleId;
         searchPage = getInstructorSearchPage(instructorId);
 
@@ -121,10 +210,10 @@ public class InstructorSearchPageUiTest extends BaseUiTestCase {
     }
 
     private InstructorSearchPage getInstructorSearchPage(String instructorId) {
-        AppUrl searchPageUrl = createUrl(Const.ActionURIs.INSTRUCTOR_SEARCH_PAGE)
+        AppUrl searchPageUrl = createUrl(Const.WebPageURIs.INSTRUCTOR_SEARCH_PAGE)
                 .withUserId(instructorId);
 
-        return loginAdminToPage(searchPageUrl, InstructorSearchPage.class);
+        return loginAdminToPageOld(searchPageUrl, InstructorSearchPage.class);
     }
 
 }

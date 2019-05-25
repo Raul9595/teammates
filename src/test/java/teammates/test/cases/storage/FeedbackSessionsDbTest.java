@@ -4,28 +4,30 @@ import static teammates.common.util.FieldValidator.SESSION_END_TIME_FIELD_NAME;
 import static teammates.common.util.FieldValidator.SESSION_START_TIME_FIELD_NAME;
 import static teammates.common.util.FieldValidator.TIME_FRAME_ERROR_MESSAGE;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.google.appengine.api.datastore.Text;
+import com.google.common.collect.Sets;
 
+import teammates.common.datatransfer.AttributesDeletionQuery;
 import teammates.common.datatransfer.DataBundle;
-import teammates.common.datatransfer.FeedbackSessionType;
 import teammates.common.datatransfer.attributes.FeedbackSessionAttributes;
 import teammates.common.exception.EntityAlreadyExistsException;
 import teammates.common.exception.EntityDoesNotExistException;
 import teammates.common.exception.InvalidParametersException;
 import teammates.common.util.Const;
-import teammates.common.util.TimeHelper;
+import teammates.common.util.JsonUtils;
 import teammates.storage.api.FeedbackSessionsDb;
 import teammates.test.cases.BaseComponentTestCase;
 import teammates.test.driver.AssertHelper;
+import teammates.test.driver.TimeHelperExtension;
 
 /**
  * SUT: {@link FeedbackSessionsDb}.
@@ -35,20 +37,106 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
     private static final FeedbackSessionsDb fsDb = new FeedbackSessionsDb();
     private DataBundle dataBundle = getTypicalDataBundle();
 
-    @BeforeClass
-    public void classSetup() throws Exception {
-        addSessionsToDb();
-    }
-
-    private void addSessionsToDb() throws Exception {
+    @BeforeMethod
+    public void addSessionsToDb() throws Exception {
         Set<String> keys = dataBundle.feedbackSessions.keySet();
         for (String i : keys) {
-            try {
-                fsDb.createEntity(dataBundle.feedbackSessions.get(i));
-            } catch (EntityAlreadyExistsException e) {
-                fsDb.updateFeedbackSession(dataBundle.feedbackSessions.get(i));
-            }
+            fsDb.createEntity(dataBundle.feedbackSessions.get(i));
         }
+    }
+
+    @AfterMethod
+    public void deleteSessionsFromDb() {
+        Set<String> keys = dataBundle.feedbackSessions.keySet();
+        for (String i : keys) {
+            FeedbackSessionAttributes sessionToDelete = dataBundle.feedbackSessions.get(i);
+            fsDb.deleteFeedbackSession(sessionToDelete.getFeedbackSessionName(), sessionToDelete.getCourseId());
+        }
+        FeedbackSessionAttributes sessionToDelete = getNewFeedbackSession();
+        fsDb.deleteFeedbackSession(sessionToDelete.getFeedbackSessionName(), sessionToDelete.getCourseId());
+    }
+
+    @Test
+    public void testGetAllOngoingSessions_typicalCase_shouldQuerySuccessfullyWithoutDuplication() {
+        Instant rangeStart = Instant.parse("2000-12-03T10:15:30.00Z");
+        Instant rangeEnd = Instant.parse("2050-04-30T21:59:00Z");
+        List<FeedbackSessionAttributes> actualAttributesList = fsDb.getAllOngoingSessions(rangeStart, rangeEnd);
+        assertEquals("should not return more than 13 sessions as there are only 13 distinct sessions in the range",
+                13, actualAttributesList.size());
+    }
+
+    @Test
+    public void testDeleteFeedbackSession() throws Exception {
+        FeedbackSessionAttributes fsa = getNewFeedbackSession();
+        fsDb.createEntity(fsa);
+        fsa = fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName());
+        assertNotNull(fsa);
+
+        ______TS("non-existent course ID");
+
+        fsDb.deleteFeedbackSession(fsa.getFeedbackSessionName(), "not_exist");
+
+        assertNotNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+
+        ______TS("non-existent session name");
+
+        fsDb.deleteFeedbackSession("not_exist", fsa.getCourseId());
+
+        assertNotNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+
+        ______TS("non-existent course ID and session name");
+
+        fsDb.deleteFeedbackSession("not_exist", "not_exist");
+
+        assertNotNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+
+        ______TS("standard success case");
+
+        fsDb.deleteFeedbackSession(fsa.getFeedbackSessionName(), fsa.getCourseId());
+
+        assertNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+    }
+
+    @Test
+    public void testDeleteFeedbackSessions_byCourseId() throws Exception {
+        FeedbackSessionAttributes fsa = getNewFeedbackSession();
+        fsDb.createEntity(fsa);
+        fsa = fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName());
+        assertNotNull(fsa);
+
+        FeedbackSessionAttributes anotherFas = getNewFeedbackSession();
+        anotherFas.setCourseId("courseId");
+        fsDb.createEntity(anotherFas);
+        anotherFas = fsDb.getFeedbackSession(anotherFas.getCourseId(), anotherFas.getFeedbackSessionName());
+        assertNotNull(anotherFas);
+
+        ______TS("non-existent course ID");
+
+        fsDb.deleteFeedbackSessions(
+                AttributesDeletionQuery.builder()
+                        .withCourseId("non_exist")
+                        .build());
+
+        assertNotNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+        assertNotNull(fsDb.getFeedbackSession(anotherFas.getCourseId(), anotherFas.getFeedbackSessionName()));
+
+        ______TS("standard success case");
+
+        fsDb.deleteFeedbackSessions(
+                AttributesDeletionQuery.builder()
+                        .withCourseId(fsa.getCourseId())
+                        .build());
+
+        assertNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+        assertNotNull(fsDb.getFeedbackSession(anotherFas.getCourseId(), anotherFas.getFeedbackSessionName()));
+
+        fsDb.deleteFeedbackSessions(
+                AttributesDeletionQuery.builder()
+                        .withCourseId(anotherFas.getCourseId())
+                        .build());
+
+        assertNull(fsDb.getFeedbackSession(fsa.getCourseId(), fsa.getFeedbackSessionName()));
+        assertNull(fsDb.getFeedbackSession(anotherFas.getCourseId(), anotherFas.getFeedbackSessionName()));
     }
 
     @Test
@@ -62,39 +150,36 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
         verifyPresentInDatastore(fsa);
 
         ______TS("duplicate");
-        try {
-            fsDb.createEntity(fsa);
-            signalFailureToDetectException();
-        } catch (EntityAlreadyExistsException e) {
-            AssertHelper.assertContains(String.format(FeedbackSessionsDb.ERROR_CREATE_ENTITY_ALREADY_EXISTS,
-                                                      fsa.getEntityTypeAsString())
-                                            + fsa.getIdentificationString(),
-                                        e.getMessage());
-        }
+        EntityAlreadyExistsException eaee = assertThrows(EntityAlreadyExistsException.class, () -> fsDb.createEntity(fsa));
+        assertEquals(
+                String.format(FeedbackSessionsDb.ERROR_CREATE_ENTITY_ALREADY_EXISTS, fsa.toString()), eaee.getMessage());
 
-        fsDb.deleteEntity(fsa);
+        fsDb.deleteFeedbackSession(fsa.getFeedbackSessionName(), fsa.getCourseId());
         verifyAbsentInDatastore(fsa);
 
         ______TS("null params");
 
-        try {
-            fsDb.createEntity(null);
-            signalFailureToDetectException();
-        } catch (AssertionError e) {
-            AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, e.getLocalizedMessage());
-        }
+        AssertionError ae = assertThrows(AssertionError.class, () -> fsDb.createEntity(null));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
 
         ______TS("invalid params");
 
-        try {
-            fsa.setStartTime(new Date());
-            fsDb.createEntity(fsa);
-            signalFailureToDetectException();
-        } catch (InvalidParametersException e) {
-            // start time is now after end time
-            AssertHelper.assertContains("start time", e.getLocalizedMessage());
-        }
+        fsa.setStartTime(Instant.now());
+        InvalidParametersException ipe = assertThrows(InvalidParametersException.class, () -> fsDb.createEntity(fsa));
+        AssertHelper.assertContains("start time", ipe.getLocalizedMessage());
 
+    }
+
+    @Test
+    public void testGetSoftDeletedFeedbackSession_typicalCase_shouldGetDeletedSession() {
+        assertNotNull(fsDb.getSoftDeletedFeedbackSession("idOfTypicalCourse4",
+                "First feedback session"));
+    }
+
+    @Test
+    public void testGetSoftDeletedFeedbackSession_sessionIsNotDeleted_shouldReturnNull() {
+        assertNotNull(fsDb.getFeedbackSession("idOfTypicalCourse2", "Instructor feedback session"));
+        assertNull(fsDb.getSoftDeletedFeedbackSession("idOfTypicalCourse2", "Instructor feedback session"));
     }
 
     @Test
@@ -102,10 +187,7 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
 
         testGetFeedbackSessions();
         testGetFeedbackSessionsForCourse();
-        testGetFeedbackSessionsPossiblyNeedingOpenEmail();
-        testGetFeedbackSessionsPossiblyNeedingClosingEmail();
-        testGetFeedbackSessionsPossiblyNeedingClosedEmail();
-        testGetFeedbackSessionsPossiblyNeedingPublishedEmail();
+        testGetSoftDeletedFeedbackSessionsForCourse();
     }
 
     private void testGetFeedbackSessions() {
@@ -115,7 +197,7 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
         FeedbackSessionAttributes expected =
                 dataBundle.feedbackSessions.get("session1InCourse2");
         FeedbackSessionAttributes actual =
-                fsDb.getFeedbackSession("idOfTypicalCourse2", "Private feedback session");
+                fsDb.getFeedbackSession("idOfTypicalCourse2", "Instructor feedback session");
 
         assertEquals(expected.toString(), actual.toString());
 
@@ -123,23 +205,22 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
 
         assertNull(fsDb.getFeedbackSession("non-course", "Non-existant feedback session"));
 
+        ______TS("soft-deleted session");
+
+        assertNotNull(fsDb.getSoftDeletedFeedbackSession("idOfTypicalCourse4", "First feedback session"));
+        assertNull(fsDb.getFeedbackSession("idOfTypicalCourse4", "First feedback session"));
+
         ______TS("null fsName");
 
-        try {
-            fsDb.getFeedbackSession("idOfTypicalCourse1", null);
-            signalFailureToDetectException();
-        } catch (AssertionError e) {
-            AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, e.getLocalizedMessage());
-        }
+        AssertionError ae = assertThrows(AssertionError.class,
+                () -> fsDb.getFeedbackSession("idOfTypicalCourse1", null));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
 
         ______TS("null courseId");
 
-        try {
-            fsDb.getFeedbackSession(null, "First feedback session");
-            signalFailureToDetectException();
-        } catch (AssertionError e) {
-            AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, e.getLocalizedMessage());
-        }
+        ae = assertThrows(AssertionError.class,
+                () -> fsDb.getFeedbackSession(null, "First feedback session"));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
 
     }
 
@@ -150,12 +231,12 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
         List<FeedbackSessionAttributes> sessions = fsDb.getFeedbackSessionsForCourse("idOfTypicalCourse1");
 
         String expected =
-                dataBundle.feedbackSessions.get("session1InCourse1").toString() + Const.EOL
-                + dataBundle.feedbackSessions.get("session2InCourse1").toString() + Const.EOL
-                + dataBundle.feedbackSessions.get("empty.session").toString() + Const.EOL
-                + dataBundle.feedbackSessions.get("awaiting.session").toString() + Const.EOL
-                + dataBundle.feedbackSessions.get("closedSession").toString() + Const.EOL
-                + dataBundle.feedbackSessions.get("gracePeriodSession").toString() + Const.EOL;
+                dataBundle.feedbackSessions.get("session1InCourse1").toString() + System.lineSeparator()
+                + dataBundle.feedbackSessions.get("session2InCourse1").toString() + System.lineSeparator()
+                + dataBundle.feedbackSessions.get("empty.session").toString() + System.lineSeparator()
+                + dataBundle.feedbackSessions.get("awaiting.session").toString() + System.lineSeparator()
+                + dataBundle.feedbackSessions.get("closedSession").toString() + System.lineSeparator()
+                + dataBundle.feedbackSessions.get("gracePeriodSession").toString() + System.lineSeparator();
 
         for (FeedbackSessionAttributes session : sessions) {
             AssertHelper.assertContains(session.toString(), expected);
@@ -164,12 +245,8 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
 
         ______TS("null params");
 
-        try {
-            fsDb.getFeedbackSessionsForCourse(null);
-            signalFailureToDetectException();
-        } catch (AssertionError e) {
-            AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, e.getLocalizedMessage());
-        }
+        AssertionError ae = assertThrows(AssertionError.class, () -> fsDb.getFeedbackSessionsForCourse(null));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
 
         ______TS("non-existant course");
 
@@ -180,7 +257,64 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
         assertTrue(fsDb.getFeedbackSessionsForCourse("idOfCourseNoEvals").isEmpty());
     }
 
-    private void testGetFeedbackSessionsPossiblyNeedingOpenEmail() {
+    private void testGetSoftDeletedFeedbackSessionsForCourse() {
+
+        ______TS("standard success case");
+
+        List<FeedbackSessionAttributes> softDeletedSessions = fsDb
+                .getSoftDeletedFeedbackSessionsForCourse("idOfTypicalCourse3");
+
+        String expected =
+                dataBundle.feedbackSessions.get("session2InCourse3").toString() + System.lineSeparator();
+
+        for (FeedbackSessionAttributes session : softDeletedSessions) {
+            AssertHelper.assertContains(session.toString(), expected);
+        }
+        assertEquals(1, softDeletedSessions.size());
+
+        ______TS("null params");
+
+        AssertionError ae = assertThrows(AssertionError.class, () -> fsDb.getSoftDeletedFeedbackSessionsForCourse(null));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
+
+        ______TS("non-existant course");
+
+        assertTrue(fsDb.getSoftDeletedFeedbackSessionsForCourse("non-existant course").isEmpty());
+
+        ______TS("no sessions in course");
+
+        assertTrue(fsDb.getSoftDeletedFeedbackSessionsForCourse("idOfCourseNoEvals").isEmpty());
+    }
+
+    @Test
+    public void testSoftDeleteFeedbackSession() throws Exception {
+        FeedbackSessionAttributes fs = getNewFeedbackSession();
+        fsDb.createEntity(fs);
+
+        ______TS("Success: soft delete an existing feedback session");
+        fsDb.softDeleteFeedbackSession(fs.getFeedbackSessionName(), fs.getCourseId());
+
+        assertNull(fsDb.getFeedbackSession(fs.getCourseId(), fs.getFeedbackSessionName()));
+        assertNotNull(fsDb.getSoftDeletedFeedbackSession(fs.getCourseId(),
+                fs.getFeedbackSessionName()));
+
+        ______TS("Success: restore soft deleted course");
+        fsDb.restoreDeletedFeedbackSession(fs.getFeedbackSessionName(), fs.getCourseId());
+
+        assertNull(fsDb.getSoftDeletedFeedbackSession(fs.getCourseId(),
+                fs.getFeedbackSessionName()));
+        assertNotNull(fsDb.getFeedbackSession(fs.getCourseId(), fs.getFeedbackSessionName()));
+        assertFalse(fsDb.getFeedbackSession(fs.getCourseId(), fs.getFeedbackSessionName()).isSessionDeleted());
+
+        ______TS("null parameter");
+
+        AssertionError ae = assertThrows(AssertionError.class, () -> fsDb.softDeleteFeedbackSession(null, null));
+        assertEquals(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getMessage());
+
+    }
+
+    @Test
+    public void testGetFeedbackSessionsPossiblyNeedingOpenEmail() throws Exception {
 
         ______TS("standard success case");
 
@@ -189,127 +323,392 @@ public class FeedbackSessionsDbTest extends BaseComponentTestCase {
         assertEquals(1, fsaList.size());
         for (FeedbackSessionAttributes fsa : fsaList) {
             assertFalse(fsa.isSentOpenEmail());
+            assertFalse(fsa.isSessionDeleted());
         }
 
+        ______TS("soft-deleted session should not appear");
+
+        // soft delete a feedback session now
+        FeedbackSessionAttributes feedbackSession = fsaList.get(0);
+        fsDb.softDeleteFeedbackSession(feedbackSession.getFeedbackSessionName(), feedbackSession.getCourseId());
+
+        fsaList = fsDb.getFeedbackSessionsPossiblyNeedingOpenEmail();
+        assertEquals(0, fsaList.size());
     }
 
-    private void testGetFeedbackSessionsPossiblyNeedingClosingEmail() {
+    @Test
+    public void testGetFeedbackSessionsPossiblyNeedingClosingEmail() throws Exception {
 
         ______TS("standard success case");
 
         List<FeedbackSessionAttributes> fsaList = fsDb.getFeedbackSessionsPossiblyNeedingClosingEmail();
 
-        assertEquals(7, fsaList.size());
+        assertEquals(9, fsaList.size());
         for (FeedbackSessionAttributes fsa : fsaList) {
             assertFalse(fsa.isSentClosingEmail());
             assertTrue(fsa.isClosingEmailEnabled());
+            assertFalse(fsa.isSessionDeleted());
         }
 
+        ______TS("soft-deleted session should not appear");
+
+        // soft delete a feedback session now
+        FeedbackSessionAttributes feedbackSession = fsaList.get(0);
+        fsDb.softDeleteFeedbackSession(feedbackSession.getFeedbackSessionName(), feedbackSession.getCourseId());
+
+        fsaList = fsDb.getFeedbackSessionsPossiblyNeedingClosingEmail();
+        assertEquals(8, fsaList.size());
     }
 
-    private void testGetFeedbackSessionsPossiblyNeedingClosedEmail() {
+    @Test
+    public void testGetFeedbackSessionsPossiblyNeedingClosedEmail() throws Exception {
 
         ______TS("standard success case");
 
         List<FeedbackSessionAttributes> fsaList = fsDb.getFeedbackSessionsPossiblyNeedingClosedEmail();
 
-        assertEquals(7, fsaList.size());
+        assertEquals(9, fsaList.size());
         for (FeedbackSessionAttributes fsa : fsaList) {
             assertFalse(fsa.isSentClosedEmail());
             assertTrue(fsa.isClosingEmailEnabled());
+            assertFalse(fsa.isSessionDeleted());
         }
 
+        ______TS("soft-deleted session should not appear");
+
+        // soft delete a feedback session now
+        FeedbackSessionAttributes feedbackSession = fsaList.get(0);
+        fsDb.softDeleteFeedbackSession(feedbackSession.getFeedbackSessionName(), feedbackSession.getCourseId());
+
+        fsaList = fsDb.getFeedbackSessionsPossiblyNeedingClosedEmail();
+        assertEquals(8, fsaList.size());
     }
 
-    private void testGetFeedbackSessionsPossiblyNeedingPublishedEmail() {
+    @Test
+    public void testGetFeedbackSessionsPossiblyNeedingPublishedEmail() throws Exception {
 
         ______TS("standard success case");
 
         List<FeedbackSessionAttributes> fsaList = fsDb.getFeedbackSessionsPossiblyNeedingPublishedEmail();
 
-        assertEquals(9, fsaList.size());
+        assertEquals(11, fsaList.size());
         for (FeedbackSessionAttributes fsa : fsaList) {
             assertFalse(fsa.isSentPublishedEmail());
             assertTrue(fsa.isPublishedEmailEnabled());
+            assertFalse(fsa.isSessionDeleted());
         }
 
+        ______TS("soft-deleted session should not appear");
+
+        // soft delete a feedback session now
+        FeedbackSessionAttributes feedbackSession = fsaList.get(0);
+        fsDb.softDeleteFeedbackSession(feedbackSession.getFeedbackSessionName(), feedbackSession.getCourseId());
+
+        fsaList = fsDb.getFeedbackSessionsPossiblyNeedingPublishedEmail();
+        assertEquals(10, fsaList.size());
+    }
+
+    @Test
+    public void testUpdateFeedbackSession_noChangeToSession_shouldNotIssueSaveRequest() throws Exception {
+        FeedbackSessionAttributes fs = getNewFeedbackSession();
+        fs.setRespondingStudentList(Sets.newHashSet("student@email.com"));
+        fs.setRespondingInstructorList(Sets.newHashSet("instructor@email.com"));
+        fs = fsDb.putEntity(fs);
+
+        FeedbackSessionAttributes updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes.updateOptionsBuilder(fs.getFeedbackSessionName(), fs.getCourseId())
+                        .build());
+
+        assertEquals(JsonUtils.toJson(fs), JsonUtils.toJson(updatedFs));
+
+        // please verify the log message manually to ensure that saving request is not issued
+
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes.updateOptionsBuilder(fs.getFeedbackSessionName(), fs.getCourseId())
+                        .withInstructions(fs.getInstructions())
+                        .withStartTime(fs.getStartTime())
+                        .withEndTime(fs.getEndTime())
+                        .withSessionVisibleFromTime(fs.getSessionVisibleFromTime())
+                        .withResultsVisibleFromTime(fs.getResultsVisibleFromTime())
+                        .withTimeZone(fs.getTimeZone())
+                        .withGracePeriod(Duration.ofMinutes(fs.getGracePeriodMinutes()))
+                        .withSentOpenEmail(fs.isSentOpenEmail())
+                        .withSentClosingEmail(fs.isSentClosingEmail())
+                        .withSentClosedEmail(fs.isSentClosedEmail())
+                        .withSentPublishedEmail(fs.isSentPublishedEmail())
+                        .withIsClosingEmailEnabled(fs.isClosingEmailEnabled())
+                        .withIsPublishedEmailEnabled(fs.isPublishedEmailEnabled())
+                        .withAddingInstructorRespondent("instructor@email.com")
+                        .withAddingStudentRespondent("student@email.com")
+                        .build());
+
+        assertEquals(JsonUtils.toJson(fs), JsonUtils.toJson(updatedFs));
+
+        // please verify the log message manually to ensure that saving request is not issued
     }
 
     @Test
     public void testUpdateFeedbackSession() throws Exception {
 
         ______TS("null params");
-        try {
-            fsDb.updateFeedbackSession(null);
-            signalFailureToDetectException();
-        } catch (AssertionError e) {
-            AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, e.getLocalizedMessage());
-        }
-        ______TS("invalid feedback sesion attributes");
+        AssertionError ae = assertThrows(AssertionError.class, () -> fsDb.updateFeedbackSession(null));
+        AssertHelper.assertContains(Const.StatusCodes.DBLEVEL_NULL_INPUT, ae.getLocalizedMessage());
+
+        ______TS("invalid feedback session attributes");
         FeedbackSessionAttributes invalidFs = getNewFeedbackSession();
-        fsDb.deleteEntity(invalidFs);
+        fsDb.deleteFeedbackSession(invalidFs.getFeedbackSessionName(), invalidFs.getCourseId());
         fsDb.createEntity(invalidFs);
-        Calendar calendar = TimeHelper.dateToCalendar(invalidFs.getEndTime());
-        calendar.add(Calendar.MONTH, 1);
-        invalidFs.setStartTime(calendar.getTime());
-        invalidFs.setResultsVisibleFromTime(calendar.getTime());
-        try {
-            fsDb.updateFeedbackSession(invalidFs);
-            signalFailureToDetectException();
-        } catch (InvalidParametersException e) {
-            assertEquals(
-                    String.format(TIME_FRAME_ERROR_MESSAGE, SESSION_END_TIME_FIELD_NAME,
-                                  SESSION_START_TIME_FIELD_NAME),
-                    e.getLocalizedMessage());
-        }
+        Instant afterEndTime = invalidFs.getEndTime().plus(Duration.ofDays(30));
+        invalidFs.setStartTime(afterEndTime);
+        invalidFs.setResultsVisibleFromTime(afterEndTime);
+        InvalidParametersException ipe = assertThrows(InvalidParametersException.class,
+                () -> fsDb.updateFeedbackSession(
+                        FeedbackSessionAttributes
+                                .updateOptionsBuilder(invalidFs.getFeedbackSessionName(), invalidFs.getCourseId())
+                                .withStartTime(invalidFs.getStartTime())
+                                .withResultsVisibleFromTime(invalidFs.getResultsVisibleFromTime())
+                                .build()));
+        assertEquals(
+                String.format(TIME_FRAME_ERROR_MESSAGE, SESSION_END_TIME_FIELD_NAME, SESSION_START_TIME_FIELD_NAME),
+                ipe.getLocalizedMessage());
+
         ______TS("feedback session does not exist");
         FeedbackSessionAttributes nonexistantFs = getNewFeedbackSession();
         nonexistantFs.setFeedbackSessionName("non existant fs");
         nonexistantFs.setCourseId("non.existant.course");
-        try {
-            fsDb.updateFeedbackSession(nonexistantFs);
-            signalFailureToDetectException();
-        } catch (EntityDoesNotExistException e) {
-            AssertHelper.assertContains(FeedbackSessionsDb.ERROR_UPDATE_NON_EXISTENT, e.getLocalizedMessage());
-        }
+        EntityDoesNotExistException ednee = assertThrows(EntityDoesNotExistException.class,
+                () -> fsDb.updateFeedbackSession(
+                        FeedbackSessionAttributes
+                                .updateOptionsBuilder(nonexistantFs.getFeedbackSessionName(), nonexistantFs.getCourseId())
+                                .withInstructions("test")
+                                .build()));
+        AssertHelper.assertContains(FeedbackSessionsDb.ERROR_UPDATE_NON_EXISTENT, ednee.getLocalizedMessage());
+
         ______TS("standard success case");
         FeedbackSessionAttributes modifiedSession = getNewFeedbackSession();
-        fsDb.deleteEntity(modifiedSession);
+        fsDb.deleteFeedbackSession(modifiedSession.getFeedbackSessionName(), modifiedSession.getCourseId());
         fsDb.createEntity(modifiedSession);
         verifyPresentInDatastore(modifiedSession);
-        modifiedSession.setInstructions(new Text("new instructions"));
-        modifiedSession.setGracePeriod(0);
+        modifiedSession.setInstructions("new instructions");
+        modifiedSession.setGracePeriodMinutes(0);
         modifiedSession.setSentOpenEmail(false);
-        fsDb.updateFeedbackSession(modifiedSession);
-        verifyPresentInDatastore(modifiedSession);
+        FeedbackSessionAttributes updatedSession = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(modifiedSession.getFeedbackSessionName(), modifiedSession.getCourseId())
+                        .withInstructions(modifiedSession.getInstructions())
+                        .withGracePeriod(Duration.ofMinutes(modifiedSession.getGracePeriodMinutes()))
+                        .withSentOpenEmail(modifiedSession.isSentOpenEmail())
+                        .build());
+        FeedbackSessionAttributes actualFs =
+                fsDb.getFeedbackSession(modifiedSession.getCourseId(), modifiedSession.getFeedbackSessionName());
+        assertEquals(JsonUtils.toJson(modifiedSession), JsonUtils.toJson(actualFs));
+        assertEquals(JsonUtils.toJson(modifiedSession), JsonUtils.toJson(updatedSession));
+    }
+
+    // the test is to ensure that optimized saving policy is implemented without false negative
+    @Test
+    public void testUpdateFeedbackSession_singleFieldUpdate_shouldUpdateCorrectly() throws Exception {
+        FeedbackSessionAttributes typicalFs = getNewFeedbackSession();
+        typicalFs = fsDb.putEntity(typicalFs);
+
+        assertNotEquals("new instructions", typicalFs.getInstructions());
+        FeedbackSessionAttributes updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withInstructions("new instructions")
+                        .build());
+        FeedbackSessionAttributes actualFs =
+                fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals("new instructions", updatedFs.getInstructions());
+        assertEquals("new instructions", actualFs.getInstructions());
+
+        Instant startTime = typicalFs.getStartTime().minusSeconds(1);
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withStartTime(startTime)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(startTime, updatedFs.getStartTime());
+        assertEquals(startTime, actualFs.getStartTime());
+
+        Instant endTime = typicalFs.getEndTime().minusSeconds(1);
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withEndTime(endTime)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(endTime, updatedFs.getEndTime());
+        assertEquals(endTime, actualFs.getEndTime());
+
+        Instant sessionVisibleTime = typicalFs.getSessionVisibleFromTime().minusSeconds(1);
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withSessionVisibleFromTime(sessionVisibleTime)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(sessionVisibleTime, updatedFs.getSessionVisibleFromTime());
+        assertEquals(sessionVisibleTime, actualFs.getSessionVisibleFromTime());
+
+        Instant resultVisibleTime = typicalFs.getResultsVisibleFromTime().minusSeconds(1);
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withResultsVisibleFromTime(resultVisibleTime)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(resultVisibleTime, updatedFs.getResultsVisibleFromTime());
+        assertEquals(resultVisibleTime, actualFs.getResultsVisibleFromTime());
+
+        assertNotEquals("Asia/Singapore", actualFs.getTimeZone().getId());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withTimeZone(ZoneId.of("Asia/Singapore"))
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals("Asia/Singapore", updatedFs.getTimeZone().getId());
+        assertEquals("Asia/Singapore", actualFs.getTimeZone().getId());
+
+        assertNotEquals(10, actualFs.getGracePeriodMinutes());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withGracePeriod(Duration.ofMinutes(10))
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(10, updatedFs.getGracePeriodMinutes());
+        assertEquals(10, actualFs.getGracePeriodMinutes());
+
+        assertFalse(actualFs.isSentOpenEmail());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withSentOpenEmail(true)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.isSentOpenEmail());
+        assertTrue(actualFs.isSentOpenEmail());
+
+        assertFalse(actualFs.isSentClosingEmail());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withSentClosingEmail(true)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.isSentClosingEmail());
+        assertTrue(actualFs.isSentClosingEmail());
+
+        assertFalse(actualFs.isSentClosedEmail());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withSentClosedEmail(true)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.isSentClosedEmail());
+        assertTrue(actualFs.isSentClosedEmail());
+
+        assertFalse(actualFs.isSentPublishedEmail());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withSentPublishedEmail(true)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.isSentPublishedEmail());
+        assertTrue(actualFs.isSentPublishedEmail());
+
+        assertTrue(actualFs.isClosingEmailEnabled());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withIsClosingEmailEnabled(false)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertFalse(updatedFs.isClosingEmailEnabled());
+        assertFalse(actualFs.isClosingEmailEnabled());
+
+        assertTrue(actualFs.isPublishedEmailEnabled());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withIsPublishedEmailEnabled(false)
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertFalse(updatedFs.isPublishedEmailEnabled());
+        assertFalse(actualFs.isPublishedEmailEnabled());
+
+        assertTrue(actualFs.getRespondingInstructorList().isEmpty());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withAddingInstructorRespondent("test@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(Sets.newHashSet("test@email.com"), updatedFs.getRespondingInstructorList());
+        assertEquals(Sets.newHashSet("test@email.com"), actualFs.getRespondingInstructorList());
+
+        assertTrue(actualFs.getRespondingStudentList().isEmpty());
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withAddingStudentRespondent("test@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(Sets.newHashSet("test@email.com"), updatedFs.getRespondingStudentList());
+        assertEquals(Sets.newHashSet("test@email.com"), actualFs.getRespondingStudentList());
+
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withUpdatingInstructorRespondent("test@email.com", "test1@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(Sets.newHashSet("test1@email.com"), updatedFs.getRespondingInstructorList());
+        assertEquals(Sets.newHashSet("test1@email.com"), actualFs.getRespondingInstructorList());
+
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withUpdatingStudentRespondent("test@email.com", "test1@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertEquals(Sets.newHashSet("test1@email.com"), updatedFs.getRespondingStudentList());
+        assertEquals(Sets.newHashSet("test1@email.com"), actualFs.getRespondingStudentList());
+
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withRemovingStudentRespondent("test1@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.getRespondingStudentList().isEmpty());
+        assertTrue(actualFs.getRespondingStudentList().isEmpty());
+
+        updatedFs = fsDb.updateFeedbackSession(
+                FeedbackSessionAttributes
+                        .updateOptionsBuilder(typicalFs.getFeedbackSessionName(), typicalFs.getCourseId())
+                        .withRemovingInstructorRespondent("test1@email.com")
+                        .build());
+        actualFs = fsDb.getFeedbackSession(typicalFs.getCourseId(), typicalFs.getFeedbackSessionName());
+        assertTrue(updatedFs.getRespondingInstructorList().isEmpty());
+        assertTrue(actualFs.getRespondingInstructorList().isEmpty());
     }
 
     private FeedbackSessionAttributes getNewFeedbackSession() {
-        return FeedbackSessionAttributes.builder("fsTest1", "testCourse", "valid@email.com")
-                .withFeedbackSessionType(FeedbackSessionType.STANDARD)
-                .withCreatedTime(new Date())
-                .withStartTime(new Date())
-                .withEndTime(new Date())
-                .withSessionVisibleFromTime(new Date())
-                .withResultsVisibleFromTime(new Date())
-                .withGracePeriod(5)
-                .withSentOpenEmail(true)
-                .withSentPublishedEmail(true)
-                .withInstructions(new Text("Give feedback."))
+        return FeedbackSessionAttributes.builder("fsTest1", "testCourse")
+                .withCreatorEmail("valid@email.com")
+                .withSessionVisibleFromTime(TimeHelperExtension.getInstantMinutesOffsetFromNow(-62))
+                .withStartTime(TimeHelperExtension.getInstantHoursOffsetFromNow(-1))
+                .withEndTime(TimeHelperExtension.getInstantHoursOffsetFromNow(0))
+                .withResultsVisibleFromTime(TimeHelperExtension.getInstantMinutesOffsetFromNow(1))
+                .withGracePeriod(Duration.ofMinutes(5))
+                .withInstructions("Give feedback.")
                 .build();
-    }
-
-    @AfterClass
-    public void classTearDown() {
-        deleteSessionsFromDb();
-    }
-
-    private void deleteSessionsFromDb() {
-        Set<String> keys = dataBundle.feedbackSessions.keySet();
-        for (String i : keys) {
-            fsDb.deleteEntity(dataBundle.feedbackSessions.get(i));
-        }
-        fsDb.deleteEntity(getNewFeedbackSession());
     }
 
 }

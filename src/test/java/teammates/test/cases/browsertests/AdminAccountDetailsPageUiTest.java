@@ -4,16 +4,17 @@ import org.testng.annotations.Test;
 
 import teammates.common.util.AppUrl;
 import teammates.common.util.Const;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
+import teammates.e2e.util.Priority;
+import teammates.e2e.util.TestProperties;
 import teammates.test.driver.BackDoor;
-import teammates.test.driver.Priority;
-import teammates.test.driver.TestProperties;
 import teammates.test.pageobjects.AdminAccountDetailsPage;
 
 /**
  * SUT: {@link Const.ActionURIs#ADMIN_ACCOUNT_DETAILS_PAGE}.
  */
 @Priority(1)
-public class AdminAccountDetailsPageUiTest extends BaseUiTestCase {
+public class AdminAccountDetailsPageUiTest extends BaseE2ETestCase {
     private AdminAccountDetailsPage detailsPage;
 
     @Override
@@ -33,10 +34,10 @@ public class AdminAccountDetailsPageUiTest extends BaseUiTestCase {
 
         ______TS("content: typical page");
 
-        AppUrl detailsPageUrl = createUrl(Const.ActionURIs.ADMIN_ACCOUNT_DETAILS_PAGE)
+        AppUrl detailsPageUrl = createUrl(Const.WebPageURIs.ADMIN_ACCOUNTS_PAGE)
                 .withInstructorId("AAMgtUiT.instr2")
                 .withUserId(TestProperties.TEST_ADMIN_ACCOUNT);
-        detailsPage = loginAdminToPage(detailsPageUrl, AdminAccountDetailsPage.class);
+        detailsPage = loginAdminToPageOld(detailsPageUrl, AdminAccountDetailsPage.class);
 
         detailsPage.verifyHtml("/adminAccountDetails.html");
     }
@@ -49,14 +50,14 @@ public class AdminAccountDetailsPageUiTest extends BaseUiTestCase {
         String courseId = "AAMgtUiT.CS2104";
 
         detailsPage.clickRemoveInstructorFromCourse(courseId)
-            .verifyStatus(Const.StatusMessages.INSTRUCTOR_REMOVED_FROM_COURSE);
+            .waitForTextsForAllStatusMessagesToUserEquals(Const.StatusMessages.INSTRUCTOR_REMOVED_FROM_COURSE);
         assertNull(BackDoor.getInstructorByGoogleId(googleId, courseId));
 
         ______TS("action: remove student from course");
 
         courseId = "AAMgtUiT.CS1101";
         detailsPage.clickRemoveStudentFromCourse(courseId)
-            .verifyStatus(Const.StatusMessages.STUDENT_DELETED);
+            .waitForTextsForAllStatusMessagesToUserEquals(Const.StatusMessages.STUDENT_DELETED);
         assertNull(BackDoor.getStudent(courseId, "AAMgtUiT.instr2@gmail.com"));
         detailsPage.verifyHtmlMainContent("/adminAccountDetailsRemoveStudent.html");
     }

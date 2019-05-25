@@ -1,14 +1,13 @@
 package teammates.storage.entity;
 
 import java.security.SecureRandom;
-import java.util.Date;
+import java.time.Instant;
 
-import com.google.gson.annotations.SerializedName;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.annotation.Translate;
 import com.googlecode.objectify.annotation.Unindex;
 
 import teammates.common.util.Assumption;
@@ -21,26 +20,19 @@ import teammates.common.util.StringHelper;
 @Entity
 @Index
 public class CourseStudent extends BaseEntity {
-
-    /**
-     * Setting this to true prevents changes to the lastUpdate time stamp.
-     * Set to true when using scripts to update entities when you want to
-     * preserve the lastUpdate time stamp.
-     **/
-    @Ignore
-    public transient boolean keepUpdateTimestamp;
-
     /**
      * ID of the student.
      *
-     * @see #makeId()
+     * @see #generateId(String, String)
      */
     @Id
     private String id;
 
-    private Date createdAt;
+    @Translate(InstantTranslatorFactory.class)
+    private Instant createdAt;
 
-    private Date updatedAt;
+    @Translate(InstantTranslatorFactory.class)
+    private Instant updatedAt;
 
     private transient String registrationKey;
 
@@ -48,33 +40,23 @@ public class CourseStudent extends BaseEntity {
      * The student's Google ID. Links to the Account object.
      * This can be null if the student hasn't joined the course yet.
      */
-    @SerializedName("google_id")
     private String googleId;
 
-    @SerializedName("email")
     private String email;
 
-    /**
-     * The student's Course ID. References the primary key of the course.
-     */
-    @SerializedName("coursename")
     private String courseId;
 
     @Unindex
-    @SerializedName("name")
     private String name;
 
     @Unindex
-    @SerializedName("lastName")
     private String lastName;
 
     @Unindex
     private String comments;
 
-    @SerializedName("teamname")
     private String teamName;
 
-    @SerializedName("sectionname")
     private String sectionName;
 
     @SuppressWarnings("unused")
@@ -92,33 +74,37 @@ public class CourseStudent extends BaseEntity {
         setTeamName(teamName);
         setSectionName(sectionName);
 
-        setCreatedAt(new Date());
+        setCreatedAt(Instant.now());
 
-        this.id = makeId();
+        this.id = generateId(getEmail(), getCourseId());
         registrationKey = generateRegistrationKey();
     }
 
-    private String makeId() {
-        return getEmail() + '%' + getCourseId();
+    /**
+     * Generates an unique ID for the student.
+     */
+    public static String generateId(String email, String courseId) {
+        return email + '%' + courseId;
     }
 
-    public Date getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date created) {
+    /**
+     * Sets the createdAt timestamp.
+     */
+    public void setCreatedAt(Instant created) {
         this.createdAt = created;
         setLastUpdate(created);
     }
 
-    public Date getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setLastUpdate(Date updatedAt) {
-        if (!keepUpdateTimestamp) {
-            this.updatedAt = updatedAt;
-        }
+    public void setLastUpdate(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public String getUniqueId() {
@@ -145,6 +131,9 @@ public class CourseStudent extends BaseEntity {
         return name;
     }
 
+    /**
+     * Sets the full name of the student.
+     */
     public void setName(String name) {
         String trimmedName = name.trim();
         String processedFullName = StringHelper.splitName(trimmedName)[2];
@@ -156,6 +145,9 @@ public class CourseStudent extends BaseEntity {
         this.lastName = lastName.trim();
     }
 
+    /**
+     * Gets the last name of the student.
+     */
     public String getLastName() {
         // for legacy data. do not remove even if not covered in test.
         if (this.lastName == null) {
@@ -200,9 +192,12 @@ public class CourseStudent extends BaseEntity {
         this.sectionName = sectionName == null ? null : sectionName.trim();
     }
 
+    /**
+     * Updates the updatedAt timestamp when saving.
+     */
     @OnSave
     public void updateLastUpdateTimestamp() {
-        this.setLastUpdate(new Date());
+        this.setLastUpdate(Instant.now());
     }
 
     /**

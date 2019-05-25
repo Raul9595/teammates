@@ -14,6 +14,7 @@ import teammates.common.datatransfer.StudentResultSummary;
 import teammates.common.datatransfer.TeamEvalResult;
 import teammates.common.datatransfer.attributes.FeedbackQuestionAttributes;
 import teammates.common.datatransfer.attributes.FeedbackResponseAttributes;
+import teammates.common.datatransfer.attributes.StudentAttributes;
 import teammates.common.util.Const;
 import teammates.common.util.HttpRequestHelper;
 import teammates.common.util.Logger;
@@ -21,7 +22,6 @@ import teammates.common.util.SanitizationHelper;
 import teammates.common.util.Templates;
 import teammates.common.util.Templates.FeedbackQuestion.FormTemplates;
 import teammates.common.util.Templates.FeedbackQuestion.Slots;
-import teammates.ui.template.InstructorFeedbackResultsResponseRow;
 
 public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails {
 
@@ -37,6 +37,14 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     public FeedbackContributionQuestionDetails(String questionText) {
         super(FeedbackQuestionType.CONTRIB, questionText);
         isNotSureAllowed = true;
+    }
+
+    public boolean isNotSureAllowed() {
+        return isNotSureAllowed;
+    }
+
+    public void setNotSureAllowed(boolean notSureAllowed) {
+        isNotSureAllowed = notSureAllowed;
     }
 
     private void setContributionQuestionDetails(boolean isNotSureAllowed) {
@@ -66,7 +74,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     }
 
     @Override
-    public boolean isChangesRequiresResponseDeletion(FeedbackQuestionDetails newDetails) {
+    public boolean shouldChangesRequireResponseDeletion(FeedbackQuestionDetails newDetails) {
         FeedbackContributionQuestionDetails newContribDetails = (FeedbackContributionQuestionDetails) newDetails;
         return newContribDetails.isNotSureAllowed != this.isNotSureAllowed;
     }
@@ -78,7 +86,8 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
 
     @Override
     public String getQuestionWithExistingResponseSubmissionFormHtml(boolean sessionIsOpen, int qnIdx,
-            int responseIdx, String courseId, int totalNumRecipients, FeedbackResponseDetails existingResponseDetails) {
+            int responseIdx, String courseId, int totalNumRecipients, FeedbackResponseDetails existingResponseDetails,
+            StudentAttributes student) {
 
         FeedbackContributionResponseDetails frd = (FeedbackContributionResponseDetails) existingResponseDetails;
         int points = frd.getAnswer();
@@ -96,7 +105,8 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
 
     @Override
     public String getQuestionWithoutExistingResponseSubmissionFormHtml(
-            boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId, int totalNumRecipients) {
+            boolean sessionIsOpen, int qnIdx, int responseIdx, String courseId, int totalNumRecipients,
+            StudentAttributes student) {
 
         String optionSelectHtml = getContributionOptionsHtml(Const.INT_UNINITIALIZED);
 
@@ -127,19 +137,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         return "<div id=\"contribForm\">"
                   + getQuestionSpecificEditFormHtml(-1)
              + "</div>";
-    }
-
-    @Override
-    public String getQuestionAdditionalInfoHtml(int questionNumber, String additionalInfoId) {
-        String additionalInfo = this.getQuestionTypeDisplayName();
-
-        return Templates.populateTemplate(
-                FormTemplates.FEEDBACK_QUESTION_ADDITIONAL_INFO,
-                Slots.MORE, "[more]",
-                Slots.LESS, "[less]",
-                Slots.QUESTION_NUMBER, Integer.toString(questionNumber),
-                Slots.ADDITIONAL_INFO_ID, additionalInfoId,
-                Slots.QUESTION_ADDITIONAL_INFO, additionalInfo);
     }
 
     /**
@@ -173,7 +170,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
 
         String currentUserTeam = bundle.emailTeamNameTable.get(studentEmail);
 
-        List<FeedbackResponseAttributes> actualResponses = getActualResponses(question, bundle);
+        List<FeedbackResponseAttributes> actualResponses = bundle.getActualResponsesSortedByGqr(question);
 
         //List of teams with at least one response
         List<String> teamNames = getTeamsWithAtLeastOneResponse(actualResponses, bundle);
@@ -232,7 +229,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
             return "";
         }
 
-        List<FeedbackResponseAttributes> actualResponses = getActualResponses(question, bundle);
+        List<FeedbackResponseAttributes> actualResponses = bundle.getActualResponsesSortedByGqr(question);
 
         //List of teams visible to the instructor and in the selected section
         List<String> teamNames = getTeamNames(bundle);
@@ -312,6 +309,14 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     }
 
     @Override
+    public String getQuestionResultStatisticsJson(
+            List<FeedbackResponseAttributes> responses, FeedbackQuestionAttributes question,
+            String userEmail, FeedbackSessionResultsBundle bundle, boolean isStudent) {
+        // TODO
+        return "";
+    }
+
+    @Override
     public String getQuestionResultStatisticsCsv(
             List<FeedbackResponseAttributes> responses,
             FeedbackQuestionAttributes question,
@@ -321,7 +326,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
             return "";
         }
 
-        List<FeedbackResponseAttributes> actualResponses = getActualResponses(question, bundle);
+        List<FeedbackResponseAttributes> actualResponses = bundle.getActualResponsesSortedByGqr(question);
 
         //List of teams visible to the instructor and in the selected section
         List<String> teamNames = getTeamNames(bundle);
@@ -396,8 +401,8 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
                     + SanitizationHelper.sanitizeForCsv(displayEmail) + ","
                     + SanitizationHelper.sanitizeForCsv(Integer.toString(summary.claimedToInstructor)) + ","
                     + SanitizationHelper.sanitizeForCsv(Integer.toString(summary.perceivedToInstructor)) + ","
-                    + SanitizationHelper.sanitizeForCsv(getNormalizedPointsListDescending(incomingPoints, studentIndx))
-                    + Const.EOL;
+                    + getNormalizedPointsListDescending(incomingPoints, studentIndx)
+                    + System.lineSeparator();
 
             // Replace all Unset values
             contribFragmentString = contribFragmentString.replaceAll(Integer.toString(Const.INT_UNINITIALIZED), "N/A");
@@ -413,13 +418,13 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         sortedMap.forEach((key, value) -> contribFragments.append(value));
 
         String csvPointsExplanation =
-                "In the points given below, an equal share is equal to 100 points. "
-                + "e.g. 80 means \"Equal share - 20%\" and 110 means \"Equal share + 10%\"." + Const.EOL
-                + "Claimed Contribution (CC) = the contribution claimed by the student." + Const.EOL
+                SanitizationHelper.sanitizeForCsv("In the points given below, an equal share is equal to 100 points. "
+                + "e.g. 80 means \"Equal share - 20%\" and 110 means \"Equal share + 10%\".") + System.lineSeparator()
+                + "Claimed Contribution (CC) = the contribution claimed by the student." + System.lineSeparator()
                 + "Perceived Contribution (PC) = the average value of student's contribution "
-                + "as perceived by the team members." + Const.EOL
-                + "Team, Name, Email, CC, PC, Ratings Recieved" + Const.EOL;
-        return csvPointsExplanation + contribFragments + Const.EOL;
+                + "as perceived by the team members." + System.lineSeparator()
+                + "Team, Name, Email, CC, PC, Ratings Received" + System.lineSeparator();
+        return csvPointsExplanation + contribFragments + System.lineSeparator();
     }
 
     private List<String> getTeamNames(FeedbackSessionResultsBundle bundle) {
@@ -437,7 +442,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     Map<String, StudentResultSummary> getStudentResults(FeedbackSessionResultsBundle bundle,
             FeedbackQuestionAttributes question) {
 
-        List<FeedbackResponseAttributes> responses = getActualResponses(question, bundle);
+        List<FeedbackResponseAttributes> responses = bundle.getActualResponsesSortedByGqr(question);
 
         List<String> teamNames = getTeamsWithAtLeastOneResponse(responses, bundle);
 
@@ -452,27 +457,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         Map<String, TeamEvalResult> teamResults = getTeamResults(teamNames, teamSubmissionArray, teamMembersEmail);
 
         return getStudentResults(teamMembersEmail, teamResults);
-    }
-
-    /**
-     * Returns A Map with student email as key and TeamEvalResult as value for the specified question.
-     */
-    Map<String, TeamEvalResult> getTeamEvalResults(FeedbackSessionResultsBundle bundle,
-            FeedbackQuestionAttributes question) {
-
-        List<FeedbackResponseAttributes> responses = getActualResponses(question, bundle);
-
-        List<String> teamNames = getTeamsWithAtLeastOneResponse(responses, bundle);
-
-        Map<String, List<String>> teamMembersEmail = getTeamMembersEmail(bundle, teamNames);
-
-        Map<String, List<FeedbackResponseAttributes>> teamResponses = getTeamResponses(
-                responses, bundle, teamNames);
-
-        Map<String, int[][]> teamSubmissionArray = getTeamSubmissionArray(
-                teamNames, teamMembersEmail, teamResponses);
-
-        return getTeamResults(teamNames, teamSubmissionArray, teamMembersEmail);
     }
 
     private Map<String, StudentResultSummary> getStudentResults(
@@ -495,7 +479,27 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         return studentResults;
     }
 
-    @SuppressWarnings("PMD.UnusedPrivateMethod") // false positive by PMD.
+    /**
+     * Returns A Map with student email as key and TeamEvalResult as value for the specified question.
+     */
+    Map<String, TeamEvalResult> getTeamEvalResults(FeedbackSessionResultsBundle bundle,
+            FeedbackQuestionAttributes question) {
+
+        List<FeedbackResponseAttributes> responses = bundle.getActualResponsesSortedByGqr(question);
+
+        List<String> teamNames = getTeamsWithAtLeastOneResponse(responses, bundle);
+
+        Map<String, List<String>> teamMembersEmail = getTeamMembersEmail(bundle, teamNames);
+
+        Map<String, List<FeedbackResponseAttributes>> teamResponses = getTeamResponses(
+                responses, bundle, teamNames);
+
+        Map<String, int[][]> teamSubmissionArray = getTeamSubmissionArray(
+                teamNames, teamMembersEmail, teamResponses);
+
+        return getTeamResults(teamNames, teamSubmissionArray, teamMembersEmail);
+    }
+
     private Map<String, TeamEvalResult> getTeamResults(List<String> teamNames,
             Map<String, int[][]> teamSubmissionArray, Map<String, List<String>> teamMembersEmail) {
         Map<String, TeamEvalResult> teamResults = new LinkedHashMap<>();
@@ -541,7 +545,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
             FeedbackSessionResultsBundle bundle, List<String> teamNames) {
         Map<String, List<FeedbackResponseAttributes>> teamResponses = new LinkedHashMap<>();
         for (String teamName : teamNames) {
-            teamResponses.put(teamName, new ArrayList<FeedbackResponseAttributes>());
+            teamResponses.put(teamName, new ArrayList<>());
         }
         for (FeedbackResponseAttributes response : responses) {
             String team = bundle.emailTeamNameTable.get(response.giver);
@@ -578,22 +582,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
             }
         }
         return teamNames;
-    }
-
-    private List<FeedbackResponseAttributes> getActualResponses(
-            FeedbackQuestionAttributes question,
-            FeedbackSessionResultsBundle bundle) {
-        List<FeedbackResponseAttributes> responses;
-        String questionId = question.getId();
-        //Get all actual responses for this question.
-        responses = new ArrayList<>();
-        for (FeedbackResponseAttributes response : bundle.actualResponses) {
-            if (response.feedbackQuestionId.equals(questionId)) {
-                responses.add(response);
-            }
-        }
-        responses.sort(bundle.compareByGiverRecipientQuestion);
-        return responses;
     }
 
     private static String getNormalizedPointsListColorizedDescending(int[] subs, int index) {
@@ -707,7 +695,7 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     }
 
     @Override
-    public List<String> validateQuestionDetails() {
+    public List<String> validateQuestionDetails(String courseId) {
         return new ArrayList<>();
     }
 
@@ -726,7 +714,8 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
             if (isValidRange && isMultipleOf10) {
                 validAnswer = true;
             }
-            if (frd.getAnswer() == Const.POINTS_NOT_SURE || frd.getAnswer() == Const.POINTS_NOT_SUBMITTED) {
+            if (frd.getAnswer() == Const.POINTS_NOT_SURE && isNotSureAllowed
+                    || frd.getAnswer() == Const.POINTS_NOT_SUBMITTED) {
                 validAnswer = true;
             }
             if (!validAnswer) {
@@ -775,53 +764,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         }
 
         return errorMsg;
-    }
-
-    static String getPerceivedContributionInEqualShareFormatHtml(int i) {
-        return "<span>&nbsp;&nbsp;["
-                + "Perceived Contribution: "
-                + convertToEqualShareFormatHtml(i)
-                + "]</span>";
-    }
-
-    private String getPerceivedContributionHtml(FeedbackQuestionAttributes question,
-            String targetEmail, FeedbackSessionResultsBundle bundle) {
-
-        if (hasPerceivedContribution(targetEmail, question, bundle)) {
-            Map<String, StudentResultSummary> stats =
-                    FeedbackContributionResponseDetails.getContribQnStudentResultSummary(question, bundle);
-            StudentResultSummary studentResult = stats.get(targetEmail);
-            int pc = studentResult.perceivedToInstructor;
-
-            return FeedbackContributionQuestionDetails.getPerceivedContributionInEqualShareFormatHtml(pc);
-        }
-        return "";
-    }
-
-    private boolean hasPerceivedContribution(String email, FeedbackQuestionAttributes question,
-                                             FeedbackSessionResultsBundle bundle) {
-        Map<String, StudentResultSummary> stats =
-                FeedbackContributionResponseDetails.getContribQnStudentResultSummary(question, bundle);
-        return stats.containsKey(email);
-    }
-
-    /**
-     * Used to display missing responses between a possible giver and a possible recipient.
-     * Returns "No Response" with the Perceived Contribution if the giver is the recipient.
-     * Otherwise, returns "No Response".
-     */
-    @Override
-    public String getNoResponseTextInHtml(String giverEmail, String recipientEmail,
-                                          FeedbackSessionResultsBundle bundle,
-                                          FeedbackQuestionAttributes question) {
-        boolean isPerceivedContributionShown = giverEmail.equals(recipientEmail)
-                                               && hasPerceivedContribution(recipientEmail, question, bundle);
-
-        // in the row for the student's self response,
-        // show the perceived contribution if the student has one
-        return "<i>" + Const.INSTRUCTOR_FEEDBACK_RESULTS_MISSING_RESPONSE + "</i>"
-               + (isPerceivedContributionShown ? getPerceivedContributionHtml(question, recipientEmail, bundle)
-                                               : "");
     }
 
     /*
@@ -900,28 +842,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         }
     }
 
-    /**
-     * Converts points in integer to String for HTML display.
-     * @return points in text form "Equal Share..." with html formatting for colors.
-     */
-    static String convertToEqualShareFormatHtml(int i) {
-        if (i == Const.INT_UNINITIALIZED) {
-            return "<span class=\"color-neutral\">N/A</span>";
-        } else if (i == Const.POINTS_NOT_SUBMITTED) {
-            return "<span class=\"color-neutral\"></span>";
-        } else if (i == Const.POINTS_NOT_SURE) {
-            return "<span class=\"color-negative\">Not Sure</span>";
-        } else if (i == 0) {
-            return "<span class=\"color-negative\">0%</span>";
-        } else if (i > 100) {
-            return "<span class=\"color-positive\">Equal Share +" + (i - 100) + "%</span>";
-        } else if (i < 100) {
-            return "<span class=\"color-negative\">Equal Share -" + (100 - i) + "%</span>";
-        } else {
-            return "<span class=\"color-neutral\">Equal Share</span>";
-        }
-    }
-
     @Override
     public boolean isQuestionSkipped(String[] answer) {
         if (answer == null) {
@@ -935,11 +855,6 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
         return true;
     }
 
-    @Override
-    public Comparator<InstructorFeedbackResultsResponseRow> getResponseRowsSortOrder() {
-        return null;
-    }
-
     private String getEqualShareHelpLinkIfNeeded(int responseIdx) {
         return responseIdx == 0
                 ? "<span class=\"glyphicon glyphicon-info-sign\"></span>"
@@ -948,7 +863,12 @@ public class FeedbackContributionQuestionDetails extends FeedbackQuestionDetails
     }
 
     @Override
-    public boolean isCommentsOnResponsesAllowed() {
+    public boolean isInstructorCommentsOnResponsesAllowed() {
+        return false;
+    }
+
+    @Override
+    public boolean isFeedbackParticipantCommentsOnResponsesAllowed() {
         return false;
     }
 }

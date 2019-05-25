@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import teammates.common.util.Const;
 import teammates.common.util.JsonUtils;
+import teammates.e2e.cases.e2e.BaseE2ETestCase;
 import teammates.test.driver.BackDoor;
 import teammates.test.driver.FileHelper;
 import teammates.test.pageobjects.AppPage;
@@ -13,7 +14,7 @@ import teammates.test.pageobjects.AppPage;
 /**
  * Loads the Mashup page for the tester to do a visual inspection.
  */
-public class MashupPageUiTest extends BaseUiTestCase {
+public class MashupPageUiTest extends BaseE2ETestCase {
 
     @Override
     protected void prepareTestData() {
@@ -23,7 +24,7 @@ public class MashupPageUiTest extends BaseUiTestCase {
 
     @Test
     public void loadWebpageCompilation() throws Exception {
-        AppPage page = loginAdmin();
+        AppPage page = null; // loginAdmin();
         uploadNewPhotoForStudent();
         page.navigateTo(createUrl(Const.ViewURIs.MASHUP));
     }

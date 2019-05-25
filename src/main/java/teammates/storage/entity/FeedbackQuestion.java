@@ -1,16 +1,17 @@
 package teammates.storage.entity;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.google.appengine.api.datastore.Text;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.annotation.Translate;
+import com.googlecode.objectify.annotation.Unindex;
 
 import teammates.common.datatransfer.FeedbackParticipantType;
 import teammates.common.datatransfer.questions.FeedbackQuestionType;
@@ -25,14 +26,6 @@ public class FeedbackQuestion extends BaseEntity {
 
     // TODO: where applicable, we should specify fields as @Unindex to prevent GAE from building unnecessary indexes.
 
-    /**
-     * Setting this to true prevents changes to the lastUpdate time stamp. Set
-     * to true when using scripts to update entities when you want to preserve
-     * the lastUpdate time stamp.
-     **/
-    @Ignore
-    public boolean keepUpdateTimestamp;
-
     @Id
     private Long feedbackQuestionId;
 
@@ -40,12 +33,15 @@ public class FeedbackQuestion extends BaseEntity {
 
     private String courseId;
 
-    // TODO: Do we need this field since creator of FS = creator of qn? (can be removed -damith)
-    private String creatorEmail;
-
-    // TODO: rename to questionMetaData, will require database conversion
+    /**
+     * Serialized {@link teammates.common.datatransfer.questions.FeedbackQuestionDetails} stored as a string.
+     *
+     * @see teammates.common.datatransfer.attributes.FeedbackQuestionAttributes#getQuestionDetails()
+     */
+    @Unindex
     private Text questionText;
 
+    @Unindex
     private Text questionDescription;
 
     private int questionNumber;
@@ -66,9 +62,11 @@ public class FeedbackQuestion extends BaseEntity {
 
     private List<FeedbackParticipantType> showRecipientNameTo = new ArrayList<>();
 
-    private Date createdAt;
+    @Translate(InstantTranslatorFactory.class)
+    private Instant createdAt;
 
-    private Date updatedAt;
+    @Translate(InstantTranslatorFactory.class)
+    private Instant updatedAt;
 
     @SuppressWarnings("unused")
     private FeedbackQuestion() {
@@ -76,8 +74,8 @@ public class FeedbackQuestion extends BaseEntity {
     }
 
     public FeedbackQuestion(
-            String feedbackSessionName, String courseId, String creatorEmail,
-            Text questionText, Text questionDescription, int questionNumber, FeedbackQuestionType questionType,
+            String feedbackSessionName, String courseId,
+            String questionText, String questionDescription, int questionNumber, FeedbackQuestionType questionType,
             FeedbackParticipantType giverType,
             FeedbackParticipantType recipientType,
             int numberOfEntitiesToGiveFeedbackTo,
@@ -88,42 +86,46 @@ public class FeedbackQuestion extends BaseEntity {
         this.feedbackQuestionId = null; // Allow GAE to generate key.
         this.feedbackSessionName = feedbackSessionName;
         this.courseId = courseId;
-        this.creatorEmail = creatorEmail;
-        this.questionText = questionText;
-        this.questionDescription = questionDescription;
+        setQuestionText(questionText);
+        setQuestionDescription(questionDescription);
         this.questionNumber = questionNumber;
         this.questionType = questionType;
         this.giverType = giverType;
         this.recipientType = recipientType;
         this.numberOfEntitiesToGiveFeedbackTo = numberOfEntitiesToGiveFeedbackTo;
-        this.showResponsesTo = showResponsesTo == null ? new ArrayList<FeedbackParticipantType>() : showResponsesTo;
-        this.showGiverNameTo = showGiverNameTo == null ? new ArrayList<FeedbackParticipantType>() : showGiverNameTo;
+        this.showResponsesTo = showResponsesTo == null ? new ArrayList<>() : showResponsesTo;
+        this.showGiverNameTo = showGiverNameTo == null ? new ArrayList<>() : showGiverNameTo;
         this.showRecipientNameTo =
-                showRecipientNameTo == null ? new ArrayList<FeedbackParticipantType>() : showRecipientNameTo;
-        this.setCreatedAt(new Date());
+                showRecipientNameTo == null ? new ArrayList<>() : showRecipientNameTo;
+        this.setCreatedAt(Instant.now());
     }
 
-    public Date getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt == null ? Const.TIME_REPRESENTS_DEFAULT_TIMESTAMP : createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt == null ? Const.TIME_REPRESENTS_DEFAULT_TIMESTAMP : updatedAt;
     }
 
-    public void setCreatedAt(Date newDate) {
+    /**
+     * Sets the createdAt timestamp of the question.
+     */
+    public void setCreatedAt(Instant newDate) {
         this.createdAt = newDate;
         setLastUpdate(newDate);
     }
 
-    public void setLastUpdate(Date newDate) {
-        if (!keepUpdateTimestamp) {
-            this.updatedAt = newDate;
-        }
+    public void setLastUpdate(Instant newDate) {
+        this.updatedAt = newDate;
     }
 
     public String getId() {
         return Key.create(FeedbackQuestion.class, feedbackQuestionId).toWebSafeString();
+    }
+
+    public void setFeedbackQuestionId(Long feedbackQuestionId) {
+        this.feedbackQuestionId = feedbackQuestionId;
     }
 
     public String getFeedbackSessionName() {
@@ -142,28 +144,20 @@ public class FeedbackQuestion extends BaseEntity {
         this.courseId = courseId;
     }
 
-    public String getCreatorEmail() {
-        return creatorEmail;
+    public String getQuestionMetaData() {
+        return questionText == null ? null : questionText.getValue();
     }
 
-    public void setCreatorEmail(String creatorEmail) {
-        this.creatorEmail = creatorEmail;
+    public void setQuestionText(String questionText) {
+        this.questionText = questionText == null ? null : new Text(questionText);
     }
 
-    public Text getQuestionMetaData() {
-        return questionText;
+    public String getQuestionDescription() {
+        return questionDescription == null ? null : questionDescription.getValue();
     }
 
-    public void setQuestionText(Text questionText) {
-        this.questionText = questionText;
-    }
-
-    public Text getQuestionDescription() {
-        return questionDescription;
-    }
-
-    public void setQuestionDescription(Text questionDescription) {
-        this.questionDescription = questionDescription;
+    public void setQuestionDescription(String questionDescription) {
+        this.questionDescription = questionDescription == null ? null : new Text(questionDescription);
     }
 
     public FeedbackQuestionType getQuestionType() {
@@ -232,8 +226,11 @@ public class FeedbackQuestion extends BaseEntity {
         this.showRecipientNameTo = showRecipientNameTo;
     }
 
+    /**
+     * Updates the updatedAt timestamp when saving.
+     */
     @OnSave
     public void updateLastUpdateTimestamp() {
-        this.setLastUpdate(new Date());
+        this.setLastUpdate(Instant.now());
     }
 }

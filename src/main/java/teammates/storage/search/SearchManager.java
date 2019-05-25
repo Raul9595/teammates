@@ -65,9 +65,9 @@ public final class SearchManager {
      * @throws MaximumRetriesExceededException with final {@link OperationResult}'s message as final message,
      *         if operation fails after maximum retries.
      */
-    private static void putDocumentWithRetry(String indexName, final Document document)
-            throws PutException, MaximumRetriesExceededException {
-        final Index index = getIndex(indexName);
+    private static void putDocumentWithRetry(String indexName, Document document)
+            throws MaximumRetriesExceededException {
+        Index index = getIndex(indexName);
 
         /*
          * The GAE Search API signals put document failure in two ways: it either
@@ -93,7 +93,7 @@ public final class SearchManager {
             }
 
             @Override
-            public boolean isSuccessful() throws PutException {
+            public boolean isSuccessful() {
                 // Update the final message to be shown if the task fails after maximum retries
                 finalMessage = lastResult.getMessage();
 
@@ -133,9 +133,9 @@ public final class SearchManager {
      * @throws MaximumRetriesExceededException with list of failed {@link Document}s as final data and
      *         final {@link OperationResult}'s message as final message, if operation fails after maximum retries.
      */
-    private static void putDocumentsWithRetry(String indexName, final List<Document> documents)
-            throws PutException, MaximumRetriesExceededException {
-        final Index index = getIndex(indexName);
+    private static void putDocumentsWithRetry(String indexName, List<Document> documents)
+            throws MaximumRetriesExceededException {
+        Index index = getIndex(indexName);
 
         /*
          * The GAE Search API allows batch putting a List of Documents.
@@ -152,7 +152,7 @@ public final class SearchManager {
             private List<String> lastIds;
 
             @Override
-            public void run() throws PutException {
+            public void run() {
                 try {
                     PutResponse response = index.put(documentsToPut);
                     lastResults = response.getResults();
@@ -209,8 +209,8 @@ public final class SearchManager {
     /**
      * Deletes document by documentId.
      */
-    public static void deleteDocument(String indexName, String documentId) {
-        getIndex(indexName).deleteAsync(documentId);
+    public static void deleteDocument(String indexName, String... documentIds) {
+        getIndex(indexName).deleteAsync(documentIds);
     }
 
     private static Index getIndex(String indexName) {

@@ -71,7 +71,7 @@ public final class InstructorPrivileges {
             Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_COURSE,
             Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_INSTRUCTOR,
             Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_SESSION,
-            Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_STUDENT
+            Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_STUDENT,
     };
 
     private static final String[] SECTION_LEVEL_ONLY_LIST = new String[] {
@@ -81,7 +81,7 @@ public final class InstructorPrivileges {
     private static final String[] SESSION_LEVEL_ONLY_LIST = new String[] {
             Const.ParamsNames.INSTRUCTOR_PERMISSION_VIEW_SESSION_IN_SECTIONS,
             Const.ParamsNames.INSTRUCTOR_PERMISSION_SUBMIT_SESSION_IN_SECTIONS,
-            Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_SESSION_COMMENT_IN_SECTIONS
+            Const.ParamsNames.INSTRUCTOR_PERMISSION_MODIFY_SESSION_COMMENT_IN_SECTIONS,
     };
 
     private static final Set<String> COURSE_LEVEL_ONLY_PRIVILEGES =
@@ -226,8 +226,8 @@ public final class InstructorPrivileges {
         if (!isPrivilegeNameValidForSectionLevel(privilegeName)) {
             return;
         }
-        this.sectionLevel.computeIfAbsent(sectionName, key -> new LinkedHashMap<>())
-                         .put(privilegeName, isAllowed);
+        addSectionWithDefaultPrivileges(sectionName);
+        this.sectionLevel.get(sectionName).put(privilegeName, isAllowed);
     }
 
     private void updatePrivilegeInSessionLevel(String sectionName, String sessionName,
@@ -269,10 +269,10 @@ public final class InstructorPrivileges {
     }
 
     private void verifyExistenceOfsectionName(String sectionName) {
-        if (!this.sessionLevel.containsKey(sectionName)) {
+        this.sessionLevel.computeIfAbsent(sectionName, key -> {
             addSectionWithDefaultPrivileges(sectionName);
-            this.sessionLevel.put(sectionName, new LinkedHashMap<String, Map<String, Boolean>>());
-        }
+            return new LinkedHashMap<>();
+        });
     }
 
     public void addSectionWithDefaultPrivileges(String sectionName) {
